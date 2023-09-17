@@ -1,9 +1,8 @@
 package com.vybes.service.client;
 
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor

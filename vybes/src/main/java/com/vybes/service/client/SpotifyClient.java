@@ -1,9 +1,6 @@
 package com.vybes.service.client;
 
-import com.vybes.service.model.AuthorizationTokenResponse;
-
-import lombok.RequiredArgsConstructor;
-
+import java.util.Collections;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,8 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Collections;
+import com.vybes.service.model.AuthorizationTokenResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
