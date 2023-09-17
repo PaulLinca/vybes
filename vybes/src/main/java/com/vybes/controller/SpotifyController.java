@@ -5,20 +5,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.vybes.service.client.SpotifyClient;
+import com.vybes.service.client.SpotifyService;
 
 @RestController
 @RequestMapping("/api")
 public class SpotifyController {
 
-    @Autowired private SpotifyClient spotifyClient;
-
-    @GetMapping("/track")
-    public String getTrack() {
-        return "track";
-    }
+    @Autowired private SpotifyService spotifyService;
 
     @GetMapping("/search")
     public Object search() {
-        return spotifyClient.searchTrack();
+        return spotifyService.searchTrack();
     }
 }
