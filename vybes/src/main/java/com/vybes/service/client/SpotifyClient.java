@@ -31,7 +31,7 @@ public class SpotifyClient {
 
     public AuthorizationTokenResponse getToken() {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "client_credentials");
@@ -50,7 +50,7 @@ public class SpotifyClient {
     public Object searchTrack() {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.add("Authorization", "Bearer " + token);
+        headers.setBearerAuth(token);
 
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
         RestTemplate restTemplate = new RestTemplate();
