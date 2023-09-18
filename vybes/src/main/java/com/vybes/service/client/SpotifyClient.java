@@ -1,6 +1,9 @@
 package com.vybes.service.client;
 
-import java.util.Collections;
+import com.vybes.service.model.AuthorizationTokenResponse;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,20 +14,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import com.vybes.service.model.AuthorizationTokenResponse;
-import lombok.RequiredArgsConstructor;
+
+import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
 public class SpotifyClient {
 
-    @Value("${spotify.http.token.client-id}")
-    private String clientId;
-    @Value("${spotify.http.token.client-secret}")
-    private String clientSecret;
-
     private static final String BASE_URL = "https://api.spotify.com/v1";
     private static final String TOKEN_URL = "https://accounts.spotify.com/api/token";
+
+    @Value("${spotify.http.token.client-id}")
+    private String clientId;
+
+    @Value("${spotify.http.token.client-secret}")
+    private String clientSecret;
 
     private String token;
 
