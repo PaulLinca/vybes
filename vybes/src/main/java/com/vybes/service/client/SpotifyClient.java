@@ -1,6 +1,7 @@
 package com.vybes.service.client;
 
 import java.util.Collections;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SpotifyClient {
 
+    @Value("${spotify.http.token.client-id}")
+    private String clientId;
+    @Value("${spotify.http.token.client-secret}")
+    private String clientSecret;
+
     private static final String BASE_URL = "https://api.spotify.com/v1";
     private static final String TOKEN_URL = "https://accounts.spotify.com/api/token";
 
@@ -32,8 +38,8 @@ public class SpotifyClient {
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "client_credentials");
-        body.add("client_id", "d358fe12a8524b249f8c4c3a7fd4a41d");
-        body.add("client_secret", "f858ccc79d7a429196cdf8f203cda698");
+        body.add("client_id", clientId);
+        body.add("client_secret", clientSecret);
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
         RestTemplate restTemplate = new RestTemplate();
