@@ -11,12 +11,12 @@ public class SpotifyService {
 
     private final SpotifyClient spotifyClient;
 
-    public Object searchTrack() {
+    public Object searchTrack(String searchQuery) {
         try {
-            return spotifyClient.searchTrack();
+            return spotifyClient.searchTrack(searchQuery);
         } catch (HttpClientErrorException.Unauthorized e) {
             spotifyClient.setAccessToken();
-            return searchTrack();
+            return searchTrack(searchQuery);
         }
     }
 }

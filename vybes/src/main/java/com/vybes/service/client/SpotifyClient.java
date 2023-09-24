@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collections;
 
@@ -54,19 +55,21 @@ public class SpotifyClient {
         return response.getBody();
     }
 
-    public Object searchTrack() {
+    public Object searchTrack(String searchString) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.setBearerAuth(token);
 
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<?> result =
-                restTemplate.exchange(
-                        BASE_URL + "/search?type=track&query=track=Kody Blu&limit=2",
-                        HttpMethod.GET,
-                        entity,
-                        Object.class);
+        String uri =
+                UriComponentsBuilder.fromHttpUrl(BASE_URL + "/search")
+                        .queryParam("type", "track")
+                        .queryParam("limit", "4")
+                        .queryParam("query", searchString)
+                        .encode()
+                        .toUriString();
+        ResponseEntity<?> result = restTemplate.exchange(uri, HttpMethod.GET, entity, Object.class);
 
         return result.getBody();
     }
