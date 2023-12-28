@@ -1,10 +1,13 @@
 package com.vybes.service.client;
 
 import com.vybes.service.model.AuthorizationTokenResponse;
+import com.vybes.service.model.SearchTrackResponse;
+import com.vybes.service.model.Track;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collections;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -55,7 +59,7 @@ public class SpotifyClient {
         return response.getBody();
     }
 
-    public Object searchTrack(String searchString) {
+    public List<Track> searchTrack(String searchString) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.setBearerAuth(token);
@@ -69,8 +73,10 @@ public class SpotifyClient {
                         .queryParam("query", searchString)
                         .encode()
                         .toUriString();
-        ResponseEntity<?> result = restTemplate.exchange(uri, HttpMethod.GET, entity, Object.class);
+        ResponseEntity<SearchTrackResponse> result =
+                restTemplate.exchange(
+                        uri, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {});
 
-        return result.getBody();
+        return result.getBody().getTracks();
     }
 }

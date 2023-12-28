@@ -1,13 +1,18 @@
 package com.vybes.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vybes.service.client.SpotifyService;
+import com.vybes.service.model.Track;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -16,8 +21,9 @@ public class SpotifyController {
 
     private final SpotifyService spotifyService;
 
-    @GetMapping("/search")
-    public Object search(@RequestParam String query) {
+    @SneakyThrows
+    @GetMapping(value = "/search", produces = "application/json; charset=UTF-8")
+    public List<Track> search(@RequestParam String query) {
         return spotifyService.searchTrack(query);
     }
 }

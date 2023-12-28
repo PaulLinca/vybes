@@ -1,9 +1,13 @@
 package com.vybes.service.client;
 
+import com.vybes.service.model.Track;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -11,7 +15,7 @@ public class SpotifyService {
 
     private final SpotifyClient spotifyClient;
 
-    public Object searchTrack(String searchQuery) {
+    public List<Track> searchTrack(String searchQuery) {
         try {
             return spotifyClient.searchTrack(searchQuery);
         } catch (HttpClientErrorException.Unauthorized e) {
