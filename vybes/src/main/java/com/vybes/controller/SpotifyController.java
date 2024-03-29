@@ -1,6 +1,5 @@
 package com.vybes.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vybes.service.client.SpotifyService;
 import com.vybes.service.model.Track;
 

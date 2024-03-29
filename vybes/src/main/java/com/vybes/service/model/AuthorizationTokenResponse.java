@@ -7,6 +7,7 @@ import lombok.Data;
 public class AuthorizationTokenResponse {
     @JsonProperty("access_token")
     private String accessToken;
+
     @JsonProperty("token_type")
     private String tokenType;
 }
