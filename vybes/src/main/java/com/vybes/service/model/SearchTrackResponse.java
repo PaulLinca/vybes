@@ -12,6 +12,5 @@ import java.util.List;
 @Builder
 @JsonDeserialize(using = SearchTrackResponseDeserializer.class)
 public class SearchTrackResponse {
-
     private List<Track> tracks;
 }
