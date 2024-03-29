@@ -18,6 +18,9 @@ import java.util.List;
 
 public class SearchTrackResponseDeserializer extends JsonDeserializer<SearchTrackResponse> {
 
+    private static final String ALBUM = "album";
+    private static final String NAME = "name";
+
     @Override
     public SearchTrackResponse deserialize(
             final JsonParser jsonParser, final DeserializationContext deserializationContext)
@@ -32,10 +35,11 @@ public class SearchTrackResponseDeserializer extends JsonDeserializer<SearchTrac
 
             ObjectNode objectNode = factory.objectNode();
             objectNode.putIfAbsent("id", trackNode.get("id"));
-            objectNode.putIfAbsent("name", trackNode.get("name"));
-            objectNode.putIfAbsent("album", trackNode.get("album").get("name"));
-            objectNode.putIfAbsent("artist", trackNode.get("artists").get(0).get("name"));
-            objectNode.putIfAbsent("imageUrl", trackNode.get("album").get("images").get(0).get("url"));
+            objectNode.putIfAbsent(NAME, trackNode.get(NAME));
+            objectNode.putIfAbsent(ALBUM, trackNode.get(ALBUM).get(NAME));
+            objectNode.putIfAbsent("artist", trackNode.get("artists").get(0).get(NAME));
+            objectNode.putIfAbsent(
+                    "imageUrl", trackNode.get(ALBUM).get("images").get(0).get("url"));
 
             jsonArray.add(objectNode);
         }
