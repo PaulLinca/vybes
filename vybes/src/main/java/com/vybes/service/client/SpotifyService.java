@@ -1,6 +1,6 @@
 package com.vybes.service.client;
 
-import com.vybes.service.model.Track;
+import com.vybes.service.model.search.SearchTrackItem;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,7 +15,7 @@ public class SpotifyService {
 
     private final SpotifyClient spotifyClient;
 
-    public List<Track> searchTrack(String searchQuery) {
+    public List<SearchTrackItem> searchTrack(String searchQuery) {
         try {
             return spotifyClient.searchTrack(searchQuery);
         } catch (HttpClientErrorException.Unauthorized e) {

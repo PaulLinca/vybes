@@ -1,4 +1,4 @@
-package com.vybes.service.model;
+package com.vybes.service.model.search;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.vybes.service.model.deserializer.SearchTrackResponseDeserializer;
@@ -12,5 +12,5 @@ import java.util.List;
 @Builder
 @JsonDeserialize(using = SearchTrackResponseDeserializer.class)
 public class SearchTrackResponse {
-    private List<Track> tracks;
+    private List<SearchTrackItem> searchTrackItems;
 }

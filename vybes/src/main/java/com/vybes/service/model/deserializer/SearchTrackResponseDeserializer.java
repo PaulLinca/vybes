@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vybes.service.model.SearchTrackResponse;
-import com.vybes.service.model.Track;
+import com.vybes.service.model.search.SearchTrackItem;
+import com.vybes.service.model.search.SearchTrackResponse;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -43,9 +43,9 @@ public class SearchTrackResponseDeserializer extends JsonDeserializer<SearchTrac
 
             jsonArray.add(objectNode);
         }
-        List<Track> tracks =
-                Arrays.asList(new ObjectMapper().readValue(jsonArray.toString(), Track[].class));
+        List<SearchTrackItem> searchTrackItems =
+                Arrays.asList(new ObjectMapper().readValue(jsonArray.toString(), SearchTrackItem[].class));
 
-        return SearchTrackResponse.builder().tracks(tracks).build();
+        return SearchTrackResponse.builder().searchTrackItems(searchTrackItems).build();
     }
 }

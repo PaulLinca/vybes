@@ -1,4 +1,4 @@
-package com.vybes.service.model;
+package com.vybes.service.model.search;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Track {
+public class SearchTrackItem {
     private String id;
     private String name;
     private String artist;
