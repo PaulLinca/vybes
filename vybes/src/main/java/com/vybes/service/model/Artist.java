@@ -1,12 +1,13 @@
 package com.vybes.service.model;
 
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.vybes.service.model.deserializer.ArtistDeserializer;
 
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Builder

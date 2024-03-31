@@ -63,7 +63,7 @@ class TrackDeserializerTest {
 
     private String readFileAsString(String fileName) throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
-        InputStream inputStream =  classLoader.getResourceAsStream(fileName);
+        InputStream inputStream = classLoader.getResourceAsStream(fileName);
         StringBuilder resultStringBuilder = new StringBuilder();
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {

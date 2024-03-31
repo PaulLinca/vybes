@@ -7,7 +7,6 @@ import com.vybes.service.model.Track;
 import com.vybes.service.model.search.SearchTrackItem;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
