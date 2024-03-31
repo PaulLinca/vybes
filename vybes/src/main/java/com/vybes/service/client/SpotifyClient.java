@@ -81,7 +81,7 @@ public class SpotifyClient {
         return result.getBody().getSearchTrackItems();
     }
 
-    public Track getTrack(String trackId) {
+    public Track getTrack(String id) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.setBearerAuth(token);
@@ -91,7 +91,7 @@ public class SpotifyClient {
 
         ResponseEntity<Track> result =
                 restTemplate.exchange(
-                        BASE_URL + "/tracks",
+                        BASE_URL + "/tracks/" + id,
                         HttpMethod.GET,
                         entity,
                         new ParameterizedTypeReference<>() {});

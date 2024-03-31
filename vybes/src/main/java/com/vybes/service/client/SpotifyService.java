@@ -1,5 +1,6 @@
 package com.vybes.service.client;
 
+import com.vybes.service.model.Track;
 import com.vybes.service.model.search.SearchTrackItem;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,15 @@ public class SpotifyService {
         } catch (HttpClientErrorException.Unauthorized e) {
             spotifyClient.setAccessToken();
             return searchTrack(searchQuery);
+        }
+    }
+
+    public Track getTrack(String id) {
+        try {
+            return spotifyClient.getTrack(id);
+        } catch (HttpClientErrorException.Unauthorized e) {
+            spotifyClient.setAccessToken();
+            return getTrack(id);
         }
     }
 }
