@@ -22,6 +22,7 @@ public class AlbumDeserializer extends JsonDeserializer<Album> {
                 .name(valueAsJson.get("name").textValue())
                 .spotifyUrl(valueAsJson.get("external_urls").get("spotify").textValue())
                 .imageUrl(valueAsJson.get("images").get(0).get("url").textValue())
+                .releaseDate(valueAsJson.get("release_date").textValue())
                 .build();
     }
 }

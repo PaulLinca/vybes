@@ -16,4 +16,5 @@ public class Album {
     private String name;
     private String imageUrl;
     private String spotifyUrl;
+    private String releaseDate;
 }

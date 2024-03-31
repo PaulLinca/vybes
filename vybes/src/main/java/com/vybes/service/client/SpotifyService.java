@@ -1,5 +1,6 @@
 package com.vybes.service.client;
 
+import com.vybes.service.model.Album;
 import com.vybes.service.model.Track;
 import com.vybes.service.model.search.SearchTrackItem;
 
@@ -20,7 +21,7 @@ public class SpotifyService {
         try {
             return spotifyClient.searchTrack(searchQuery);
         } catch (HttpClientErrorException.Unauthorized e) {
-            spotifyClient.setAccessToken();
+            spotifyClient.refreshAccessToken();
             return searchTrack(searchQuery);
         }
     }
@@ -29,8 +30,17 @@ public class SpotifyService {
         try {
             return spotifyClient.getTrack(id);
         } catch (HttpClientErrorException.Unauthorized e) {
-            spotifyClient.setAccessToken();
+            spotifyClient.refreshAccessToken();
             return getTrack(id);
+        }
+    }
+
+    public Album getAlbum(String id) {
+        try {
+            return spotifyClient.getAlbum(id);
+        } catch (HttpClientErrorException.Unauthorized e) {
+            spotifyClient.refreshAccessToken();
+            return getAlbum(id);
         }
     }
 }
