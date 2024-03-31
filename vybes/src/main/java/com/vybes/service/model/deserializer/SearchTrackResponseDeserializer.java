@@ -44,7 +44,9 @@ public class SearchTrackResponseDeserializer extends JsonDeserializer<SearchTrac
             jsonArray.add(objectNode);
         }
         List<SearchTrackItem> searchTrackItems =
-                Arrays.asList(new ObjectMapper().readValue(jsonArray.toString(), SearchTrackItem[].class));
+                Arrays.asList(
+                        new ObjectMapper()
+                                .readValue(jsonArray.toString(), SearchTrackItem[].class));
 
         return SearchTrackResponse.builder().searchTrackItems(searchTrackItems).build();
     }
