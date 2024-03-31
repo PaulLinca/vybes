@@ -29,7 +29,7 @@ public class TrackDeserializer extends JsonDeserializer<Track> {
                 .name(valueAsJson.get("name").textValue())
                 .spotifyUrl(valueAsJson.get("external_urls").at("/spotify").textValue())
                 .album(jsonParser.getCodec().treeToValue(valueAsJson.get("album"), Album.class))
-                .artist(getArtists(valueAsJson.withArray("artists"), jsonParser.getCodec()))
+                .artists(getArtists(valueAsJson.withArray("artists"), jsonParser.getCodec()))
                 .build();
     }
 
