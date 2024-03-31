@@ -1,8 +1,10 @@
-package com.vybes.service.model;
+package com.vybes.service.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.vybes.service.model.deserializer.TrackDeserializer;
+import com.vybes.service.model.entity.Album;
+import com.vybes.service.model.entity.Artist;
 
 import lombok.Builder;
 import lombok.Data;

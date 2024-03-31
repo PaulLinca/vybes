@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.vybes.service.model.Artist;
+import com.vybes.service.model.entity.Artist;
 
 import java.io.IOException;
 import java.util.ArrayList;

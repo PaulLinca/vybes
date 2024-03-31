@@ -1,4 +1,4 @@
-package com.vybes.service.model;
+package com.vybes.service.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

@@ -1,8 +1,8 @@
 package com.vybes.service.client;
 
-import com.vybes.service.model.Album;
-import com.vybes.service.model.Artist;
-import com.vybes.service.model.Track;
+import com.vybes.service.model.entity.Album;
+import com.vybes.service.model.entity.Artist;
+import com.vybes.service.model.entity.Track;
 import com.vybes.service.model.search.SearchTrackItem;
 
 import lombok.RequiredArgsConstructor;

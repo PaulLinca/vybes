@@ -7,9 +7,9 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vybes.service.model.Album;
-import com.vybes.service.model.Artist;
-import com.vybes.service.model.Track;
+import com.vybes.service.model.entity.Album;
+import com.vybes.service.model.entity.Artist;
+import com.vybes.service.model.entity.Track;
 
 import lombok.SneakyThrows;
 
