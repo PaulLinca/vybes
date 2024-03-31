@@ -1,21 +1,17 @@
 package com.vybes.service.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.vybes.service.model.SpotifyEntity;
 import com.vybes.service.model.deserializer.AlbumDeserializer;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
-@Data
-@Builder
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Getter
+@SuperBuilder
 @JsonDeserialize(using = AlbumDeserializer.class)
-public class Album {
-    private String id;
-    private String name;
+public class Album extends SpotifyEntity {
     private Artist artist;
     private String imageUrl;
-    private String spotifyUrl;
     private String releaseDate;
 }

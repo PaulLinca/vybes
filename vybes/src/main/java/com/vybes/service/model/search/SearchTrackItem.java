@@ -1,14 +1,15 @@
 package com.vybes.service.model.search;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.vybes.service.model.SpotifyEntity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-@Data
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class SearchTrackItem {
-    private String id;
-    private String name;
+@Getter
+@SuperBuilder
+@NoArgsConstructor // we need this for jackson deserializing
+public class SearchTrackItem extends SpotifyEntity {
     private String artist;
     private String album;
     private String imageUrl;

@@ -2,9 +2,9 @@ package com.vybes.service.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class AuthorizationTokenResponse {
     @JsonProperty("access_token")
     private String accessToken;
