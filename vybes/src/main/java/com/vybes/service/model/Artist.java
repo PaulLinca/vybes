@@ -1,5 +1,6 @@
 package com.vybes.service.model;
 
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.vybes.service.model.deserializer.ArtistDeserializer;
@@ -15,4 +16,7 @@ public class Artist {
     private String id;
     private String name;
     private String spotifyUrl;
+    private Integer popularity;
+    private String imageUrl;
+    private List<String> genres;
 }

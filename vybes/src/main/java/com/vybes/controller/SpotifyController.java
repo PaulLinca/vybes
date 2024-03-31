@@ -2,6 +2,7 @@ package com.vybes.controller;
 
 import com.vybes.service.client.SpotifyService;
 import com.vybes.service.model.Album;
+import com.vybes.service.model.Artist;
 import com.vybes.service.model.Track;
 import com.vybes.service.model.search.SearchTrackItem;
 
@@ -35,5 +36,10 @@ public class SpotifyController {
     @GetMapping(value = "/album", produces = "application/json; charset=UTF-8")
     public Album getAlbum(@RequestParam String id) {
         return spotifyService.getAlbum(id);
+    }
+
+    @GetMapping(value = "/artist", produces = "application/json; charset=UTF-8")
+    public Artist getArtist(@RequestParam String id) {
+        return spotifyService.getArtist(id);
     }
 }
