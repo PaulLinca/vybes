@@ -1,6 +1,7 @@
 package com.vybes.service.client;
 
 import com.vybes.service.model.AuthorizationTokenResponse;
+import com.vybes.service.model.Track;
 import com.vybes.service.model.search.SearchTrackItem;
 import com.vybes.service.model.search.SearchTrackResponse;
 
@@ -78,5 +79,23 @@ public class SpotifyClient {
                         uri, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {});
 
         return result.getBody().getSearchTrackItems();
+    }
+
+    public Track getTrack(String trackId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setBearerAuth(token);
+
+        HttpEntity<String> entity = new HttpEntity<>(null, headers);
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<Track> result =
+                restTemplate.exchange(
+                        BASE_URL + "/tracks",
+                        HttpMethod.GET,
+                        entity,
+                        new ParameterizedTypeReference<>() {});
+
+        return result.getBody();
     }
 }
