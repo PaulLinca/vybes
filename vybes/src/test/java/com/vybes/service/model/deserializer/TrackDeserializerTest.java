@@ -19,84 +19,14 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 @ExtendWith(MockitoExtension.class)
 class TrackDeserializerTest {
 
-    private static final String trackJson =
-            "{\n"
-                    + "    \"album\": {\n"
-                    + "        \"artists\": [\n"
-                    + "            {\n"
-                    + "                \"external_urls\": {\n"
-                    + "                    \"spotify\": \"https://open.spotify.com/artist/6U3ybJ9UHNKEdsH7ktGBZ7\"\n"
-                    + "                },\n"
-                    + "                \"href\": \"https://api.spotify.com/v1/artists/6U3ybJ9UHNKEdsH7ktGBZ7\",\n"
-                    + "                \"id\": \"6U3ybJ9UHNKEdsH7ktGBZ7\",\n"
-                    + "                \"name\": \"JID\",\n"
-                    + "                \"type\": \"artist\",\n"
-                    + "                \"uri\": \"spotify:artist:6U3ybJ9UHNKEdsH7ktGBZ7\"\n"
-                    + "            }\n"
-                    + "        ],\n"
-                    + "        \"external_urls\": {\n"
-                    + "            \"spotify\": \"https://open.spotify.com/album/29jlK0pu6Zv0TznE4uwpbq\"\n"
-                    + "        },\n"
-                    + "        \"href\": \"https://api.spotify.com/v1/albums/29jlK0pu6Zv0TznE4uwpbq\",\n"
-                    + "        \"id\": \"29jlK0pu6Zv0TznE4uwpbq\",\n"
-                    + "        \"images\": [\n"
-                    + "            {\n"
-                    + "                \"height\": 640,\n"
-                    + "                \"url\": \"https://i.scdn.co/image/ab67616d0000b273b3577183ca1363cbf1379216\",\n"
-                    + "                \"width\": 640\n"
-                    + "            },\n"
-                    + "            {\n"
-                    + "                \"height\": 300,\n"
-                    + "                \"url\": \"https://i.scdn.co/image/ab67616d00001e02b3577183ca1363cbf1379216\",\n"
-                    + "                \"width\": 300\n"
-                    + "            },\n"
-                    + "            {\n"
-                    + "                \"height\": 64,\n"
-                    + "                \"url\": \"https://i.scdn.co/image/ab67616d00004851b3577183ca1363cbf1379216\",\n"
-                    + "                \"width\": 64\n"
-                    + "            }\n"
-                    + "        ],\n"
-                    + "        \"name\": \"The Forever Story (Extended Version)\",\n"
-                    + "        \"release_date\": \"2022-10-31\",\n"
-                    + "        \"release_date_precision\": \"day\",\n"
-                    + "        \"total_tracks\": 16,\n"
-                    + "        \"type\": \"album\",\n"
-                    + "        \"uri\": \"spotify:album:29jlK0pu6Zv0TznE4uwpbq\"\n"
-                    + "    },\n"
-                    + "    \"artists\": [\n"
-                    + "        {\n"
-                    + "            \"external_urls\": {\n"
-                    + "                \"spotify\": \"https://open.spotify.com/artist/6U3ybJ9UHNKEdsH7ktGBZ7\"\n"
-                    + "            },\n"
-                    + "            \"href\": \"https://api.spotify.com/v1/artists/6U3ybJ9UHNKEdsH7ktGBZ7\",\n"
-                    + "            \"id\": \"6U3ybJ9UHNKEdsH7ktGBZ7\",\n"
-                    + "            \"name\": \"JID\",\n"
-                    + "            \"type\": \"artist\",\n"
-                    + "            \"uri\": \"spotify:artist:6U3ybJ9UHNKEdsH7ktGBZ7\"\n"
-                    + "        }\n"
-                    + "    ],\n"
-                    + "    \"disc_number\": 1,\n"
-                    + "    \"duration_ms\": 224629,\n"
-                    + "    \"explicit\": false,\n"
-                    + "    \"external_ids\": {\n"
-                    + "        \"isrc\": \"USUM72214817\"\n"
-                    + "    },\n"
-                    + "    \"external_urls\": {\n"
-                    + "        \"spotify\": \"https://open.spotify.com/track/4BLIa4mBW1u5d9PLoMoENs\"\n"
-                    + "    },\n"
-                    + "    \"href\": \"https://api.spotify.com/v1/tracks/4BLIa4mBW1u5d9PLoMoENs\",\n"
-                    + "    \"id\": \"4BLIa4mBW1u5d9PLoMoENs\",\n"
-                    + "    \"is_local\": false,\n"
-                    + "    \"name\": \"Kody Blu 31\",\n"
-                    + "    \"popularity\": 26,\n"
-                    + "    \"preview_url\": null,\n"
-                    + "    \"track_number\": 7,\n"
-                    + "    \"type\": \"track\",\n"
-                    + "    \"uri\": \"spotify:track:4BLIa4mBW1u5d9PLoMoENs\"\n"
-                    + "}";
     private final TrackDeserializer testee = new TrackDeserializer();
 
     @Spy private ObjectMapper objectMapper = new ObjectMapper();
@@ -106,7 +36,7 @@ class TrackDeserializerTest {
     @SneakyThrows
     void deserializeResponse() {
         when(jsonParser.getCodec()).thenReturn(objectMapper);
-        JsonNode trackNode = objectMapper.readTree(trackJson);
+        JsonNode trackNode = objectMapper.readTree(readFileAsString("input/getTrackResponse.json"));
         when(objectMapper.readTree(jsonParser)).thenReturn(trackNode);
 
         Track response = testee.deserialize(jsonParser, null);
@@ -129,5 +59,20 @@ class TrackDeserializerTest {
         assertThat(
                 artist.getSpotifyUrl(),
                 is("https://open.spotify.com/artist/6U3ybJ9UHNKEdsH7ktGBZ7"));
+    }
+
+    private String readFileAsString(String fileName) throws IOException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        InputStream inputStream =  classLoader.getResourceAsStream(fileName);
+        StringBuilder resultStringBuilder = new StringBuilder();
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                resultStringBuilder.append(line).append("\n");
+            }
+        }
+
+        return resultStringBuilder.toString();
     }
 }
