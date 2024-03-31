@@ -14,6 +14,7 @@ import lombok.Data;
 public class Album {
     private String id;
     private String name;
+    private Artist artist;
     private String imageUrl;
     private String spotifyUrl;
     private String releaseDate;
