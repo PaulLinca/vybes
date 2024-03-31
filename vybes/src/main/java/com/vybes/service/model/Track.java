@@ -17,6 +17,6 @@ public class Track {
     private String id;
     private String name;
     private Album album;
-    private List<Artist> artist;
+    private List<Artist> artists;
     private String spotifyUrl;
 }
