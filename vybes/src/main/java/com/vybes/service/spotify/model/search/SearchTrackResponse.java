@@ -1,7 +1,7 @@
-package com.vybes.service.model.search;
+package com.vybes.service.spotify.model.search;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.vybes.service.model.deserializer.SearchTrackResponseDeserializer;
+import com.vybes.service.spotify.model.deserializer.SearchTrackResponseDeserializer;
 
 import lombok.Builder;
 import lombok.Getter;

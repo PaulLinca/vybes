@@ -1,4 +1,4 @@
-package com.vybes.service.model;
+package com.vybes.service.spotify.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

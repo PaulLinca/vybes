@@ -1,4 +1,4 @@
-package com.vybes.service.model.deserializer;
+package com.vybes.service.spotify.model.deserializer;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -7,9 +7,9 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.vybes.service.model.entity.Album;
-import com.vybes.service.model.entity.Artist;
-import com.vybes.service.model.entity.Track;
+import com.vybes.service.spotify.model.entity.Album;
+import com.vybes.service.spotify.model.entity.Artist;
+import com.vybes.service.spotify.model.entity.Track;
 
 import java.io.IOException;
 import java.util.ArrayList;

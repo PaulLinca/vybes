@@ -1,10 +1,10 @@
 package com.vybes.controller;
 
-import com.vybes.service.client.SpotifyService;
-import com.vybes.service.model.entity.Album;
-import com.vybes.service.model.entity.Artist;
-import com.vybes.service.model.entity.Track;
-import com.vybes.service.model.search.SearchTrackItem;
+import com.vybes.service.spotify.SpotifyService;
+import com.vybes.service.spotify.model.entity.Album;
+import com.vybes.service.spotify.model.entity.Artist;
+import com.vybes.service.spotify.model.entity.Track;
+import com.vybes.service.spotify.model.search.SearchTrackItem;
 
 import lombok.RequiredArgsConstructor;
 

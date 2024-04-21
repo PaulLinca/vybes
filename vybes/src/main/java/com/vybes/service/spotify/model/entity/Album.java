@@ -1,8 +1,8 @@
-package com.vybes.service.model.entity;
+package com.vybes.service.spotify.model.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.vybes.service.model.SpotifyEntity;
-import com.vybes.service.model.deserializer.AlbumDeserializer;
+import com.vybes.service.spotify.model.SpotifyEntity;
+import com.vybes.service.spotify.model.deserializer.AlbumDeserializer;
 
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;

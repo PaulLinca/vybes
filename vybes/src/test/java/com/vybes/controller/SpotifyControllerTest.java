@@ -2,7 +2,7 @@ package com.vybes.controller;
 
 import static org.mockito.Mockito.verify;
 
-import com.vybes.service.client.SpotifyService;
+import com.vybes.service.spotify.SpotifyService;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
