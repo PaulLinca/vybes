@@ -16,9 +16,9 @@ public class PostRepository {
     private final JdbcTemplate template;
 
     public void save(Post post) {
-        String sql = "insert into post (id, songName) values (?, ?)";
+        String sql = "insert into post (songName) values (?)";
 
-        template.update(sql, post.getId(), post.getSongName());
+        template.update(sql, post.getSongName());
     }
 
     public List<Post> getAllPosts() {

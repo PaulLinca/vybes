@@ -15,7 +15,7 @@ public class PostService {
     private final PostRepository postRepository;
 
     public void addPost(String songName) {
-        postRepository.save(Post.builder().id(22).songName(songName).build());
+        postRepository.save(Post.builder().songName(songName).build());
     }
 
     public List<Post> getAllPosts() {
