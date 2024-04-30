@@ -1,31 +1,31 @@
 package com.vybes.controller;
 
-import com.vybes.service.writer.PostService;
-import com.vybes.service.writer.entity.Post;
+import com.vybes.service.writer.VybeService;
+import com.vybes.service.writer.entity.Vybe;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/api/vybes")
 @RequiredArgsConstructor
-public class PostController {
-    private final PostService postService;
+public class VybesController {
+    private final VybeService vybeService;
 
     @GetMapping(value = "/findAll", produces = "application/json; charset=UTF-8")
-    public List<Post> getAllPosts() {
-        return postService.getAllPosts();
+    public List<Vybe> getAllVybes() {
+        return vybeService.getAllVybes();
     }
 
     @PostMapping(value = "/post", produces = "application/json; charset=UTF-8")
-    public void postTrack(@RequestParam String songName) {
-        postService.addPost(songName);
+    public Vybe postVybe(@RequestBody Vybe vybe) {
+        return vybeService.postVybe(vybe);
     }
 }
