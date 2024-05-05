@@ -12,5 +12,4 @@ public class UserController {
     public String helloUser() {
         return "User access level";
     }
-
 }

@@ -13,7 +13,7 @@ public class RsaKeyProperties {
     private RSAPublicKey publicKey;
     private RSAPrivateKey privateKey;
 
-    public  RsaKeyProperties() {
+    public RsaKeyProperties() {
         KeyPair pair = KeyGeneratorUtility.generateRsaKey();
         this.privateKey = (RSAPrivateKey) pair.getPrivate();
         this.publicKey = (RSAPublicKey) pair.getPublic();
