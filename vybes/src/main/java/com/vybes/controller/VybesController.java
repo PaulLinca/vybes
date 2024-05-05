@@ -1,7 +1,7 @@
 package com.vybes.controller;
 
-import com.vybes.service.writer.VybeService;
-import com.vybes.service.writer.entity.Vybe;
+import com.vybes.service.vybe.VybeService;
+import com.vybes.service.vybe.entity.Vybe;
 
 import lombok.RequiredArgsConstructor;
 

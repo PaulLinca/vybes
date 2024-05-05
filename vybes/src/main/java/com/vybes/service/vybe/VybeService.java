@@ -1,7 +1,7 @@
-package com.vybes.service.writer;
+package com.vybes.service.vybe;
 
-import com.vybes.service.writer.entity.Vybe;
-import com.vybes.service.writer.repository.VybeRepository;
+import com.vybes.service.vybe.entity.Vybe;
+import com.vybes.service.vybe.repository.VybeRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +21,6 @@ public class VybeService {
     }
 
     public List<Vybe> getAllVybes() {
-        return vybeRepository.getAllVybes();
+        return vybeRepository.findAll();
     }
 }
