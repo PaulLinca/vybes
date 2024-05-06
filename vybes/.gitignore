@@ -52,3 +52,4 @@ target
 .flattened-pom.xml
 secrets.yml
 .gradletasknamecache
+/.idea/sonarlint/issuestore/index.pb
