@@ -1,4 +1,4 @@
-package com.vybes.security.utility;
+package com.vybes.security.rsa;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -11,16 +11,12 @@ public class KeyGeneratorUtility {
     }
 
     public static KeyPair generateRsaKey() {
-        KeyPair keyPair;
-
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(2048);
-            keyPair = keyPairGenerator.generateKeyPair();
+            return keyPairGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-
-        return keyPair;
     }
 }

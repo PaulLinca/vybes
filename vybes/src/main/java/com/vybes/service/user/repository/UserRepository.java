@@ -1,6 +1,6 @@
 package com.vybes.service.user.repository;
 
-import com.vybes.security.model.ApplicationUser;
+import com.vybes.service.user.model.VybesUser;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<ApplicationUser, Integer> {
-    Optional<ApplicationUser> findByUsername(String username);
+public interface UserRepository extends JpaRepository<VybesUser, Integer> {
+    Optional<VybesUser> findByUsername(String username);
 }

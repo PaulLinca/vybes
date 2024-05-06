@@ -1,6 +1,6 @@
 package com.vybes.dto;
 
-import com.vybes.security.model.ApplicationUser;
+import com.vybes.service.user.model.VybesUser;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +8,6 @@ import lombok.Data;
 @Data
 @Builder
 public class LoginResponseDTO {
-    private ApplicationUser user;
+    private VybesUser user;
     private String jwt;
 }

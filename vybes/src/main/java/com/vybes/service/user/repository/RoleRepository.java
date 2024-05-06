@@ -1,6 +1,6 @@
 package com.vybes.service.user.repository;
 
-import com.vybes.security.model.Role;
+import com.vybes.service.user.model.Role;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

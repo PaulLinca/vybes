@@ -1,4 +1,4 @@
-package com.vybes.security.model;
+package com.vybes.service.user.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,7 +28,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class ApplicationUser implements UserDetails {
+public class VybesUser implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

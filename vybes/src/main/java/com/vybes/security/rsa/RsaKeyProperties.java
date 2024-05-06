@@ -1,21 +1,25 @@
-package com.vybes.security.utility;
+package com.vybes.security.rsa;
+
+import lombok.Data;
+
+import org.springframework.stereotype.Component;
 
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import org.springframework.stereotype.Component;
-import lombok.Data;
 
 @Data
 @Component
 public class RsaKeyProperties {
+    // Nice explanation:  https://www.youtube.com/watch?v=YEBfamv-_do
 
     private RSAPublicKey publicKey;
     private RSAPrivateKey privateKey;
 
     public RsaKeyProperties() {
         KeyPair pair = KeyGeneratorUtility.generateRsaKey();
-        this.privateKey = (RSAPrivateKey) pair.getPrivate();
+
         this.publicKey = (RSAPublicKey) pair.getPublic();
+        this.privateKey = (RSAPrivateKey) pair.getPrivate();
     }
 }

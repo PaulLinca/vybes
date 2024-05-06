@@ -1,8 +1,8 @@
 package com.vybes.service.auth;
 
 import com.vybes.dto.LoginResponseDTO;
-import com.vybes.security.model.ApplicationUser;
-import com.vybes.security.model.Role;
+import com.vybes.service.user.model.VybesUser;
+import com.vybes.service.user.model.Role;
 import com.vybes.service.user.repository.RoleRepository;
 import com.vybes.service.user.repository.UserRepository;
 
@@ -31,12 +31,12 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
-    public ApplicationUser registerUser(String username, String password) {
+    public VybesUser registerUser(String username, String password) {
         String encodedPassword = passwordEncoder.encode(password);
         Role role = roleRepository.findByAuthority("USER").orElseThrow();
 
-        ApplicationUser newUser =
-                ApplicationUser.builder()
+        VybesUser newUser =
+                VybesUser.builder()
                         .username(username)
                         .password(encodedPassword)
                         .authorities(Set.of(role))

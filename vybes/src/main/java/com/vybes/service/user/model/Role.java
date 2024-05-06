@@ -1,4 +1,4 @@
-package com.vybes.security.model;
+package com.vybes.service.user.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
