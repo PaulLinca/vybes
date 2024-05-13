@@ -1,9 +1,14 @@
 package com.vybes.service.vybe.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vybes.service.user.model.VybesUser;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,4 +40,9 @@ public class Vybe {
     private String imageUrl;
 
     private ZonedDateTime postedDate;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private VybesUser user;
 }
