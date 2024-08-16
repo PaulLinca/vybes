@@ -1,8 +1,8 @@
 package com.vybes.service.auth;
 
 import com.vybes.dto.LoginResponseDTO;
-import com.vybes.service.user.model.VybesUser;
 import com.vybes.service.user.model.Role;
+import com.vybes.service.user.model.VybesUser;
 import com.vybes.service.user.repository.RoleRepository;
 import com.vybes.service.user.repository.UserRepository;
 

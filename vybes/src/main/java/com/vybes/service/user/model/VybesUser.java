@@ -33,7 +33,7 @@ public class VybesUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
 
     @Column(unique = true)
     private String username;

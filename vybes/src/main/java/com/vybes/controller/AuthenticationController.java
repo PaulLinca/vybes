@@ -2,8 +2,8 @@ package com.vybes.controller;
 
 import com.vybes.dto.LoginResponseDTO;
 import com.vybes.dto.RegistrationRequestDTO;
-import com.vybes.service.user.model.VybesUser;
 import com.vybes.service.auth.AuthenticationService;
+import com.vybes.service.user.model.VybesUser;
 
 import lombok.RequiredArgsConstructor;
 
