@@ -1,6 +1,7 @@
 package com.vybes.service.auth;
 
 import com.vybes.dto.LoginResponseDTO;
+import com.vybes.dto.VybesUserResponseDTO;
 import com.vybes.exception.UserAlreadyExistsException;
 import com.vybes.service.user.model.Role;
 import com.vybes.service.user.model.VybesUser;
@@ -33,8 +34,8 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
-    public VybesUser registerUser(String username, String password) {
-        if(userRepository.findByUsername(username).isPresent()) {
+    public VybesUserResponseDTO registerUser(String username, String password) {
+        if (userRepository.findByUsername(username).isPresent()) {
             throw new UserAlreadyExistsException("Username is already taken.");
         }
 
@@ -47,9 +48,12 @@ public class AuthenticationService {
                         .password(encodedPassword)
                         .authorities(Set.of(role))
                         .build();
-        userRepository.save(newUser);
+        VybesUser registeredUser = userRepository.save(newUser);
 
-        return newUser;
+        return VybesUserResponseDTO.builder()
+                .username(registeredUser.getUsername())
+                .id(registeredUser.getUserId())
+                .build();
     }
 
     public LoginResponseDTO loginUser(String username, String password) {
@@ -59,18 +63,24 @@ public class AuthenticationService {
                             new UsernamePasswordAuthenticationToken(username, password));
             String jwtToken = tokenService.generateJwt(auth);
 
+            VybesUser user =
+                    userRepository
+                            .findByUsername(username)
+                            .orElseThrow(
+                                    () ->
+                                            new UsernameNotFoundException(
+                                                    "Can't find user: " + username));
+
             return LoginResponseDTO.builder()
                     .user(
-                            userRepository
-                                    .findByUsername(username)
-                                    .orElseThrow(
-                                            () ->
-                                                    new UsernameNotFoundException(
-                                                            "Can't find user: " + username)))
+                            VybesUserResponseDTO.builder()
+                                    .id(user.getUserId())
+                                    .username(user.getUsername())
+                                    .build())
                     .jwt(jwtToken)
                     .build();
         } catch (AuthenticationException e) {
-             throw new BadCredentialsException(e.getMessage());
+            throw new BadCredentialsException(e.getMessage());
         }
     }
 }

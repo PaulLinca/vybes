@@ -2,8 +2,8 @@ package com.vybes.controller;
 
 import com.vybes.dto.LoginResponseDTO;
 import com.vybes.dto.RegistrationRequestDTO;
+import com.vybes.dto.VybesUserResponseDTO;
 import com.vybes.service.auth.AuthenticationService;
-import com.vybes.service.user.model.VybesUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +24,7 @@ public class AuthenticationController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/register")
-    public VybesUser registerUser(@RequestBody RegistrationRequestDTO registrationRequestDTO) {
+    public VybesUserResponseDTO registerUser(@RequestBody RegistrationRequestDTO registrationRequestDTO) {
         return authenticationService.registerUser(
                 registrationRequestDTO.getUsername(), registrationRequestDTO.getPassword());
     }
