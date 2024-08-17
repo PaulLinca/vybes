@@ -1,6 +1,7 @@
 package com.vybes.service.auth;
 
 import com.vybes.dto.LoginResponseDTO;
+import com.vybes.exception.UserAlreadyExistsException;
 import com.vybes.service.user.model.Role;
 import com.vybes.service.user.model.VybesUser;
 import com.vybes.service.user.repository.RoleRepository;
@@ -11,6 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -32,6 +34,10 @@ public class AuthenticationService {
     private final TokenService tokenService;
 
     public VybesUser registerUser(String username, String password) {
+        if(userRepository.findByUsername(username).isPresent()) {
+            throw new UserAlreadyExistsException("Username is already taken.");
+        }
+
         String encodedPassword = passwordEncoder.encode(password);
         Role role = roleRepository.findByAuthority("USER").orElseThrow();
 
@@ -64,7 +70,7 @@ public class AuthenticationService {
                     .jwt(jwtToken)
                     .build();
         } catch (AuthenticationException e) {
-            return LoginResponseDTO.builder().user(null).jwt("").build();
+             throw new BadCredentialsException(e.getMessage());
         }
     }
 }

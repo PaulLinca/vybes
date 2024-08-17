@@ -15,11 +15,13 @@ import com.vybes.service.vybe.mapper.VybeMapper;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -36,11 +38,13 @@ public class VybesController {
     private final CommentMapper commentMapper;
     private final LikeMapper likeMapper;
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/findAll", produces = "application/json; charset=UTF-8")
     public List<VybeDTO> getAllVybes() {
         return vybeService.getAllVybes().stream().map(vybeMapper::transform).toList();
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/post", produces = "application/json; charset=UTF-8")
     public VybeDTO postVybe(@RequestBody CreateVybeRequestDTO request) {
         Vybe vybe = vybeMapper.transform(request);
@@ -51,6 +55,7 @@ public class VybesController {
         return vybeMapper.transform(vybeService.createVybe(vybe));
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/comments")
     public CommentDTO createComment(@RequestBody CommentDTO request) {
         Comment comment = commentMapper.transform(request);
@@ -60,6 +65,7 @@ public class VybesController {
         return commentMapper.transform(vybeService.saveComment(comment));
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{vybeId}/comments")
     public List<CommentDTO> getCommentsByPostId(@PathVariable Long vybeId) {
         return vybeService.getCommentsByVybeId(vybeId).stream()
@@ -67,6 +73,7 @@ public class VybesController {
                 .toList();
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/likes")
     public LikeDTO createLike(@RequestBody LikeDTO request) {
         return likeMapper.transform(
@@ -80,6 +87,7 @@ public class VybesController {
                                 .build()));
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{vybeId}/likes")
     public List<LikeDTO> getLikesByVybeId(@PathVariable Long vybeId) {
         return vybeService.getLikesByVybeId(vybeId).stream().map(likeMapper::transform).toList();
