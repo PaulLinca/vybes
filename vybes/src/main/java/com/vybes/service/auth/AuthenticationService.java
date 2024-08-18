@@ -52,7 +52,7 @@ public class AuthenticationService {
 
         return VybesUserResponseDTO.builder()
                 .username(registeredUser.getUsername())
-                .id(registeredUser.getUserId())
+                .userId(registeredUser.getUserId())
                 .build();
     }
 
@@ -72,11 +72,8 @@ public class AuthenticationService {
                                                     "Can't find user: " + username));
 
             return LoginResponseDTO.builder()
-                    .user(
-                            VybesUserResponseDTO.builder()
-                                    .id(user.getUserId())
-                                    .username(user.getUsername())
-                                    .build())
+                    .username(user.getUsername())
+                    .userId(user.getUserId())
                     .jwt(jwtToken)
                     .build();
         } catch (AuthenticationException e) {

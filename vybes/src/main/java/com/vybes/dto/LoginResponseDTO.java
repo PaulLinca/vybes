@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class LoginResponseDTO {
-    private VybesUserResponseDTO user;
+    private Long userId;
+    private String username;
     private String jwt;
 }
