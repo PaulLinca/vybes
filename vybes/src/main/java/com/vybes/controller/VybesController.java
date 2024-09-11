@@ -126,9 +126,45 @@ public class VybesController {
                                 .orElseThrow());
 
         if (isDeleted) {
-            return ResponseEntity.noContent().build(); // 204 No Content (deletion successful)
+            return ResponseEntity.noContent().build();
         } else {
-            return ResponseEntity.notFound().build(); // 404 Not Found (comment not found)
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{vybeId}/comments/{commentId}/likes")
+    public LikeDTO likeComment(@PathVariable Long vybeId, @PathVariable Long commentId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        return likeMapper.transform(
+                vybeService.saveLike(
+                        Like.builder()
+                                .user(
+                                        userRepository
+                                                .findByUsername(authentication.getName())
+                                                .orElseThrow())
+                                .comment(vybeService.getCommentById(commentId))
+                                .build()));
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @DeleteMapping("/{vybeId}/comments/{commentId}/likes")
+    public ResponseEntity<?> unlikeComment(
+            @PathVariable Long vybeId, @PathVariable Long commentId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Long userId =
+                userRepository
+                        .findByUsername(authentication.getName())
+                        .map(VybesUser::getUserId)
+                        .orElseThrow();
+
+        boolean isDeleted = vybeService.deleteCommentLike(commentId, userId);
+        if (isDeleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 

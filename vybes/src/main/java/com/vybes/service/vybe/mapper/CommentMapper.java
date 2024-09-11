@@ -10,17 +10,27 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Mapper(componentModel = "spring")
 public interface CommentMapper {
 
     @Mapping(target = "vybeId", source = "vybe.id")
     @Mapping(target = "userId", source = "user.userId")
+    @Mapping(target = "likeIds", source = "likes", qualifiedByName = "mapLikeIds")
     CommentDTO transform(Comment comment);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "vybe", ignore = true)
     @Mapping(target = "user", ignore = true)
     Comment transform(CommentDTO comment);
+
+    @Named("mapLikeIds")
+    default List<Long> mapLikeIds(List<Like> likes) {
+        return Optional.ofNullable(likes).orElse(Collections.emptyList()).stream()
+                .map(Like::getId)
+                .toList();
+    }
 }

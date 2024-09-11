@@ -39,6 +39,11 @@ public class VybeService {
     }
 
     @Transactional
+    public Comment getCommentById(Long id) {
+        return commentRepository.findById(id).orElseThrow();
+    }
+
+    @Transactional
     public Comment saveComment(Comment comment) {
         return commentRepository.save(comment);
     }
@@ -62,6 +67,12 @@ public class VybeService {
     @Transactional
     public Like deleteLike(Long vybeId, Long userId) {
         return likeRepository.deleteByVybeIdAndUser_UserId(vybeId, userId).stream().findFirst().orElseThrow();
+    }
+
+    @Transactional
+    public boolean deleteCommentLike(Long commentId, Long userId) {
+        int rowsDeleted =  likeRepository.deleteByCommentIdAndUserId(commentId, userId);
+        return rowsDeleted > 0;
     }
 
     @Transactional

@@ -10,5 +10,6 @@ import org.mapstruct.Mapping;
 public interface LikeMapper {
     @Mapping(source = "vybe.id", target = "vybeId")
     @Mapping(source = "user.userId", target = "userId")
+    @Mapping(source = "comment.id", target = "commentId")
     LikeDTO transform(Like like);
 }
