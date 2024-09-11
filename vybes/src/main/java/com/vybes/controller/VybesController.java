@@ -17,6 +17,7 @@ import com.vybes.service.vybe.mapper.VybeMapper;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -110,17 +111,25 @@ public class VybesController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/{vybeId}/comments")
-    public CommentDTO deleteComment(@PathVariable Long vybeId) {
+    @DeleteMapping("/{vybeId}/comments/{commentId}")
+    public ResponseEntity<?> deleteComment(
+            @PathVariable Long vybeId, @PathVariable Long commentId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        return commentMapper.transform(
+        boolean isDeleted =
                 vybeService.deleteComment(
                         vybeId,
+                        commentId,
                         userRepository
                                 .findByUsername(authentication.getName())
                                 .map(VybesUser::getUserId)
-                                .orElseThrow()));
+                                .orElseThrow());
+
+        if (isDeleted) {
+            return ResponseEntity.noContent().build(); // 204 No Content (deletion successful)
+        } else {
+            return ResponseEntity.notFound().build(); // 404 Not Found (comment not found)
+        }
     }
 
     @ResponseStatus(HttpStatus.OK)

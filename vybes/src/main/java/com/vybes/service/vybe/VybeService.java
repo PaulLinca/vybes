@@ -1,6 +1,5 @@
 package com.vybes.service.vybe;
 
-import com.vybes.service.vybe.dto.CommentDTO;
 import com.vybes.service.vybe.entity.Comment;
 import com.vybes.service.vybe.entity.Like;
 import com.vybes.service.vybe.entity.Vybe;
@@ -9,6 +8,7 @@ import com.vybes.service.vybe.repository.LikeRepository;
 import com.vybes.service.vybe.repository.VybeRepository;
 
 import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -44,8 +44,9 @@ public class VybeService {
     }
 
     @Transactional
-    public Comment deleteComment(Long vybeId, Long userId) {
-        return commentRepository.deleteByVybeIdAndUser_UserId(vybeId, userId).stream().findFirst().orElseThrow();
+    public boolean deleteComment(Long vybeId, Long commentId, Long userId) {
+        int rowsDeleted = commentRepository.deleteByCommentIdAndVybeIdAndUserId(commentId, vybeId, userId);
+        return rowsDeleted > 0;
     }
 
     @Transactional
