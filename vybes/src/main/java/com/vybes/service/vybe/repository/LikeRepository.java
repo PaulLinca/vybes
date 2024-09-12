@@ -14,7 +14,13 @@ import java.util.List;
 public interface LikeRepository extends JpaRepository<Like, Long> {
     List<Like> findByVybeId(Long vybeId);
 
+    List<Like> findByVybeIdAndUser_UserId(Long vybeId, Long userId);
+
     List<Like> deleteByVybeIdAndUser_UserId(Long vybeId, Long userId);
+
+    @Query("SELECT l FROM Like l WHERE l.comment.id = :commentId AND l.user.userId = :userId")
+    Like findByCommentIdAndUserId(@Param("commentId") Long commentId,
+                                   @Param("userId") Long userId);
 
     @Modifying
     @Query("DELETE FROM Like l WHERE l.comment.id = :commentId AND l.user.userId = :userId")

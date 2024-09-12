@@ -50,7 +50,8 @@ public class VybeService {
 
     @Transactional
     public boolean deleteComment(Long vybeId, Long commentId, Long userId) {
-        int rowsDeleted = commentRepository.deleteByCommentIdAndVybeIdAndUserId(commentId, vybeId, userId);
+        int rowsDeleted =
+                commentRepository.deleteByCommentIdAndVybeIdAndUserId(commentId, vybeId, userId);
         return rowsDeleted > 0;
     }
 
@@ -61,17 +62,38 @@ public class VybeService {
 
     @Transactional
     public Like saveLike(Like like) {
+
+        if (!likeRepository
+                .findByVybeIdAndUser_UserId(like.getVybe().getId(), like.getUser().getUserId())
+                .isEmpty()) {
+            return null;
+        }
+
         return likeRepository.save(like);
     }
 
     @Transactional
     public Like deleteLike(Long vybeId, Long userId) {
-        return likeRepository.deleteByVybeIdAndUser_UserId(vybeId, userId).stream().findFirst().orElseThrow();
+        return likeRepository.deleteByVybeIdAndUser_UserId(vybeId, userId).stream()
+                .findFirst()
+                .orElseThrow();
+    }
+
+    @Transactional
+    public Like saveCommentLike(Like like) {
+
+        if (likeRepository.findByCommentIdAndUserId(
+                        like.getComment().getId(), like.getUser().getUserId())
+                != null) {
+            return null;
+        }
+
+        return likeRepository.save(like);
     }
 
     @Transactional
     public boolean deleteCommentLike(Long commentId, Long userId) {
-        int rowsDeleted =  likeRepository.deleteByCommentIdAndUserId(commentId, userId);
+        int rowsDeleted = likeRepository.deleteByCommentIdAndUserId(commentId, userId);
         return rowsDeleted > 0;
     }
 

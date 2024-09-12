@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/vybes")
@@ -70,18 +71,19 @@ public class VybesController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{vybeId}/likes")
-    public LikeDTO likeVybe(@PathVariable Long vybeId) {
+    public ResponseEntity<LikeDTO> likeVybe(@PathVariable Long vybeId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        return likeMapper.transform(
-                vybeService.saveLike(
-                        Like.builder()
-                                .user(
-                                        userRepository
-                                                .findByUsername(authentication.getName())
-                                                .orElseThrow())
-                                .vybe(vybeService.getVybeById(vybeId))
-                                .build()));
+        Like like =
+                Like.builder()
+                        .user(userRepository.findByUsername(authentication.getName()).orElseThrow())
+                        .vybe(vybeService.getVybeById(vybeId))
+                        .build();
+
+        return Optional.ofNullable(vybeService.saveLike(like))
+                .map(likeMapper::transform)
+                .map(l -> new ResponseEntity<>(l, HttpStatus.CREATED))
+                .orElse(ResponseEntity.badRequest().build());
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -134,18 +136,20 @@ public class VybesController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{vybeId}/comments/{commentId}/likes")
-    public LikeDTO likeComment(@PathVariable Long vybeId, @PathVariable Long commentId) {
+    public ResponseEntity<LikeDTO> likeComment(
+            @PathVariable Long vybeId, @PathVariable Long commentId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        return likeMapper.transform(
-                vybeService.saveLike(
-                        Like.builder()
-                                .user(
-                                        userRepository
-                                                .findByUsername(authentication.getName())
-                                                .orElseThrow())
-                                .comment(vybeService.getCommentById(commentId))
-                                .build()));
+        Like like =
+                Like.builder()
+                        .user(userRepository.findByUsername(authentication.getName()).orElseThrow())
+                        .comment(vybeService.getCommentById(commentId))
+                        .build();
+
+        return Optional.ofNullable(vybeService.saveCommentLike(like))
+                .map(likeMapper::transform)
+                .map(l -> new ResponseEntity<>(l, HttpStatus.CREATED))
+                .orElse(ResponseEntity.badRequest().build());
     }
 
     @ResponseStatus(HttpStatus.CREATED)
