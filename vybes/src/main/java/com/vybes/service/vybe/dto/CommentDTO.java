@@ -10,7 +10,7 @@ public class CommentDTO {
     private Long id;
     private String text;
     private Long vybeId;
-    private Long userId;
+    private UserDTO user;
     private ZonedDateTime timestamp;
     private List<Long> likeIds;
 }

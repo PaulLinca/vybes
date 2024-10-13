@@ -11,6 +11,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
@@ -37,8 +39,13 @@ public class Vybe {
 
     private String spotifyTrackId;
 
-    private List<String> spotifyArtistIds;
-
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "vybe_artist", // This is the name of the join table
+            joinColumns = @JoinColumn(name = "vybe_id"), // Foreign key for Vybe
+            inverseJoinColumns = @JoinColumn(name = "artist_id") // Foreign key for Artist
+    )
+    private List<Artist> spotifyArtists;
     private String spotifyAlbumId;
 
     private String imageUrl;

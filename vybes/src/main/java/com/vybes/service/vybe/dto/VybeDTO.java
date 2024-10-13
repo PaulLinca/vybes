@@ -8,13 +8,13 @@ import java.util.List;
 @Data
 public class VybeDTO {
     private Long id;
-    private Long userId;
+    private UserDTO user;
     private String songName;
     private String spotifyTrackId;
-    private List<String> spotifyArtistIds;
+    private List<ArtistDTO> spotifyArtists;
     private String spotifyAlbumId;
     private String imageUrl;
     private ZonedDateTime postedDate;
-    private List<Long> likeIds;
-    private List<Long> commentIds;
+    private List<LikeDTO> likes;
+    private List<CommentDTO> comments;
 }

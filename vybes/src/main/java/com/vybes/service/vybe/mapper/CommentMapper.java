@@ -18,7 +18,6 @@ import java.util.Optional;
 public interface CommentMapper {
 
     @Mapping(target = "vybeId", source = "vybe.id")
-    @Mapping(target = "userId", source = "user.userId")
     @Mapping(target = "likeIds", source = "likes", qualifiedByName = "mapLikeIds")
     CommentDTO transform(Comment comment);
 

@@ -1,12 +1,15 @@
 package com.vybes.controller;
 
 import com.vybes.dto.CreateVybeRequestDTO;
+import com.vybes.service.spotify.SpotifyService;
+import com.vybes.service.spotify.model.entity.Track;
 import com.vybes.service.user.model.VybesUser;
 import com.vybes.service.user.repository.UserRepository;
 import com.vybes.service.vybe.VybeService;
 import com.vybes.service.vybe.dto.CommentDTO;
 import com.vybes.service.vybe.dto.LikeDTO;
 import com.vybes.service.vybe.dto.VybeDTO;
+import com.vybes.service.vybe.entity.Artist;
 import com.vybes.service.vybe.entity.Comment;
 import com.vybes.service.vybe.entity.Like;
 import com.vybes.service.vybe.entity.Vybe;
@@ -39,6 +42,7 @@ import java.util.Optional;
 public class VybesController {
 
     private final VybeService vybeService;
+    private final SpotifyService spotifyService;
     private final UserRepository userRepository;
     private final VybeMapper vybeMapper;
     private final CommentMapper commentMapper;
@@ -65,6 +69,16 @@ public class VybesController {
         vybe.setComments(new ArrayList<>());
         vybe.setLikes(new ArrayList<>());
         vybe.setUser(userRepository.findByUsername(authentication.getName()).orElseThrow());
+
+        Track spotifyTrack = spotifyService.getTrack(request.getSpotifyTrackId());
+        vybe.setSpotifyTrackId(spotifyTrack.getId());
+        vybe.setSongName(spotifyTrack.getName());
+        vybe.setSpotifyAlbumId(spotifyTrack.getAlbum().getId());
+        vybe.setImageUrl(spotifyTrack.getAlbum().getImageUrl());
+        vybe.setSpotifyArtists(
+                spotifyTrack.getArtists().stream()
+                        .map(a -> Artist.builder().spotifyId(a.getId()).name(a.getName()).build())
+                        .toList());
 
         return vybeMapper.transform(vybeService.createVybe(vybe));
     }
