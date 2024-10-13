@@ -1,5 +1,6 @@
 package com.vybes.service.vybe.entity;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -38,4 +39,6 @@ public class Comment {
     @JsonManagedReference
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Like> likes;
+
+    private ZonedDateTime timestamp;
 }

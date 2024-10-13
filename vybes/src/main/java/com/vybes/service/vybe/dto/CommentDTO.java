@@ -2,6 +2,7 @@ package com.vybes.service.vybe.dto;
 
 import lombok.Data;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Data
@@ -10,5 +11,6 @@ public class CommentDTO {
     private String text;
     private Long vybeId;
     private Long userId;
+    private ZonedDateTime timestamp;
     private List<Long> likeIds;
 }
