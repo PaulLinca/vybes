@@ -88,10 +88,15 @@ public class VybesController {
     public ResponseEntity<LikeDTO> likeVybe(@PathVariable Long vybeId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        Vybe vybe = vybeService.getVybeById(vybeId);
+        if(vybe.getUser().getUsername().equals(authentication.getName())) {
+            return ResponseEntity.badRequest().build();
+        }
+
         Like like =
                 Like.builder()
                         .user(userRepository.findByUsername(authentication.getName()).orElseThrow())
-                        .vybe(vybeService.getVybeById(vybeId))
+                        .vybe(vybe)
                         .build();
 
         return Optional.ofNullable(vybeService.saveLike(like))
