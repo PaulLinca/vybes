@@ -62,6 +62,7 @@ public class AuthenticationService {
                     authenticationManager.authenticate(
                             new UsernamePasswordAuthenticationToken(username, password));
             String jwtToken = tokenService.generateJwt(auth);
+            String refreshToken = tokenService.generateRefreshToken(username);
 
             VybesUser user =
                     userRepository
@@ -75,9 +76,26 @@ public class AuthenticationService {
                     .username(user.getUsername())
                     .userId(user.getUserId())
                     .jwt(jwtToken)
+                    .refreshToken(refreshToken)
                     .build();
         } catch (AuthenticationException e) {
             throw new BadCredentialsException(e.getMessage());
         }
+    }
+
+    public LoginResponseDTO refreshToken(String refreshToken) {
+        String username = tokenService.extractUsername(refreshToken);
+        VybesUser user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Can't find user: " + username));
+
+        String newJwt = tokenService.generateJwt(new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities()));
+        String newRefreshToken = tokenService.generateRefreshToken(username);
+
+        return LoginResponseDTO.builder()
+                .username(user.getUsername())
+                .userId(user.getUserId())
+                .jwt(newJwt)
+                .refreshToken(newRefreshToken)
+                .build();
     }
 }

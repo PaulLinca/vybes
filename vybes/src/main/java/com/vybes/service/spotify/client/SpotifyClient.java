@@ -72,7 +72,7 @@ public class SpotifyClient {
         String uri =
                 UriComponentsBuilder.fromHttpUrl(BASE_URL + "/search")
                         .queryParam("type", "track")
-                        .queryParam("limit", "4")
+                        .queryParam("limit", "10")
                         .queryParam("query", searchString)
                         .encode()
                         .toUriString();
