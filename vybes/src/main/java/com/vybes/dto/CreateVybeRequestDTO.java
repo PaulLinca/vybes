@@ -8,4 +8,5 @@ import java.time.ZonedDateTime;
 public class CreateVybeRequestDTO {
     private String spotifyTrackId;
     private ZonedDateTime postedDate;
+    private String description;
 }

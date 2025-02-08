@@ -15,6 +15,7 @@ public class VybeDTO {
     private String spotifyAlbumId;
     private String imageUrl;
     private ZonedDateTime postedDate;
+    private String description;
     private List<LikeDTO> likes;
     private List<CommentDTO> comments;
 }

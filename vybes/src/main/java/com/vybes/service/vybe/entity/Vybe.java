@@ -52,6 +52,8 @@ public class Vybe {
 
     private ZonedDateTime postedDate;
 
+    private String description;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "vybe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Like> likes;
