@@ -12,5 +12,5 @@ public class CommentDTO {
     private Long vybeId;
     private UserDTO user;
     private ZonedDateTime timestamp;
-    private List<Long> likeIds;
+    private List<LikeDTO> likes;
 }
