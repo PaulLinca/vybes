@@ -1,5 +1,6 @@
 package com.vybes.service.auth;
 
+import com.vybes.service.user.model.VybesUser;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.Authentication;
@@ -26,6 +27,9 @@ public class TokenService {
     public String generateJwt(Authentication auth) {
         Instant now = Instant.now();
 
+        VybesUser user = (VybesUser) auth.getPrincipal();
+        String userEmail = user.getEmail(); // Get email explicitly
+
         String scope =
                 auth.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
@@ -36,14 +40,14 @@ public class TokenService {
                         .issuer("self")
                         .issuedAt(now)
                         .expiresAt(now.plus(15, ChronoUnit.MINUTES))
-                        .subject(auth.getName())
+                        .subject(userEmail) // Use email as subject
                         .claim("roles", scope)
                         .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
-    public String generateRefreshToken(String username) {
+    public String generateRefreshToken(String email) {
         Instant now = Instant.now();
 
         JwtClaimsSet claims =
@@ -51,7 +55,7 @@ public class TokenService {
                         .issuer("self")
                         .issuedAt(now)
                         .expiresAt(now.plus(14, ChronoUnit.DAYS)) // 14 days for refresh token
-                        .subject(username)
+                        .subject(email)
                         .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

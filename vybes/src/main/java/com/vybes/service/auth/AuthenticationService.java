@@ -2,6 +2,7 @@ package com.vybes.service.auth;
 
 import com.vybes.dto.LoginResponseDTO;
 import com.vybes.dto.VybesUserResponseDTO;
+import com.vybes.exception.EmailAlreadyUsedException;
 import com.vybes.exception.UserAlreadyExistsException;
 import com.vybes.service.user.model.Role;
 import com.vybes.service.user.model.VybesUser;
@@ -17,6 +18,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,9 +36,9 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
-    public VybesUserResponseDTO registerUser(String username, String password) {
-        if (userRepository.findByUsername(username).isPresent()) {
-            throw new UserAlreadyExistsException("Username is already taken.");
+    public VybesUserResponseDTO registerUser(String email, String password) {
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new EmailAlreadyUsedException("Email address already used.");
         }
 
         String encodedPassword = passwordEncoder.encode(password);
@@ -44,36 +46,37 @@ public class AuthenticationService {
 
         VybesUser newUser =
                 VybesUser.builder()
-                        .username(username)
+                        .email(email)
                         .password(encodedPassword)
                         .authorities(Set.of(role))
                         .build();
         VybesUser registeredUser = userRepository.save(newUser);
 
         return VybesUserResponseDTO.builder()
-                .username(registeredUser.getUsername())
+                .email(registeredUser.getEmail())
                 .userId(registeredUser.getUserId())
                 .build();
     }
 
-    public LoginResponseDTO loginUser(String username, String password) {
+    public LoginResponseDTO loginUser(String email, String password) {
         try {
             Authentication auth =
                     authenticationManager.authenticate(
-                            new UsernamePasswordAuthenticationToken(username, password));
+                            new UsernamePasswordAuthenticationToken(email, password));
             String jwtToken = tokenService.generateJwt(auth);
-            String refreshToken = tokenService.generateRefreshToken(username);
+            String refreshToken = tokenService.generateRefreshToken(email);
 
             VybesUser user =
                     userRepository
-                            .findByUsername(username)
+                            .findByEmail(email)
                             .orElseThrow(
                                     () ->
                                             new UsernameNotFoundException(
-                                                    "Can't find user: " + username));
+                                                    "Can't find user: " + email));
 
             return LoginResponseDTO.builder()
                     .username(user.getUsername())
+                    .email(user.getEmail())
                     .userId(user.getUserId())
                     .jwt(jwtToken)
                     .refreshToken(refreshToken)
@@ -88,7 +91,7 @@ public class AuthenticationService {
         VybesUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Can't find user: " + username));
 
-        String newJwt = tokenService.generateJwt(new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities()));
+        String newJwt = tokenService.generateJwt(new UsernamePasswordAuthenticationToken(user.getEmail(), null, user.getAuthorities()));
         String newRefreshToken = tokenService.generateRefreshToken(username);
 
         return LoginResponseDTO.builder()

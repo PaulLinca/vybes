@@ -7,4 +7,5 @@ import lombok.Data;
 public class VybesUserResponseDTO {
     private Long userId;
     private String username;
+    private String email;
 }

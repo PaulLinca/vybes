@@ -2,6 +2,7 @@ package com.vybes.controller;
 
 import com.vybes.dto.AuthRequestDTO;
 import com.vybes.dto.LoginResponseDTO;
+import com.vybes.dto.UsernameSetupRequestDTO;
 import com.vybes.dto.VybesUserResponseDTO;
 import com.vybes.service.auth.AuthenticationService;
 
@@ -29,14 +30,14 @@ public class AuthenticationController {
     @PostMapping("/register")
     public VybesUserResponseDTO registerUser(@RequestBody AuthRequestDTO authRequestDTO) {
         return authenticationService.registerUser(
-                authRequestDTO.getUsername(), authRequestDTO.getPassword());
+                authRequestDTO.getEmail(), authRequestDTO.getPassword());
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/login")
     public LoginResponseDTO loginUser(@RequestBody AuthRequestDTO authRequestDTO) {
         return authenticationService.loginUser(
-                authRequestDTO.getUsername(), authRequestDTO.getPassword());
+                authRequestDTO.getEmail(), authRequestDTO.getPassword());
     }
 
     @ResponseStatus(HttpStatus.OK)
