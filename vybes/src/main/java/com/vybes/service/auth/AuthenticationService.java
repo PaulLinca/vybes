@@ -78,6 +78,7 @@ public class AuthenticationService {
                     .userId(user.getUserId())
                     .jwt(jwtToken)
                     .refreshToken(refreshToken)
+                    .requiresUsernameSetup(user.getUsername() == null)
                     .build();
         } catch (AuthenticationException e) {
             throw new BadCredentialsException(e.getMessage());
