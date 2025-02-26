@@ -98,6 +98,7 @@ public class AuthenticationService {
                 .userId(user.getUserId())
                 .jwt(newJwt)
                 .refreshToken(newRefreshToken)
+                .requiresUsernameSetup(user.getUsername() == null)
                 .build();
     }
 }
