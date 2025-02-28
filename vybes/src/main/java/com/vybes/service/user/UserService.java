@@ -28,18 +28,29 @@ public class UserService implements UserDetailsService {
                         () -> new UsernameNotFoundException("User not found with email: " + email));
     }
 
-    public UserDetails getByUsername(String username) throws UsernameNotFoundException {
-        return userRepository
-                .findByUsername(username)
-                .orElseThrow(
-                        () -> new UsernameNotFoundException("User not found with username: " + username));
+    public VybesUserResponseDTO getByUsername(String username) throws UsernameNotFoundException {
+        var user =
+                userRepository
+                        .findByUsername(username)
+                        .orElseThrow(
+                                () ->
+                                        new UsernameNotFoundException(
+                                                "User not found with username: " + username));
+
+        return VybesUserResponseDTO.builder()
+                .userId(user.getUserId())
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .build();
     }
 
     public VybesUserResponseDTO setUsername(String username) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        VybesUser user = userRepository.findByEmail(authentication.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        VybesUser user =
+                userRepository
+                        .findByEmail(authentication.getName())
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         if (user.getUsername() != null) {
             throw new IllegalStateException("Username has already been set");

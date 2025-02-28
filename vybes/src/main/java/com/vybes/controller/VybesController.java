@@ -68,7 +68,7 @@ public class VybesController {
         Vybe vybe = vybeMapper.transform(request);
         vybe.setComments(new ArrayList<>());
         vybe.setLikes(new ArrayList<>());
-        vybe.setUser(userRepository.findByUsername(authentication.getName()).orElseThrow());
+        vybe.setUser(userRepository.findByEmail(authentication.getName()).orElseThrow());
 
         Track spotifyTrack = spotifyService.getTrack(request.getSpotifyTrackId());
         vybe.setSpotifyTrackId(spotifyTrack.getId());
@@ -95,7 +95,7 @@ public class VybesController {
 
         Like like =
                 Like.builder()
-                        .user(userRepository.findByUsername(authentication.getName()).orElseThrow())
+                        .user(userRepository.findByEmail(authentication.getName()).orElseThrow())
                         .vybe(vybe)
                         .build();
 
@@ -114,7 +114,7 @@ public class VybesController {
                 vybeService.deleteLike(
                         vybeId,
                         userRepository
-                                .findByUsername(authentication.getName())
+                                .findByEmail(authentication.getName())
                                 .map(VybesUser::getUserId)
                                 .orElseThrow()));
     }
@@ -125,7 +125,7 @@ public class VybesController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         Comment comment = commentMapper.transform(request);
-        comment.setUser(userRepository.findByUsername(authentication.getName()).orElseThrow());
+        comment.setUser(userRepository.findByEmail(authentication.getName()).orElseThrow());
         comment.setVybe(vybeService.getVybeById(vybeId));
 
         return commentMapper.transform(vybeService.saveComment(comment));
@@ -142,7 +142,7 @@ public class VybesController {
                         vybeId,
                         commentId,
                         userRepository
-                                .findByUsername(authentication.getName())
+                                .findByEmail(authentication.getName())
                                 .map(VybesUser::getUserId)
                                 .orElseThrow());
 
@@ -161,7 +161,7 @@ public class VybesController {
 
         Like like =
                 Like.builder()
-                        .user(userRepository.findByUsername(authentication.getName()).orElseThrow())
+                        .user(userRepository.findByEmail(authentication.getName()).orElseThrow())
                         .comment(vybeService.getCommentById(commentId))
                         .build();
 
@@ -179,7 +179,7 @@ public class VybesController {
 
         Long userId =
                 userRepository
-                        .findByUsername(authentication.getName())
+                        .findByEmail(authentication.getName())
                         .map(VybesUser::getUserId)
                         .orElseThrow();
 

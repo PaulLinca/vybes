@@ -21,7 +21,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @GetMapping
     public VybesUserResponseDTO getUser(@RequestParam String username) {
-        return userService.setUsername(username);
+        return userService.getByUsername(username);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
