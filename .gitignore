@@ -63,3 +63,13 @@ target
 .flattened-pom.xml
 secrets.yml
 .gradletasknamecache
+
+# Log files
+*.log
+*.log.*
+*.gz
+
+# H2 Database files
+*.db
+*.trace.db
+*.mv.db
