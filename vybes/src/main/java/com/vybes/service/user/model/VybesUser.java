@@ -1,5 +1,6 @@
 package com.vybes.service.user.model;
 
+import com.vybes.service.vybe.entity.Artist;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,18 +13,18 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -51,6 +52,24 @@ public class VybesUser implements UserDetails {
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private Set<Role> authorities;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_favorite_artists",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id")
+    )
+    @Size(max = 3, message = "You can only have up to 3 favorite artists")
+    private Set<Artist> favoriteArtists = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_favorite_albums",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "album_id")
+    )
+    @Size(max = 3, message = "You can only have up to 3 favorite albums")
+    private Set<Album> favoriteAlbums = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

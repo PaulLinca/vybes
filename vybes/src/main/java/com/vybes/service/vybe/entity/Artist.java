@@ -1,29 +1,37 @@
 package com.vybes.service.vybe.entity;
 
+import java.util.HashSet;
 import java.util.List;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.Set;
 
-@Data
-@Builder
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vybes.service.user.model.VybesUser;
+import jakarta.persistence.*;
+import lombok.*;
+
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Artist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String spotifyId;
+
     private String name;
 
-    @ManyToMany(mappedBy = "spotifyArtists") // Reference back to the Vybes
+    private String imageUrl;
+
+    @ManyToMany(mappedBy = "spotifyArtists")
+    @JsonIgnore
     private List<Vybe> vybes;
+
+    @ManyToMany(mappedBy = "favoriteArtists")
+    @JsonIgnore
+    private Set<VybesUser> fans = new HashSet<>();
 }

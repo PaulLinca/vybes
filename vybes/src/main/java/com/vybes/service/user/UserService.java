@@ -1,6 +1,8 @@
 package com.vybes.service.user;
 
 import com.vybes.dto.VybesUserResponseDTO;
+import com.vybes.dto.mapper.AlbumMapper;
+import com.vybes.dto.mapper.ArtistMapper;
 import com.vybes.exception.UserAlreadyExistsException;
 import com.vybes.service.user.model.VybesUser;
 import com.vybes.service.user.repository.UserRepository;
@@ -14,11 +16,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final ArtistMapper artistMapper;
+    private final AlbumMapper albumMapper;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -41,6 +47,14 @@ public class UserService implements UserDetailsService {
                 .userId(user.getUserId())
                 .email(user.getEmail())
                 .username(user.getUsername())
+                .favoriteArtists(
+                        user.getFavoriteArtists().stream()
+                                .map(artistMapper::transform)
+                                .collect(Collectors.toSet()))
+                .favoriteAlbums(
+                        user.getFavoriteAlbums().stream()
+                                .map(albumMapper::transform)
+                                .collect(Collectors.toSet()))
                 .build();
     }
 

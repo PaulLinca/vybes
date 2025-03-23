@@ -1,5 +1,6 @@
 package com.vybes.exception.handler;
 
+import com.vybes.exception.InvalidRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,14 @@ public class GlobalExceptionHandler {
         logger.error("Unhandled exception occurred", ex);
 
         return new ResponseEntity<>("Invalid username or password.", HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(InvalidRequestException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<String> handleInvalidRequestException(InvalidRequestException ex) {
+        logger.error("Invalid request", ex);
+
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
