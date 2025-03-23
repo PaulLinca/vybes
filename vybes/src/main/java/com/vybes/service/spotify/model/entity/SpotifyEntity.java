@@ -1,4 +1,4 @@
-package com.vybes.service.spotify.model;
+package com.vybes.service.spotify.model.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

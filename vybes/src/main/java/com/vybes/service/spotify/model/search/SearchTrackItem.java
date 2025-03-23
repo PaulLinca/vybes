@@ -1,6 +1,6 @@
 package com.vybes.service.spotify.model.search;
 
-import com.vybes.service.spotify.model.SpotifyEntity;
+import com.vybes.service.spotify.model.entity.SpotifyEntity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -33,5 +33,5 @@ public class Artist {
 
     @ManyToMany(mappedBy = "favoriteArtists")
     @JsonIgnore
-    private Set<VybesUser> fans = new HashSet<>();
+    private Set<VybesUser> favoritedBy = new HashSet<>();
 }

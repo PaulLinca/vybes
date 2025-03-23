@@ -8,9 +8,9 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vybes.service.spotify.model.deserializer.TrackDeserializer;
-import com.vybes.service.spotify.model.entity.Album;
-import com.vybes.service.spotify.model.entity.Artist;
-import com.vybes.service.spotify.model.entity.Track;
+import com.vybes.service.spotify.model.entity.SpotifyAlbum;
+import com.vybes.service.spotify.model.entity.SpotifyArtist;
+import com.vybes.service.spotify.model.entity.SpotifyTrack;
 
 import lombok.SneakyThrows;
 
@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 @ExtendWith(MockitoExtension.class)
-class TrackDeserializerTest {
+class SpotifyTrackDeserializerTest {
 
     private final TrackDeserializer testee = new TrackDeserializer();
 
@@ -40,7 +40,7 @@ class TrackDeserializerTest {
         JsonNode trackNode = objectMapper.readTree(readFileAsString("input/getTrackResponse.json"));
         when(objectMapper.readTree(jsonParser)).thenReturn(trackNode);
 
-        Track response = testee.deserialize(jsonParser, null);
+        SpotifyTrack response = testee.deserialize(jsonParser, null);
 
         assertThat(response.getId(), is("4BLIa4mBW1u5d9PLoMoENs"));
         assertThat(response.getName(), is("Kody Blu 31"));
@@ -48,13 +48,13 @@ class TrackDeserializerTest {
                 response.getSpotifyUrl(),
                 is("https://open.spotify.com/track/4BLIa4mBW1u5d9PLoMoENs"));
 
-        Album album = response.getAlbum();
-        assertThat(album.getId(), is("29jlK0pu6Zv0TznE4uwpbq"));
-        assertThat(album.getName(), is("The Forever Story (Extended Version)"));
+        SpotifyAlbum spotifyAlbum = response.getAlbum();
+        assertThat(spotifyAlbum.getId(), is("29jlK0pu6Zv0TznE4uwpbq"));
+        assertThat(spotifyAlbum.getName(), is("The Forever Story (Extended Version)"));
         assertThat(
-                album.getSpotifyUrl(), is("https://open.spotify.com/album/29jlK0pu6Zv0TznE4uwpbq"));
+                spotifyAlbum.getSpotifyUrl(), is("https://open.spotify.com/album/29jlK0pu6Zv0TznE4uwpbq"));
 
-        Artist artist = response.getArtists().get(0);
+        SpotifyArtist artist = response.getArtists().get(0);
         assertThat(artist.getId(), is("6U3ybJ9UHNKEdsH7ktGBZ7"));
         assertThat(artist.getName(), is("JID"));
         assertThat(

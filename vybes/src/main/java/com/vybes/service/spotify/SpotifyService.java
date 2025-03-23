@@ -1,9 +1,9 @@
 package com.vybes.service.spotify;
 
 import com.vybes.service.spotify.client.SpotifyClient;
-import com.vybes.service.spotify.model.entity.Album;
-import com.vybes.service.spotify.model.entity.Artist;
-import com.vybes.service.spotify.model.entity.Track;
+import com.vybes.service.spotify.model.entity.SpotifyAlbum;
+import com.vybes.service.spotify.model.entity.SpotifyArtist;
+import com.vybes.service.spotify.model.entity.SpotifyTrack;
 import com.vybes.service.spotify.model.search.SearchTrackItem;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class SpotifyService {
         }
     }
 
-    public Track getTrack(String id) {
+    public SpotifyTrack getTrack(String id) {
         try {
             return spotifyClient.getTrack(id);
         } catch (HttpClientErrorException.Unauthorized e) {
@@ -37,7 +37,7 @@ public class SpotifyService {
         }
     }
 
-    public Album getAlbum(String id) {
+    public SpotifyAlbum getAlbum(String id) {
         try {
             return spotifyClient.getAlbum(id);
         } catch (HttpClientErrorException.Unauthorized e) {
@@ -46,7 +46,7 @@ public class SpotifyService {
         }
     }
 
-    public Artist getArtist(String id) {
+    public SpotifyArtist getArtist(String id) {
         try {
             return spotifyClient.getArtist(id);
         } catch (HttpClientErrorException.Unauthorized e) {

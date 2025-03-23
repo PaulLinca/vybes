@@ -3,6 +3,8 @@ package com.vybes.service.user;
 import com.vybes.dto.request.FavoritesUpdateRequest;
 import com.vybes.exception.InvalidRequestException;
 import com.vybes.service.spotify.SpotifyService;
+import com.vybes.service.spotify.model.entity.SpotifyAlbum;
+import com.vybes.service.spotify.model.entity.SpotifyArtist;
 import com.vybes.service.user.model.Album;
 import com.vybes.service.user.model.VybesUser;
 import com.vybes.service.user.repository.AlbumRepository;
@@ -45,7 +47,7 @@ public class UserFavoritesService {
                 Artist artist = artistRepository.findBySpotifyId(spotifyId);
 
                 if (artist == null) {
-                    com.vybes.service.spotify.model.entity.Artist spotifyArtist =
+                    SpotifyArtist spotifyArtist =
                             spotifyService.getArtist(spotifyId);
                     artist =
                             Artist.builder()
@@ -53,7 +55,7 @@ public class UserFavoritesService {
                                     .name(spotifyArtist.getName())
                                     .imageUrl(spotifyArtist.getImageUrl())
                                     .vybes(new ArrayList<>())
-                                    .fans(new HashSet<>())
+                                    .favoritedBy(new HashSet<>())
                                     .build();
 
                     artist = artistRepository.save(artist);
@@ -73,7 +75,7 @@ public class UserFavoritesService {
                 Album album = albumRepository.findBySpotifyId(spotifyId);
 
                 if (album == null) {
-                    com.vybes.service.spotify.model.entity.Album spotifyAlbum =
+                    SpotifyAlbum spotifyAlbum =
                             spotifyService.getAlbum(spotifyId);
                     album =
                             Album.builder()

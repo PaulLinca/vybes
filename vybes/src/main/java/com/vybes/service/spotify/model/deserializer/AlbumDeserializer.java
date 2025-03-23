@@ -4,21 +4,21 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.vybes.service.spotify.model.entity.Album;
-import com.vybes.service.spotify.model.entity.Artist;
+import com.vybes.service.spotify.model.entity.SpotifyAlbum;
+import com.vybes.service.spotify.model.entity.SpotifyArtist;
 
 import java.io.IOException;
 
-public class AlbumDeserializer extends JsonDeserializer<Album> {
+public class AlbumDeserializer extends JsonDeserializer<SpotifyAlbum> {
 
     @Override
-    public Album deserialize(
+    public SpotifyAlbum deserialize(
             final JsonParser jsonParser, final DeserializationContext deserializationContext)
             throws IOException {
 
         JsonNode valueAsJson = jsonParser.getCodec().readTree(jsonParser);
 
-        return Album.builder()
+        return SpotifyAlbum.builder()
                 .id(valueAsJson.get("id").textValue())
                 .name(valueAsJson.get("name").textValue())
                 .spotifyUrl(valueAsJson.get("external_urls").get("spotify").textValue())
@@ -27,7 +27,7 @@ public class AlbumDeserializer extends JsonDeserializer<Album> {
                 .artist(
                         jsonParser
                                 .getCodec()
-                                .treeToValue(valueAsJson.get("artists").get(0), Artist.class))
+                                .treeToValue(valueAsJson.get("artists").get(0), SpotifyArtist.class))
                 .build();
     }
 }

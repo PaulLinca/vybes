@@ -8,7 +8,7 @@ import com.vybes.dto.mapper.LikeMapper;
 import com.vybes.dto.mapper.VybeMapper;
 import com.vybes.dto.request.CreateVybeRequestDTO;
 import com.vybes.service.spotify.SpotifyService;
-import com.vybes.service.spotify.model.entity.Track;
+import com.vybes.service.spotify.model.entity.SpotifyTrack;
 import com.vybes.service.user.model.VybesUser;
 import com.vybes.service.user.repository.ArtistRepository;
 import com.vybes.service.user.repository.UserRepository;
@@ -72,7 +72,7 @@ public class VybesController {
         vybe.setLikes(new ArrayList<>());
         vybe.setUser(userRepository.findByEmail(authentication.getName()).orElseThrow());
 
-        Track spotifyTrack = spotifyService.getTrack(request.getSpotifyTrackId());
+        SpotifyTrack spotifyTrack = spotifyService.getTrack(request.getSpotifyTrackId());
         vybe.setSpotifyTrackId(spotifyTrack.getId());
         vybe.setSongName(spotifyTrack.getName());
         vybe.setSpotifyAlbumId(spotifyTrack.getAlbum().getId());

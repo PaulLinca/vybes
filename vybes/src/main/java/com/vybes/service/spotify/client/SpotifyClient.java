@@ -1,9 +1,9 @@
 package com.vybes.service.spotify.client;
 
 import com.vybes.service.spotify.model.AuthorizationTokenResponse;
-import com.vybes.service.spotify.model.entity.Album;
-import com.vybes.service.spotify.model.entity.Artist;
-import com.vybes.service.spotify.model.entity.Track;
+import com.vybes.service.spotify.model.entity.SpotifyAlbum;
+import com.vybes.service.spotify.model.entity.SpotifyArtist;
+import com.vybes.service.spotify.model.entity.SpotifyTrack;
 import com.vybes.service.spotify.model.search.SearchTrackItem;
 import com.vybes.service.spotify.model.search.SearchTrackResponse;
 
@@ -84,7 +84,7 @@ public class SpotifyClient {
         return result.getBody().getSearchTrackItems();
     }
 
-    public Track getTrack(String id) {
+    public SpotifyTrack getTrack(String id) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.setBearerAuth(token);
@@ -92,7 +92,7 @@ public class SpotifyClient {
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<Track> result =
+        ResponseEntity<SpotifyTrack> result =
                 restTemplate.exchange(
                         BASE_URL + "/tracks/" + id,
                         HttpMethod.GET,
@@ -102,7 +102,7 @@ public class SpotifyClient {
         return result.getBody();
     }
 
-    public Album getAlbum(String id) {
+    public SpotifyAlbum getAlbum(String id) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.setBearerAuth(token);
@@ -110,7 +110,7 @@ public class SpotifyClient {
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<Album> result =
+        ResponseEntity<SpotifyAlbum> result =
                 restTemplate.exchange(
                         BASE_URL + "/albums/" + id,
                         HttpMethod.GET,
@@ -120,7 +120,7 @@ public class SpotifyClient {
         return result.getBody();
     }
 
-    public Artist getArtist(String id) {
+    public SpotifyArtist getArtist(String id) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.setBearerAuth(token);
@@ -128,7 +128,7 @@ public class SpotifyClient {
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<Artist> result =
+        ResponseEntity<SpotifyArtist> result =
                 restTemplate.exchange(
                         BASE_URL + "/artists/" + id,
                         HttpMethod.GET,

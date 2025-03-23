@@ -1,9 +1,9 @@
 package com.vybes.controller;
 
 import com.vybes.service.spotify.SpotifyService;
-import com.vybes.service.spotify.model.entity.Album;
-import com.vybes.service.spotify.model.entity.Artist;
-import com.vybes.service.spotify.model.entity.Track;
+import com.vybes.service.spotify.model.entity.SpotifyAlbum;
+import com.vybes.service.spotify.model.entity.SpotifyArtist;
+import com.vybes.service.spotify.model.entity.SpotifyTrack;
 import com.vybes.service.spotify.model.search.SearchTrackItem;
 
 import lombok.RequiredArgsConstructor;
@@ -32,19 +32,19 @@ public class SpotifyController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/track", produces = "application/json; charset=UTF-8")
-    public Track getTrack(@RequestParam String id) {
+    public SpotifyTrack getTrack(@RequestParam String id) {
         return spotifyService.getTrack(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/album", produces = "application/json; charset=UTF-8")
-    public Album getAlbum(@RequestParam String id) {
+    public SpotifyAlbum getAlbum(@RequestParam String id) {
         return spotifyService.getAlbum(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/artist", produces = "application/json; charset=UTF-8")
-    public Artist getArtist(@RequestParam String id) {
+    public SpotifyArtist getArtist(@RequestParam String id) {
         return spotifyService.getArtist(id);
     }
 }

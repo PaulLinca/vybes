@@ -1,7 +1,6 @@
 package com.vybes.service.spotify.model.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.vybes.service.spotify.model.SpotifyEntity;
 import com.vybes.service.spotify.model.deserializer.TrackDeserializer;
 
 import lombok.Getter;
@@ -12,7 +11,7 @@ import java.util.List;
 @Getter
 @SuperBuilder
 @JsonDeserialize(using = TrackDeserializer.class)
-public class Track extends SpotifyEntity {
-    private Album album;
-    private List<Artist> artists;
+public class SpotifyTrack extends SpotifyEntity {
+    private SpotifyAlbum album;
+    private List<SpotifyArtist> artists;
 }
