@@ -1,4 +1,4 @@
-package com.vybes.service.vybe.dto;
+package com.vybes.dto;
 
 import lombok.Data;
 

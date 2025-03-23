@@ -1,21 +1,22 @@
 package com.vybes.controller;
 
-import com.vybes.dto.CreateVybeRequestDTO;
+import com.vybes.dto.CommentDTO;
+import com.vybes.dto.LikeDTO;
+import com.vybes.dto.VybeDTO;
+import com.vybes.dto.mapper.CommentMapper;
+import com.vybes.dto.mapper.LikeMapper;
+import com.vybes.dto.mapper.VybeMapper;
+import com.vybes.dto.request.CreateVybeRequestDTO;
 import com.vybes.service.spotify.SpotifyService;
 import com.vybes.service.spotify.model.entity.Track;
 import com.vybes.service.user.model.VybesUser;
+import com.vybes.service.user.repository.ArtistRepository;
 import com.vybes.service.user.repository.UserRepository;
 import com.vybes.service.vybe.VybeService;
-import com.vybes.service.vybe.dto.CommentDTO;
-import com.vybes.service.vybe.dto.LikeDTO;
-import com.vybes.service.vybe.dto.VybeDTO;
 import com.vybes.service.vybe.entity.Artist;
 import com.vybes.service.vybe.entity.Comment;
 import com.vybes.service.vybe.entity.Like;
 import com.vybes.service.vybe.entity.Vybe;
-import com.vybes.service.vybe.mapper.CommentMapper;
-import com.vybes.service.vybe.mapper.LikeMapper;
-import com.vybes.service.vybe.mapper.VybeMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,6 +45,7 @@ public class VybesController {
     private final VybeService vybeService;
     private final SpotifyService spotifyService;
     private final UserRepository userRepository;
+    private final ArtistRepository artistRepository;
     private final VybeMapper vybeMapper;
     private final CommentMapper commentMapper;
     private final LikeMapper likeMapper;
@@ -77,7 +79,13 @@ public class VybesController {
         vybe.setImageUrl(spotifyTrack.getAlbum().getImageUrl());
         vybe.setSpotifyArtists(
                 spotifyTrack.getArtists().stream()
-                        .map(a -> Artist.builder().spotifyId(a.getId()).name(a.getName()).build())
+                        .map(a -> Optional.ofNullable(artistRepository.findBySpotifyId(a.getId()))
+                                .orElseGet(() -> artistRepository.save(
+                                        Artist.builder()
+                                                .spotifyId(a.getId())
+                                                .name(a.getName())
+                                                .build()
+                                )))
                         .toList());
 
         return vybeMapper.transform(vybeService.createVybe(vybe));

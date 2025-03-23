@@ -1,6 +1,6 @@
 package com.vybes.service.user;
 
-import com.vybes.dto.FavoritesUpdateRequest;
+import com.vybes.dto.request.FavoritesUpdateRequest;
 import com.vybes.exception.InvalidRequestException;
 import com.vybes.service.spotify.SpotifyService;
 import com.vybes.service.user.model.Album;

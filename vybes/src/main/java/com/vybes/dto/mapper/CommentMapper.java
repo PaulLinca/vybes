@@ -1,6 +1,6 @@
-package com.vybes.service.vybe.mapper;
+package com.vybes.dto.mapper;
 
-import com.vybes.service.vybe.dto.CommentDTO;
+import com.vybes.dto.CommentDTO;
 import com.vybes.service.vybe.entity.Comment;
 
 import org.mapstruct.Mapper;

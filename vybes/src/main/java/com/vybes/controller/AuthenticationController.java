@@ -1,6 +1,6 @@
 package com.vybes.controller;
 
-import com.vybes.dto.AuthRequestDTO;
+import com.vybes.dto.request.AuthRequestDTO;
 import com.vybes.dto.LoginResponseDTO;
 import com.vybes.dto.VybesUserResponseDTO;
 import com.vybes.service.auth.AuthenticationService;

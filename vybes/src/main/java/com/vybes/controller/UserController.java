@@ -1,7 +1,7 @@
 package com.vybes.controller;
 
-import com.vybes.dto.FavoritesUpdateRequest;
-import com.vybes.dto.UsernameSetupRequestDTO;
+import com.vybes.dto.request.FavoritesUpdateRequest;
+import com.vybes.dto.request.UsernameSetupRequestDTO;
 import com.vybes.dto.VybesUserResponseDTO;
 import com.vybes.service.user.UserFavoritesService;
 import com.vybes.service.user.UserService;
