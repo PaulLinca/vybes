@@ -19,8 +19,10 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> deleteByVybeIdAndUser_UserId(Long vybeId, Long userId);
 
     @Modifying
-    @Query("DELETE FROM Comment c WHERE c.id = :commentId AND c.vybe.id = :vybeId AND c.user.userId = :userId")
-    int deleteByCommentIdAndVybeIdAndUserId(@Param("commentId") Long commentId,
-                                             @Param("vybeId") Long vybeId,
-                                             @Param("userId") Long userId);
+    @Query(
+            "DELETE FROM Comment c WHERE c.id = :commentId AND c.vybe.id = :vybeId AND c.user.userId = :userId")
+    int deleteByCommentIdAndVybeIdAndUserId(
+            @Param("commentId") Long commentId,
+            @Param("vybeId") Long vybeId,
+            @Param("userId") Long userId);
 }

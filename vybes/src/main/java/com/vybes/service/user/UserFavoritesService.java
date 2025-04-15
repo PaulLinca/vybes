@@ -47,8 +47,7 @@ public class UserFavoritesService {
                 Artist artist = artistRepository.findBySpotifyId(spotifyId);
 
                 if (artist == null) {
-                    SpotifyArtist spotifyArtist =
-                            spotifyService.getArtist(spotifyId);
+                    SpotifyArtist spotifyArtist = spotifyService.getArtist(spotifyId);
                     artist =
                             Artist.builder()
                                     .spotifyId(spotifyId)
@@ -75,8 +74,7 @@ public class UserFavoritesService {
                 Album album = albumRepository.findBySpotifyId(spotifyId);
 
                 if (album == null) {
-                    SpotifyAlbum spotifyAlbum =
-                            spotifyService.getAlbum(spotifyId);
+                    SpotifyAlbum spotifyAlbum = spotifyService.getAlbum(spotifyId);
                     album =
                             Album.builder()
                                     .spotifyId(spotifyId)

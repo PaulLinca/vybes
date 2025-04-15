@@ -12,9 +12,13 @@ import org.springframework.stereotype.Component;
 public class GlobalLoggingAspect {
     private static final Logger logger = LoggerFactory.getLogger(GlobalLoggingAspect.class);
 
-    @AfterThrowing(pointcut = "within(@org.springframework.web.bind.annotation.RestController *) || within(@org.springframework.stereotype.Service *) || within(@org.springframework.stereotype.Repository *)", throwing = "exception")
+    @AfterThrowing(
+            pointcut =
+                    "within(@org.springframework.web.bind.annotation.RestController *) || within(@org.springframework.stereotype.Service *) || within(@org.springframework.stereotype.Repository *)",
+            throwing = "exception")
     public void logException(JoinPoint joinPoint, Throwable exception) {
-        logger.error("Exception in {}.{}() with cause = {}",
+        logger.error(
+                "Exception in {}.{}() with cause = {}",
                 joinPoint.getSignature().getDeclaringTypeName(),
                 joinPoint.getSignature().getName(),
                 exception.getCause() != null ? exception.getCause() : "NULL",

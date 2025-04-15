@@ -1,6 +1,5 @@
 package com.vybes.dto;
 
-
 import lombok.Builder;
 import lombok.Data;
 

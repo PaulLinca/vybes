@@ -27,7 +27,8 @@ public class AlbumDeserializer extends JsonDeserializer<SpotifyAlbum> {
                 .artist(
                         jsonParser
                                 .getCodec()
-                                .treeToValue(valueAsJson.get("artists").get(0), SpotifyArtist.class))
+                                .treeToValue(
+                                        valueAsJson.get("artists").get(0), SpotifyArtist.class))
                 .build();
     }
 }

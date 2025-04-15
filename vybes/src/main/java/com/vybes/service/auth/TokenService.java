@@ -1,6 +1,7 @@
 package com.vybes.service.auth;
 
 import com.vybes.service.user.model.VybesUser;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.Authentication;

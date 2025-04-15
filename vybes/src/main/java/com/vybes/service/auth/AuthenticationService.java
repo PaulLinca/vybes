@@ -87,10 +87,18 @@ public class AuthenticationService {
 
     public LoginResponseDTO refreshToken(String refreshToken) {
         String username = tokenService.extractUsername(refreshToken);
-        VybesUser user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Can't find user: " + username));
+        VybesUser user =
+                userRepository
+                        .findByUsername(username)
+                        .orElseThrow(
+                                () ->
+                                        new UsernameNotFoundException(
+                                                "Can't find user: " + username));
 
-        String newJwt = tokenService.generateJwt(new UsernamePasswordAuthenticationToken(user.getEmail(), null, user.getAuthorities()));
+        String newJwt =
+                tokenService.generateJwt(
+                        new UsernamePasswordAuthenticationToken(
+                                user.getEmail(), null, user.getAuthorities()));
         String newRefreshToken = tokenService.generateRefreshToken(username);
 
         return LoginResponseDTO.builder()

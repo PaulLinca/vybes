@@ -52,7 +52,8 @@ class SpotifyTrackDeserializerTest {
         assertThat(spotifyAlbum.getId(), is("29jlK0pu6Zv0TznE4uwpbq"));
         assertThat(spotifyAlbum.getName(), is("The Forever Story (Extended Version)"));
         assertThat(
-                spotifyAlbum.getSpotifyUrl(), is("https://open.spotify.com/album/29jlK0pu6Zv0TznE4uwpbq"));
+                spotifyAlbum.getSpotifyUrl(),
+                is("https://open.spotify.com/album/29jlK0pu6Zv0TznE4uwpbq"));
 
         SpotifyArtist artist = response.getArtists().get(0);
         assertThat(artist.getId(), is("6U3ybJ9UHNKEdsH7ktGBZ7"));

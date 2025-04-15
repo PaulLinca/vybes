@@ -34,7 +34,8 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/setUsername")
-    public VybesUserResponseDTO setUsername(@RequestBody UsernameSetupRequestDTO usernameSetupRequestDTO) {
+    public VybesUserResponseDTO setUsername(
+            @RequestBody UsernameSetupRequestDTO usernameSetupRequestDTO) {
         return userService.setUsername(usernameSetupRequestDTO.getUsername());
     }
 

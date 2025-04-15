@@ -26,7 +26,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<String> handleInvalidCredentialsException(InvalidCredentialsException ex) {
+    public ResponseEntity<String> handleInvalidCredentialsException(
+            InvalidCredentialsException ex) {
         logger.error("Unhandled exception occurred", ex);
 
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
@@ -52,6 +53,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleGlobalException(Exception ex, WebRequest request) {
         logger.error("Unhandled exception occurred", ex);
 
-        return new ResponseEntity<>("An unexpected error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(
+                "An unexpected error occurred: " + ex.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

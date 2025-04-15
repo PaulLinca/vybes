@@ -1,6 +1,7 @@
 package com.vybes.service.user.model;
 
 import com.vybes.service.vybe.entity.Artist;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,8 +13,8 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
-
 import jakarta.validation.constraints.Size;
+
 import lombok.*;
 
 import org.springframework.security.core.GrantedAuthority;

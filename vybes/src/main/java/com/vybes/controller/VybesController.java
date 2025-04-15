@@ -79,13 +79,18 @@ public class VybesController {
         vybe.setImageUrl(spotifyTrack.getAlbum().getImageUrl());
         vybe.setSpotifyArtists(
                 spotifyTrack.getArtists().stream()
-                        .map(a -> Optional.ofNullable(artistRepository.findBySpotifyId(a.getId()))
-                                .orElseGet(() -> artistRepository.save(
-                                        Artist.builder()
-                                                .spotifyId(a.getId())
-                                                .name(a.getName())
-                                                .build()
-                                )))
+                        .map(
+                                a ->
+                                        Optional.ofNullable(
+                                                        artistRepository.findBySpotifyId(a.getId()))
+                                                .orElseGet(
+                                                        () ->
+                                                                artistRepository.save(
+                                                                        Artist.builder()
+                                                                                .spotifyId(
+                                                                                        a.getId())
+                                                                                .name(a.getName())
+                                                                                .build())))
                         .toList());
 
         return vybeMapper.transform(vybeService.createVybe(vybe));
@@ -97,7 +102,7 @@ public class VybesController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         Vybe vybe = vybeService.getVybeById(vybeId);
-        if(vybe.getUser().getUsername().equals(authentication.getName())) {
+        if (vybe.getUser().getUsername().equals(authentication.getName())) {
             return ResponseEntity.badRequest().build();
         }
 
