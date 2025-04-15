@@ -4,8 +4,12 @@ import com.vybes.service.spotify.model.AuthorizationTokenResponse;
 import com.vybes.service.spotify.model.entity.SpotifyAlbum;
 import com.vybes.service.spotify.model.entity.SpotifyArtist;
 import com.vybes.service.spotify.model.entity.SpotifyTrack;
-import com.vybes.service.spotify.model.search.SearchTrackItem;
-import com.vybes.service.spotify.model.search.SearchTrackResponse;
+import com.vybes.service.spotify.model.search.album.SearchAlbumItem;
+import com.vybes.service.spotify.model.search.album.SearchAlbumResponse;
+import com.vybes.service.spotify.model.search.artist.SearchArtistItem;
+import com.vybes.service.spotify.model.search.artist.SearchArtistResponse;
+import com.vybes.service.spotify.model.search.track.SearchTrackItem;
+import com.vybes.service.spotify.model.search.track.SearchTrackResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -63,78 +67,92 @@ public class SpotifyClient {
     }
 
     public List<SearchTrackItem> searchTrack(String searchString) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.setBearerAuth(token);
-
-        HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        RestTemplate restTemplate = new RestTemplate();
-        String uri =
-                UriComponentsBuilder.fromHttpUrl(BASE_URL + "/search")
-                        .queryParam("type", "track")
-                        .queryParam("limit", "10")
-                        .queryParam("market", "US")
-                        .queryParam("query", searchString)
-                        .encode()
-                        .toUriString();
         ResponseEntity<SearchTrackResponse> result =
-                restTemplate.exchange(
-                        uri, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {});
+                new RestTemplate()
+                        .exchange(
+                                buildSearchUri(searchString, "track"),
+                                HttpMethod.GET,
+                                buildHttpEntity(),
+                                new ParameterizedTypeReference<>() {});
 
         return result.getBody().getSearchTrackItems();
     }
 
+    public List<SearchArtistItem> searchArtist(String searchString) {
+        ResponseEntity<SearchArtistResponse> result =
+                new RestTemplate()
+                        .exchange(
+                                buildSearchUri(searchString, "artist"),
+                                HttpMethod.GET,
+                                buildHttpEntity(),
+                                new ParameterizedTypeReference<>() {});
+
+        return result.getBody().getSearchArtistItems();
+    }
+
+    public List<SearchAlbumItem> searchAlbum(String searchString) {
+        ResponseEntity<SearchAlbumResponse> result =
+                new RestTemplate()
+                        .exchange(
+                                buildSearchUri(searchString, "album"),
+                                HttpMethod.GET,
+                                buildHttpEntity(),
+                                new ParameterizedTypeReference<>() {});
+
+        return result.getBody().getSearchAlbumItems();
+    }
+
     public SpotifyTrack getTrack(String id) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.setBearerAuth(token);
-
-        HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        RestTemplate restTemplate = new RestTemplate();
-
         ResponseEntity<SpotifyTrack> result =
-                restTemplate.exchange(
-                        BASE_URL + "/tracks/" + id,
-                        HttpMethod.GET,
-                        entity,
-                        new ParameterizedTypeReference<>() {});
+                new RestTemplate()
+                        .exchange(
+                                BASE_URL + "/tracks/" + id,
+                                HttpMethod.GET,
+                                buildHttpEntity(),
+                                new ParameterizedTypeReference<>() {});
 
         return result.getBody();
     }
 
     public SpotifyAlbum getAlbum(String id) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.setBearerAuth(token);
-
-        HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        RestTemplate restTemplate = new RestTemplate();
-
         ResponseEntity<SpotifyAlbum> result =
-                restTemplate.exchange(
-                        BASE_URL + "/albums/" + id,
-                        HttpMethod.GET,
-                        entity,
-                        new ParameterizedTypeReference<>() {});
+                new RestTemplate()
+                        .exchange(
+                                BASE_URL + "/albums/" + id,
+                                HttpMethod.GET,
+                                buildHttpEntity(),
+                                new ParameterizedTypeReference<>() {});
 
         return result.getBody();
     }
 
     public SpotifyArtist getArtist(String id) {
+        ResponseEntity<SpotifyArtist> result =
+                new RestTemplate()
+                        .exchange(
+                                BASE_URL + "/artists/" + id,
+                                HttpMethod.GET,
+                                buildHttpEntity(),
+                                new ParameterizedTypeReference<>() {});
+
+        return result.getBody();
+    }
+
+    private String buildSearchUri(String searchString, String type) {
+        return UriComponentsBuilder.fromHttpUrl(BASE_URL + "/search")
+                .queryParam("type", type)
+                .queryParam("limit", "10")
+                .queryParam("market", "US")
+                .queryParam("query", searchString)
+                .encode()
+                .toUriString();
+    }
+
+    private HttpEntity<String> buildHttpEntity() {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.setBearerAuth(token);
 
-        HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        RestTemplate restTemplate = new RestTemplate();
-
-        ResponseEntity<SpotifyArtist> result =
-                restTemplate.exchange(
-                        BASE_URL + "/artists/" + id,
-                        HttpMethod.GET,
-                        entity,
-                        new ParameterizedTypeReference<>() {});
-
-        return result.getBody();
+        return new HttpEntity<>(null, headers);
     }
 }

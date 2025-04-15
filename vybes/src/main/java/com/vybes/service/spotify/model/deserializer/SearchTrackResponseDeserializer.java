@@ -7,8 +7,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vybes.service.spotify.model.search.SearchTrackItem;
-import com.vybes.service.spotify.model.search.SearchTrackResponse;
+import com.vybes.service.spotify.model.search.track.SearchTrackItem;
+import com.vybes.service.spotify.model.search.track.SearchTrackResponse;
 
 import java.io.IOException;
 import java.util.Arrays;

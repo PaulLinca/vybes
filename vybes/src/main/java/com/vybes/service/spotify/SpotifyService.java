@@ -4,7 +4,9 @@ import com.vybes.service.spotify.client.SpotifyClient;
 import com.vybes.service.spotify.model.entity.SpotifyAlbum;
 import com.vybes.service.spotify.model.entity.SpotifyArtist;
 import com.vybes.service.spotify.model.entity.SpotifyTrack;
-import com.vybes.service.spotify.model.search.SearchTrackItem;
+import com.vybes.service.spotify.model.search.album.SearchAlbumItem;
+import com.vybes.service.spotify.model.search.artist.SearchArtistItem;
+import com.vybes.service.spotify.model.search.track.SearchTrackItem;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +27,24 @@ public class SpotifyService {
         } catch (HttpClientErrorException.Unauthorized e) {
             spotifyClient.refreshAccessToken();
             return searchTrack(searchQuery);
+        }
+    }
+
+    public List<SearchArtistItem> searchArtist(String searchQuery) {
+        try {
+            return spotifyClient.searchArtist(searchQuery);
+        } catch (HttpClientErrorException.Unauthorized e) {
+            spotifyClient.refreshAccessToken();
+            return searchArtist(searchQuery);
+        }
+    }
+
+    public List<SearchAlbumItem> searchAlbum(String searchQuery) {
+        try {
+            return spotifyClient.searchAlbum(searchQuery);
+        } catch (HttpClientErrorException.Unauthorized e) {
+            spotifyClient.refreshAccessToken();
+            return searchAlbum(searchQuery);
         }
     }
 

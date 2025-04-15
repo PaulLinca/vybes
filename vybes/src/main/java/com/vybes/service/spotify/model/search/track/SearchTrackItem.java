@@ -1,4 +1,4 @@
-package com.vybes.service.spotify.model.search;
+package com.vybes.service.spotify.model.search.track;
 
 import com.vybes.service.spotify.model.entity.SpotifyEntity;
 

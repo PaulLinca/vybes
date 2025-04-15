@@ -20,7 +20,7 @@ class SpotifyControllerTest {
 
     @Test
     void test() {
-        testee.search(STRING_PARAMETER);
+        testee.searchTrack(STRING_PARAMETER);
         testee.getTrack(STRING_PARAMETER);
         testee.getAlbum(STRING_PARAMETER);
         testee.getArtist(STRING_PARAMETER);

@@ -1,4 +1,4 @@
-package com.vybes.service.spotify.model.search;
+package com.vybes.service.spotify.model.search.track;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.vybes.service.spotify.model.deserializer.SearchTrackResponseDeserializer;

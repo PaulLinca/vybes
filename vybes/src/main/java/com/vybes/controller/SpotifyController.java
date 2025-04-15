@@ -4,7 +4,9 @@ import com.vybes.service.spotify.SpotifyService;
 import com.vybes.service.spotify.model.entity.SpotifyAlbum;
 import com.vybes.service.spotify.model.entity.SpotifyArtist;
 import com.vybes.service.spotify.model.entity.SpotifyTrack;
-import com.vybes.service.spotify.model.search.SearchTrackItem;
+import com.vybes.service.spotify.model.search.album.SearchAlbumItem;
+import com.vybes.service.spotify.model.search.artist.SearchArtistItem;
+import com.vybes.service.spotify.model.search.track.SearchTrackItem;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,16 +20,28 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/spotify")
+@RequestMapping("/api/music")
 @RequiredArgsConstructor
 public class SpotifyController {
 
     private final SpotifyService spotifyService;
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/search", produces = "application/json; charset=UTF-8")
-    public List<SearchTrackItem> search(@RequestParam String query) {
+    @GetMapping(value = "/search/track", produces = "application/json; charset=UTF-8")
+    public List<SearchTrackItem> searchTrack(@RequestParam String query) {
         return spotifyService.searchTrack(query);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/search/artist", produces = "application/json; charset=UTF-8")
+    public List<SearchArtistItem> searchArtist(@RequestParam String query) {
+        return spotifyService.searchArtist(query);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/search/album", produces = "application/json; charset=UTF-8")
+    public List<SearchAlbumItem> searchAlbum(@RequestParam String query) {
+        return spotifyService.searchAlbum(query);
     }
 
     @ResponseStatus(HttpStatus.OK)
