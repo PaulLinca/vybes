@@ -11,30 +11,23 @@ import com.vybes.service.spotify.model.search.artist.SearchArtistResponse;
 import com.vybes.service.spotify.model.search.track.SearchTrackItem;
 import com.vybes.service.spotify.model.search.track.SearchTrackResponse;
 
-import jakarta.annotation.PostConstruct;
-
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ClientRequest;
-import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.ExchangeFunction;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriBuilder;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import reactor.core.publisher.Mono;
-
-import java.net.URI;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 @RequiredArgsConstructor
@@ -42,138 +35,124 @@ public class SpotifyClient {
 
     private static final String BASE_URL = "https://api.spotify.com/v1";
     private static final String TOKEN_URL = "https://accounts.spotify.com/api/token";
-    private final WebClient.Builder webClientBuilder;
-    private final AtomicReference<String> tokenRef = new AtomicReference<>();
+
     @Value("${spotify.http.token.client-id}")
     private String clientId;
+
     @Value("${spotify.http.token.client-secret}")
     private String clientSecret;
-    private WebClient spotifyWebClient;
 
-    @PostConstruct
-    public void initialize() {
-        refreshAccessToken();
-        this.spotifyWebClient = createBaseWebClient();
-    }
-
-    private WebClient createBaseWebClient() {
-        return webClientBuilder
-                .baseUrl(BASE_URL)
-                .filter(this::tokenFilter)
-                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-                .build();
-    }
-
-    private Mono<ClientResponse> tokenFilter(ClientRequest request, ExchangeFunction next) {
-        ClientRequest authorizedRequest = ClientRequest.from(request)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenRef.get())
-                .build();
-
-        return next.exchange(authorizedRequest)
-                .flatMap(response -> {
-                    if (response.statusCode() == HttpStatus.UNAUTHORIZED) {
-                        return Mono.fromCallable(() -> {
-                                    refreshAccessToken();
-                                    return true;
-                                })
-                                .then(Mono.defer(() -> {
-                                    ClientRequest newRequest = ClientRequest.from(request)
-                                            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenRef.get())
-                                            .build();
-                                    return next.exchange(newRequest);
-                                }));
-                    }
-                    return Mono.just(response);
-                });
-    }
+    private String token;
 
     public void refreshAccessToken() {
-        AuthorizationTokenResponse tokenResponse = getToken();
-        tokenRef.set(tokenResponse.getAccessToken());
+        token = getToken().getAccessToken();
     }
 
     public AuthorizationTokenResponse getToken() {
-        WebClient webClient = webClientBuilder.build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("grant_type", "client_credentials");
-        formData.add("client_id", clientId);
-        formData.add("client_secret", clientSecret);
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("grant_type", "client_credentials");
+        body.add("client_id", clientId);
+        body.add("client_secret", clientSecret);
 
-        return webClient
-                .post()
-                .uri(TOKEN_URL)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(BodyInserters.fromFormData(formData))
-                .retrieve()
-                .bodyToMono(AuthorizationTokenResponse.class)
-                .block();
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<AuthorizationTokenResponse> response =
+                restTemplate.exchange(
+                        TOKEN_URL, HttpMethod.POST, entity, AuthorizationTokenResponse.class);
+
+        return response.getBody();
     }
 
     public List<SearchTrackItem> searchTrack(String searchString) {
-        return spotifyWebClient
-                .get()
-                .uri(uriBuilder -> buildSearchUri(uriBuilder, searchString, "track"))
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<SearchTrackResponse>() {})
-                .map(SearchTrackResponse::getSearchTrackItems)
-                .block();
+        ResponseEntity<SearchTrackResponse> result =
+                new RestTemplate()
+                        .exchange(
+                                buildSearchUri(searchString, "track"),
+                                HttpMethod.GET,
+                                buildHttpEntity(),
+                                new ParameterizedTypeReference<>() {});
+
+        return result.getBody().getSearchTrackItems();
     }
 
     public List<SearchArtistItem> searchArtist(String searchString) {
-        return spotifyWebClient
-                .get()
-                .uri(uriBuilder -> buildSearchUri(uriBuilder, searchString, "artist"))
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<SearchArtistResponse>() {})
-                .map(SearchArtistResponse::getSearchArtistItems)
-                .block();
+        ResponseEntity<SearchArtistResponse> result =
+                new RestTemplate()
+                        .exchange(
+                                buildSearchUri(searchString, "artist"),
+                                HttpMethod.GET,
+                                buildHttpEntity(),
+                                new ParameterizedTypeReference<>() {});
+
+        return result.getBody().getSearchArtistItems();
     }
 
     public List<SearchAlbumItem> searchAlbum(String searchString) {
-        return spotifyWebClient
-                .get()
-                .uri(uriBuilder -> buildSearchUri(uriBuilder, searchString, "album"))
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<SearchAlbumResponse>() {})
-                .map(SearchAlbumResponse::getSearchAlbumItems)
-                .block();
+        ResponseEntity<SearchAlbumResponse> result =
+                new RestTemplate()
+                        .exchange(
+                                buildSearchUri(searchString, "album"),
+                                HttpMethod.GET,
+                                buildHttpEntity(),
+                                new ParameterizedTypeReference<>() {});
+
+        return result.getBody().getSearchAlbumItems();
     }
 
     public SpotifyTrack getTrack(String id) {
-        return spotifyWebClient
-                .get()
-                .uri("/tracks/{id}", id)
-                .retrieve()
-                .bodyToMono(SpotifyTrack.class)
-                .block();
+        ResponseEntity<SpotifyTrack> result =
+                new RestTemplate()
+                        .exchange(
+                                BASE_URL + "/tracks/" + id,
+                                HttpMethod.GET,
+                                buildHttpEntity(),
+                                new ParameterizedTypeReference<>() {});
+
+        return result.getBody();
     }
 
     public SpotifyAlbum getAlbum(String id) {
-        return spotifyWebClient
-                .get()
-                .uri("/albums/{id}", id)
-                .retrieve()
-                .bodyToMono(SpotifyAlbum.class)
-                .block();
+        ResponseEntity<SpotifyAlbum> result =
+                new RestTemplate()
+                        .exchange(
+                                BASE_URL + "/albums/" + id,
+                                HttpMethod.GET,
+                                buildHttpEntity(),
+                                new ParameterizedTypeReference<>() {});
+
+        return result.getBody();
     }
 
     public SpotifyArtist getArtist(String id) {
-        return spotifyWebClient
-                .get()
-                .uri("/artists/{id}", id)
-                .retrieve()
-                .bodyToMono(SpotifyArtist.class)
-                .block();
+        ResponseEntity<SpotifyArtist> result =
+                new RestTemplate()
+                        .exchange(
+                                BASE_URL + "/artists/" + id,
+                                HttpMethod.GET,
+                                buildHttpEntity(),
+                                new ParameterizedTypeReference<>() {});
+
+        return result.getBody();
     }
 
-    private URI buildSearchUri(UriBuilder uriBuilder, String searchString, String type) {
-        return uriBuilder
-                .path("/search")
+    private String buildSearchUri(String searchString, String type) {
+        return UriComponentsBuilder.fromHttpUrl(BASE_URL + "/search")
                 .queryParam("type", type)
                 .queryParam("limit", "10")
                 .queryParam("market", "US")
-                .queryParam("q", searchString)
-                .build();
+                .queryParam("query", searchString)
+                .encode()
+                .toUriString();
+    }
+
+    private HttpEntity<String> buildHttpEntity() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setBearerAuth(token);
+
+        return new HttpEntity<>(null, headers);
     }
 }
