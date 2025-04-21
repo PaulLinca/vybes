@@ -89,7 +89,7 @@ public class AuthenticationService {
         String username = tokenService.extractUsername(refreshToken);
         VybesUser user =
                 userRepository
-                        .findByUsername(username)
+                        .findByEmail(username)
                         .orElseThrow(
                                 () ->
                                         new UsernameNotFoundException(

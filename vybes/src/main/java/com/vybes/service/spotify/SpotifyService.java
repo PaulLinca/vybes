@@ -1,11 +1,11 @@
 package com.vybes.service.spotify;
 
+import com.vybes.dto.AlbumDTO;
+import com.vybes.dto.ArtistDTO;
 import com.vybes.service.spotify.client.SpotifyClient;
 import com.vybes.service.spotify.model.entity.SpotifyAlbum;
 import com.vybes.service.spotify.model.entity.SpotifyArtist;
 import com.vybes.service.spotify.model.entity.SpotifyTrack;
-import com.vybes.service.spotify.model.search.album.SearchAlbumItem;
-import com.vybes.service.spotify.model.search.artist.SearchArtistItem;
 import com.vybes.service.spotify.model.search.track.SearchTrackItem;
 
 import lombok.RequiredArgsConstructor;
@@ -30,18 +30,34 @@ public class SpotifyService {
         }
     }
 
-    public List<SearchArtistItem> searchArtist(String searchQuery) {
+    public List<ArtistDTO> searchArtist(String searchQuery) {
         try {
-            return spotifyClient.searchArtist(searchQuery);
+            return spotifyClient.searchArtist(searchQuery).stream()
+                    .map(
+                            a ->
+                                    ArtistDTO.builder()
+                                            .spotifyId(a.getId())
+                                            .name(a.getName())
+                                            .imageUrl(a.getImageUrl())
+                                            .build())
+                    .toList();
         } catch (HttpClientErrorException.Unauthorized e) {
             spotifyClient.refreshAccessToken();
             return searchArtist(searchQuery);
         }
     }
 
-    public List<SearchAlbumItem> searchAlbum(String searchQuery) {
+    public List<AlbumDTO> searchAlbum(String searchQuery) {
         try {
-            return spotifyClient.searchAlbum(searchQuery);
+            return spotifyClient.searchAlbum(searchQuery).stream()
+                    .map(
+                            a ->
+                                    AlbumDTO.builder()
+                                            .spotifyId(a.getId())
+                                            .name(a.getName())
+                                            .imageUrl(a.getImageUrl())
+                                            .build())
+                    .toList();
         } catch (HttpClientErrorException.Unauthorized e) {
             spotifyClient.refreshAccessToken();
             return searchAlbum(searchQuery);
