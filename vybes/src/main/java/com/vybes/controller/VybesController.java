@@ -2,6 +2,7 @@ package com.vybes.controller;
 
 import com.vybes.dto.CommentDTO;
 import com.vybes.dto.LikeDTO;
+import com.vybes.dto.PageResponse;
 import com.vybes.dto.VybeDTO;
 import com.vybes.dto.mapper.CommentMapper;
 import com.vybes.dto.mapper.LikeMapper;
@@ -20,6 +21,7 @@ import com.vybes.service.vybe.entity.Vybe;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,6 +52,40 @@ public class VybesController {
     private final VybeMapper vybeMapper;
     private final CommentMapper commentMapper;
     private final LikeMapper likeMapper;
+
+    /**
+     * Get all vybes with pagination support
+     *
+     * @param page Page number (zero-based)
+     * @param size Number of items per page
+     * @param sort Field to sort by (default: createdAt)
+     * @param direction Sort direction (ASC or DESC, default: DESC)
+     * @return List of VybeDTOs for the requested page
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(produces = "application/json; charset=UTF-8")
+    public ResponseEntity<PageResponse<VybeDTO>> getVybesPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sort,
+            @RequestParam(defaultValue = "DESC") String direction) {
+
+        Page<Vybe> vybesPage = vybeService.getVybesPaginated(page, size, sort, direction);
+
+        List<VybeDTO> vybesDTOs =
+                vybesPage.getContent().stream().map(vybeMapper::transform).toList();
+
+        PageResponse<VybeDTO> response =
+                new PageResponse<>(
+                        vybesDTOs,
+                        vybesPage.getNumber(),
+                        vybesPage.getSize(),
+                        vybesPage.getTotalElements(),
+                        vybesPage.getTotalPages(),
+                        vybesPage.isLast());
+
+        return ResponseEntity.ok(response);
+    }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/findAll", produces = "application/json; charset=UTF-8")

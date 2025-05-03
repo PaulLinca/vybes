@@ -11,6 +11,10 @@ import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +31,27 @@ public class VybeService {
         vybeRepository.save(vybe);
         return vybe;
     }
+
+    @Transactional
+    public Page<Vybe> getVybesPaginated(int page, int size, String sortBy, String direction) {
+        if (page < 0) page = 0;
+        if (size < 1) size = 10;
+        if (size > 50) size = 50;
+
+        if (sortBy == null || sortBy.isEmpty()) {
+            sortBy = "postedDate";
+        }
+
+        Sort.Direction sortDirection = Sort.Direction.DESC;
+        if (direction != null && direction.equalsIgnoreCase("ASC")) {
+            sortDirection = Sort.Direction.ASC;
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+
+        return vybeRepository.findAll(pageable);
+    }
+
 
     @Transactional
     public List<Vybe> getAllVybes() {
