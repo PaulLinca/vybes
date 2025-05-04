@@ -5,10 +5,14 @@ import com.vybes.dto.VybesUserResponseDTO;
 import com.vybes.dto.request.AuthRequestDTO;
 import com.vybes.service.auth.AuthenticationService;
 
+import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,21 +31,49 @@ public class AuthenticationController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/register")
-    public VybesUserResponseDTO registerUser(@RequestBody AuthRequestDTO authRequestDTO) {
-        return authenticationService.registerUser(
-                authRequestDTO.getEmail(), authRequestDTO.getPassword());
+    public ResponseEntity<VybesUserResponseDTO> registerUser(
+            @Valid @RequestBody AuthRequestDTO authRequestDTO) {
+
+        VybesUserResponseDTO user =
+                authenticationService.registerUser(
+                        authRequestDTO.getEmail(), authRequestDTO.getPassword());
+
+        log.info("User registered successfully: {}", authRequestDTO.getEmail());
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/login")
-    public LoginResponseDTO loginUser(@RequestBody AuthRequestDTO authRequestDTO) {
-        return authenticationService.loginUser(
-                authRequestDTO.getEmail(), authRequestDTO.getPassword());
+    public ResponseEntity<LoginResponseDTO> loginUser(
+            @Valid @RequestBody AuthRequestDTO authRequestDTO) {
+        try {
+            LoginResponseDTO response =
+                    authenticationService.loginUser(
+                            authRequestDTO.getEmail(), authRequestDTO.getPassword());
+
+            log.info("User logged in successfully: {}", authRequestDTO.getEmail());
+            return ResponseEntity.ok(response);
+        } catch (BadCredentialsException e) {
+            log.warn("Failed login attempt for email: {}", authRequestDTO.getEmail());
+            throw e;
+        }
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/refresh")
-    public LoginResponseDTO refreshToken(@RequestHeader("Authorization") String refreshToken) {
-        return authenticationService.refreshToken(refreshToken);
+    public ResponseEntity<LoginResponseDTO> refreshToken(
+            @RequestHeader("Authorization") String refreshToken) {
+
+        if (refreshToken.startsWith("Bearer ")) {
+            refreshToken = refreshToken.substring(7);
+        }
+
+        try {
+            LoginResponseDTO response = authenticationService.refreshToken(refreshToken);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.warn("Token refresh failed: {}", e.getMessage());
+            throw e;
+        }
     }
 }

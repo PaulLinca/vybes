@@ -17,7 +17,6 @@ import java.util.List;
 public class SearchArtistResponseDeserializer extends JsonDeserializer<SearchArtistResponse> {
 
     private static final String NAME_KEY = "name";
-    private static final String ALBUM_KEY = "album";
 
     @Override
     public SearchArtistResponse deserialize(

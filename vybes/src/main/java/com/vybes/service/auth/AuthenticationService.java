@@ -8,6 +8,8 @@ import com.vybes.service.user.model.VybesUser;
 import com.vybes.service.user.repository.RoleRepository;
 import com.vybes.service.user.repository.UserRepository;
 
+import io.micrometer.common.util.StringUtils;
+
 import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
@@ -27,7 +29,6 @@ import java.util.Set;
 @Transactional
 @RequiredArgsConstructor
 public class AuthenticationService {
-
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -35,12 +36,22 @@ public class AuthenticationService {
     private final TokenService tokenService;
 
     public VybesUserResponseDTO registerUser(String email, String password) {
+        if (StringUtils.isBlank(email) || StringUtils.isBlank(password)) {
+            throw new BadRequestException("Email and password are required");
+        }
+
         if (userRepository.findByEmail(email).isPresent()) {
-            throw new EmailAlreadyUsedException("Email address already used.");
+            throw new EmailAlreadyUsedException("Email address already in use");
         }
 
         String encodedPassword = passwordEncoder.encode(password);
-        Role role = roleRepository.findByAuthority("USER").orElseThrow();
+        Role role =
+                roleRepository
+                        .findByAuthority("USER")
+                        .orElseThrow(
+                                () ->
+                                        new RuntimeException(
+                                                "Required USER role not found in database"));
 
         VybesUser newUser =
                 VybesUser.builder()
@@ -57,56 +68,71 @@ public class AuthenticationService {
     }
 
     public LoginResponseDTO loginUser(String email, String password) {
+        VybesUser user = getUserFromEmail(email);
+
         try {
             Authentication auth =
                     authenticationManager.authenticate(
                             new UsernamePasswordAuthenticationToken(email, password));
+
+            userRepository.save(user);
+
             String jwtToken = tokenService.generateJwt(auth);
             String refreshToken = tokenService.generateRefreshToken(email);
 
-            VybesUser user =
-                    userRepository
-                            .findByEmail(email)
-                            .orElseThrow(
-                                    () ->
-                                            new UsernameNotFoundException(
-                                                    "Can't find user: " + email));
-
-            return LoginResponseDTO.builder()
-                    .username(user.getUsername())
-                    .email(user.getEmail())
-                    .userId(user.getUserId())
-                    .jwt(jwtToken)
-                    .refreshToken(refreshToken)
-                    .requiresUsernameSetup(user.getUsername() == null)
-                    .build();
+            return buildLoginResponse(user, jwtToken, refreshToken);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException(e.getMessage());
+            throw new BadCredentialsException("Invalid credentials");
         }
     }
 
     public LoginResponseDTO refreshToken(String refreshToken) {
-        String username = tokenService.extractUsername(refreshToken);
-        VybesUser user =
-                userRepository
-                        .findByEmail(username)
-                        .orElseThrow(
-                                () ->
-                                        new UsernameNotFoundException(
-                                                "Can't find user: " + username));
+        try {
+            if (!tokenService.validateRefreshToken(refreshToken)) {
+                throw new InvalidTokenException("Refresh token is invalid or expired");
+            }
 
-        String newJwt =
-                tokenService.generateJwt(
-                        new UsernamePasswordAuthenticationToken(
-                                user.getEmail(), null, user.getAuthorities()));
-        String newRefreshToken = tokenService.generateRefreshToken(username);
+            String email = tokenService.extractUsername(refreshToken);
+            VybesUser user = getUserFromEmail(email);
 
+            Authentication auth =
+                    new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+
+            String newJwt = tokenService.generateJwt(auth);
+            String newRefreshToken = tokenService.generateRefreshToken(email);
+
+            return buildLoginResponse(user, newJwt, newRefreshToken);
+        } catch (Exception e) {
+            throw new InvalidTokenException("Failed to refresh token: " + e.getMessage());
+        }
+    }
+
+    private VybesUser getUserFromEmail(String email) {
+        return userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
+    }
+
+    private LoginResponseDTO buildLoginResponse(VybesUser user, String jwt, String refreshToken) {
         return LoginResponseDTO.builder()
                 .username(user.getUsername())
+                .email(user.getEmail())
                 .userId(user.getUserId())
-                .jwt(newJwt)
-                .refreshToken(newRefreshToken)
+                .jwt(jwt)
+                .refreshToken(refreshToken)
                 .requiresUsernameSetup(user.getUsername() == null)
                 .build();
+    }
+
+    public static class InvalidTokenException extends RuntimeException {
+        public InvalidTokenException(String message) {
+            super(message);
+        }
+    }
+
+    public static class BadRequestException extends RuntimeException {
+        public BadRequestException(String message) {
+            super(message);
+        }
     }
 }

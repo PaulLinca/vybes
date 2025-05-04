@@ -4,6 +4,7 @@ import com.vybes.service.user.model.VybesUser;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -25,11 +26,20 @@ public class TokenService {
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder jwtDecoder;
 
+    @Value("${app.jwt.issuer}")
+    private String issuer;
+
+    @Value("${app.jwt.access-token-expiration-minutes:15}")
+    private int accessTokenExpirationMinutes;
+
+    @Value("${app.jwt.refresh-token-expiration-days:14}")
+    private int refreshTokenExpirationDays;
+
     public String generateJwt(Authentication auth) {
         Instant now = Instant.now();
 
         VybesUser user = (VybesUser) auth.getPrincipal();
-        String userEmail = user.getEmail(); // Get email explicitly
+        String userEmail = user.getEmail();
 
         String scope =
                 auth.getAuthorities().stream()
@@ -38,11 +48,13 @@ public class TokenService {
 
         JwtClaimsSet claims =
                 JwtClaimsSet.builder()
-                        .issuer("self")
+                        .issuer(issuer)
                         .issuedAt(now)
-                        .expiresAt(now.plus(15, ChronoUnit.MINUTES))
-                        .subject(userEmail) // Use email as subject
+                        .expiresAt(now.plus(accessTokenExpirationMinutes, ChronoUnit.MINUTES))
+                        .subject(userEmail)
                         .claim("roles", scope)
+                        .claim("userId", user.getUserId())
+                        .claim("tokenType", "access")
                         .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
@@ -53,22 +65,14 @@ public class TokenService {
 
         JwtClaimsSet claims =
                 JwtClaimsSet.builder()
-                        .issuer("self")
+                        .issuer(issuer)
                         .issuedAt(now)
-                        .expiresAt(now.plus(14, ChronoUnit.DAYS)) // 14 days for refresh token
+                        .expiresAt(now.plus(refreshTokenExpirationDays, ChronoUnit.DAYS))
                         .subject(email)
+                        .claim("tokenType", "refresh")
                         .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-    }
-
-    public boolean validateToken(String token) {
-        try {
-            jwtDecoder.decode(token);
-            return true;
-        } catch (JwtException e) {
-            return false;
-        }
     }
 
     public String extractUsername(String token) {
@@ -77,6 +81,17 @@ public class TokenService {
     }
 
     public boolean validateRefreshToken(String refreshToken) {
-        return validateToken(refreshToken);
+        try {
+            Jwt jwt = jwtDecoder.decode(refreshToken);
+
+            String tokenType = jwt.getClaimAsString("tokenType");
+            if (!"refresh".equals(tokenType)) {
+                return false;
+            }
+
+            return !jwt.getExpiresAt().isBefore(Instant.now());
+        } catch (JwtException e) {
+            return false;
+        }
     }
 }
