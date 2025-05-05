@@ -1,5 +1,6 @@
 package com.vybes.dto;
 
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,5 +10,5 @@ public class AlbumDTO {
     private String spotifyId;
     private String name;
     private String imageUrl;
-    private String artist;
+    private List<ArtistDTO> artists;
 }

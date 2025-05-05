@@ -4,44 +4,57 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.vybes.external.spotify.model.entity.SpotifyAlbum;
+import com.vybes.external.spotify.model.entity.SpotifyArtist;
 import com.vybes.external.spotify.model.search.album.SearchAlbumResponse;
-import com.vybes.external.spotify.model.search.album.SearchAlbumResult;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchAlbumResponseDeserializer extends JsonDeserializer<SearchAlbumResponse> {
 
-    private static final String NAME_KEY = "name";
-
     @Override
-    public SearchAlbumResponse deserialize(
-            final JsonParser jsonParser, final DeserializationContext deserializationContext)
+    public SearchAlbumResponse deserialize(JsonParser jsonParser, DeserializationContext ctxt)
             throws IOException {
+        JsonNode rootNode = jsonParser.getCodec().readTree(jsonParser);
+        JsonNode albumsNode = rootNode.get("albums");
+        JsonNode itemsNode = albumsNode.get("items");
 
-        JsonNode valueAsJson = jsonParser.getCodec().readTree(jsonParser);
-        JsonNodeFactory factory = JsonNodeFactory.instance;
-        ArrayNode tracks = JsonNodeFactory.instance.arrayNode();
+        List<SpotifyAlbum> albums = new ArrayList<>();
 
-        for (JsonNode trackNode : valueAsJson.get("albums").get("items")) {
-            tracks.add(getAlbumNode(trackNode, factory.objectNode()));
+        for (JsonNode albumNode : itemsNode) {
+            SpotifyAlbum album = new SpotifyAlbum();
+
+            album.setId(albumNode.get("id").asText());
+            album.setName(albumNode.get("name").asText());
+            album.setSpotifyUrl(albumNode.get("external_urls").get("spotify").asText());
+
+            if (albumNode.has("images") && albumNode.get("images").size() > 0) {
+                album.setImageUrl(albumNode.get("images").get(0).get("url").asText());
+            }
+
+            album.setReleaseDate(albumNode.get("release_date").asText());
+
+            List<SpotifyArtist> artists = new ArrayList<>();
+            JsonNode artistsNode = albumNode.get("artists");
+
+            for (JsonNode artistNode : artistsNode) {
+                SpotifyArtist artist = new SpotifyArtist();
+                artist.setId(artistNode.get("id").asText());
+                artist.setName(artistNode.get("name").asText());
+                artist.setSpotifyUrl(artistNode.get("external_urls").get("spotify").asText());
+
+                artists.add(artist);
+            }
+
+            album.setArtists(artists);
+            albums.add(album);
         }
 
-        List<SearchAlbumResult> searchAlbumResults =
-                Arrays.asList(jsonParser.getCodec().treeToValue(tracks, SearchAlbumResult[].class));
-
-        return SearchAlbumResponse.builder().searchAlbumItems(searchAlbumResults).build();
-    }
-
-    private ObjectNode getAlbumNode(JsonNode trackNode, ObjectNode item) {
-        item.putIfAbsent("id", trackNode.get("id"));
-        item.putIfAbsent(NAME_KEY, trackNode.get(NAME_KEY));
-        item.putIfAbsent("imageUrl", trackNode.get("images").get(0).get("url"));
-
-        return item;
+        SearchAlbumResponse response =
+                SearchAlbumResponse.builder().searchAlbumItems(albums).build();
+        System.out.println(response);
+        return response;
     }
 }

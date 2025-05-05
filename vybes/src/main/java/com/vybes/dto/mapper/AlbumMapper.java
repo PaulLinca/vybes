@@ -1,20 +1,18 @@
 package com.vybes.dto.mapper;
 
 import com.vybes.dto.AlbumDTO;
+import com.vybes.external.spotify.model.entity.SpotifyAlbum;
 import com.vybes.model.Album;
-import com.vybes.model.Artist;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
-@Mapper
+@Mapper(
+        componentModel = "spring",
+        uses = {ArtistMapper.class})
 public interface AlbumMapper {
-    @Mapping(source = "album.artist", target = "artist", qualifiedByName = "mapArtist")
     AlbumDTO transform(Album album);
 
-    @Named("mapArtist")
-    default String mapArtist(Artist artist) {
-        return artist != null ? artist.getName() : null;
-    }
+    @Mapping(target = "spotifyId", source = "id")
+    AlbumDTO transform(SpotifyAlbum album);
 }

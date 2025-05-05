@@ -2,6 +2,7 @@ package com.vybes.external.spotify;
 
 import com.vybes.dto.AlbumDTO;
 import com.vybes.dto.ArtistDTO;
+import com.vybes.dto.mapper.AlbumMapper;
 import com.vybes.external.spotify.model.entity.SpotifyAlbum;
 import com.vybes.external.spotify.model.entity.SpotifyArtist;
 import com.vybes.external.spotify.model.entity.SpotifyTrack;
@@ -20,6 +21,7 @@ import java.util.List;
 public class SpotifyService {
 
     private final SpotifyClient spotifyClient;
+    private final AlbumMapper albumMapper;
 
     public List<SearchTrackResult> searchTrack(String searchQuery) {
         try {
@@ -50,13 +52,7 @@ public class SpotifyService {
     public List<AlbumDTO> searchAlbum(String searchQuery) {
         try {
             return spotifyClient.searchAlbum(searchQuery).stream()
-                    .map(
-                            a ->
-                                    AlbumDTO.builder()
-                                            .spotifyId(a.getId())
-                                            .name(a.getName())
-                                            .imageUrl(a.getImageUrl())
-                                            .build())
+                    .map(albumMapper::transform)
                     .toList();
         } catch (HttpClientErrorException.Unauthorized e) {
             spotifyClient.refreshAccessToken();
