@@ -1,5 +1,9 @@
 package com.vybes.external.spotify.model.deserializer;
 
+import static com.vybes.external.spotify.model.deserializer.DeserializerHelper.getAlbum;
+import static com.vybes.external.spotify.model.deserializer.DeserializerHelper.getArtist;
+import static com.vybes.external.spotify.model.deserializer.DeserializerHelper.getArtists;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -21,33 +25,9 @@ public class SearchAlbumResponseDeserializer extends JsonDeserializer<SearchAlbu
         JsonNode itemsNode = rootNode.get("albums").get("items");
 
         List<SpotifyAlbum> albums = new ArrayList<>();
-
         for (JsonNode albumNode : itemsNode) {
-            SpotifyAlbum album = new SpotifyAlbum();
-
-            album.setId(albumNode.get("id").asText());
-            album.setName(albumNode.get("name").asText());
-            album.setSpotifyUrl(albumNode.get("external_urls").get("spotify").asText());
-
-            if (albumNode.has("images") && albumNode.get("images").size() > 0) {
-                album.setImageUrl(albumNode.get("images").get(0).get("url").asText());
-            }
-
-            album.setReleaseDate(albumNode.get("release_date").asText());
-
-            List<SpotifyArtist> artists = new ArrayList<>();
-            JsonNode artistsNode = albumNode.get("artists");
-
-            for (JsonNode artistNode : artistsNode) {
-                SpotifyArtist artist = new SpotifyArtist();
-                artist.setId(artistNode.get("id").asText());
-                artist.setName(artistNode.get("name").asText());
-                artist.setSpotifyUrl(artistNode.get("external_urls").get("spotify").asText());
-
-                artists.add(artist);
-            }
-
-            album.setArtists(artists);
+            SpotifyAlbum album = getAlbum(albumNode);
+            album.setArtists(getArtists(albumNode.get("artists")));
             albums.add(album);
         }
 

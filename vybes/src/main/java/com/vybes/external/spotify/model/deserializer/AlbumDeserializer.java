@@ -1,15 +1,15 @@
 package com.vybes.external.spotify.model.deserializer;
 
+import static com.vybes.external.spotify.model.deserializer.DeserializerHelper.getAlbum;
+import static com.vybes.external.spotify.model.deserializer.DeserializerHelper.getArtists;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vybes.external.spotify.model.entity.SpotifyAlbum;
-import com.vybes.external.spotify.model.entity.SpotifyArtist;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AlbumDeserializer extends JsonDeserializer<SpotifyAlbum> {
 
@@ -20,30 +20,9 @@ public class AlbumDeserializer extends JsonDeserializer<SpotifyAlbum> {
 
         JsonNode valueAsJson = jsonParser.getCodec().readTree(jsonParser);
 
-        return SpotifyAlbum.builder()
-                .id(valueAsJson.get("id").textValue())
-                .name(valueAsJson.get("name").textValue())
-                .spotifyUrl(valueAsJson.get("external_urls").get("spotify").textValue())
-                .imageUrl(valueAsJson.get("images").get(0).get("url").textValue())
-                .releaseDate(valueAsJson.get("release_date").textValue())
-                .artists(getArtists(valueAsJson.withArray("artists")))
-                .build();
-    }
+        SpotifyAlbum album = getAlbum(valueAsJson);
+        album.setArtists(getArtists(valueAsJson.withArray("artists")));
 
-    private List<SpotifyArtist> getArtists(JsonNode artistsArrayNode) {
-        List<SpotifyArtist> artists = new ArrayList<>();
-
-        for (JsonNode artistNode : artistsArrayNode) {
-            SpotifyArtist artist =
-                    SpotifyArtist.builder()
-                            .id(artistNode.get("id").asText())
-                            .name(artistNode.get("name").asText())
-                            .spotifyUrl(artistNode.get("external_urls").get("spotify").asText())
-                            .build();
-
-            artists.add(artist);
-        }
-
-        return artists;
+        return album;
     }
 }
