@@ -52,9 +52,6 @@ public class SearchAlbumResponseDeserializer extends JsonDeserializer<SearchAlbu
             albums.add(album);
         }
 
-        SearchAlbumResponse response =
-                SearchAlbumResponse.builder().searchAlbumItems(albums).build();
-        System.out.println(response);
-        return response;
+        return SearchAlbumResponse.builder().searchAlbumItems(albums).build();
     }
 }

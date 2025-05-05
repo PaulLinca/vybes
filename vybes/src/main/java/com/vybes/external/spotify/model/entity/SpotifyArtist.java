@@ -16,6 +16,5 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @ToString(callSuper = true)
 public class SpotifyArtist extends SpotifyEntity {
-    private String spotifyUrl;
     private String imageUrl;
 }

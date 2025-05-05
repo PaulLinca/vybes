@@ -4,45 +4,41 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vybes.external.spotify.model.search.artist.SearchArtistResult;
+import com.vybes.external.spotify.model.entity.SpotifyArtist;
 import com.vybes.external.spotify.model.search.artist.SearchArtistResponse;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchArtistResponseDeserializer extends JsonDeserializer<SearchArtistResponse> {
-
-    private static final String NAME_KEY = "name";
 
     @Override
     public SearchArtistResponse deserialize(
             final JsonParser jsonParser, final DeserializationContext deserializationContext)
             throws IOException {
+        JsonNode rootNode = jsonParser.getCodec().readTree(jsonParser);
+        JsonNode artistsNode = rootNode.get("artists");
+        JsonNode itemsNode = artistsNode.get("items");
 
-        JsonNode valueAsJson = jsonParser.getCodec().readTree(jsonParser);
-        JsonNodeFactory factory = JsonNodeFactory.instance;
-        ArrayNode tracks = JsonNodeFactory.instance.arrayNode();
+        List<SpotifyArtist> artists = new ArrayList<>();
 
-        for (JsonNode trackNode : valueAsJson.get("artists").get("items")) {
-            tracks.add(getArtistNode(trackNode, factory.objectNode()));
+        for (JsonNode artistNode : itemsNode) {
+            SpotifyArtist artist = new SpotifyArtist();
+
+            artist.setId(artistNode.get("id").asText());
+            artist.setName(artistNode.get("name").asText());
+            artist.setSpotifyUrl(artistNode.get("external_urls").get("spotify").asText());
+
+            if (artistNode.has("images") && !artistNode.get("images").isEmpty()) {
+                artist.setImageUrl(artistNode.get("images").get(0).get("url").asText());
+            }
+
+            artists.add(artist);
         }
 
-        List<SearchArtistResult> searchTrackItems =
-                Arrays.asList(
-                        jsonParser.getCodec().treeToValue(tracks, SearchArtistResult[].class));
-
-        return SearchArtistResponse.builder().searchArtistItems(searchTrackItems).build();
-    }
-
-    private ObjectNode getArtistNode(JsonNode trackNode, ObjectNode item) {
-        item.putIfAbsent("id", trackNode.get("id"));
-        item.putIfAbsent(NAME_KEY, trackNode.get(NAME_KEY));
-        item.putIfAbsent("imageUrl", trackNode.get("images").get(0).get("url"));
-
-        return item;
+        SearchArtistResponse response = SearchArtistResponse.builder().searchArtistItems(artists).build();
+        System.out.println(response);
+        return response;
     }
 }
