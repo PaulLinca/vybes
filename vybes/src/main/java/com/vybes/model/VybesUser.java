@@ -56,8 +56,7 @@ public class VybesUser implements UserDetails {
     @JoinTable(
             name = "user_favorite_artists",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "artist_id"))
     @Size(max = 3, message = "You can only have up to 3 favorite artists")
     private Set<Artist> favoriteArtists = new HashSet<>();
 
@@ -65,8 +64,7 @@ public class VybesUser implements UserDetails {
     @JoinTable(
             name = "user_favorite_albums",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "album_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "album_id"))
     @Size(max = 3, message = "You can only have up to 3 favorite albums")
     private Set<Album> favoriteAlbums = new HashSet<>();
 

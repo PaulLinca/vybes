@@ -6,10 +6,10 @@ import com.vybes.external.spotify.SpotifyService;
 import com.vybes.external.spotify.model.entity.SpotifyAlbum;
 import com.vybes.external.spotify.model.entity.SpotifyArtist;
 import com.vybes.model.Album;
+import com.vybes.model.Artist;
 import com.vybes.model.VybesUser;
 import com.vybes.repository.AlbumRepository;
 import com.vybes.repository.ArtistRepository;
-import com.vybes.model.Artist;
 
 import jakarta.transaction.Transactional;
 

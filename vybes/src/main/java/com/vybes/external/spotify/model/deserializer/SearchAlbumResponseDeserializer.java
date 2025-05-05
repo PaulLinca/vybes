@@ -7,8 +7,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vybes.external.spotify.model.search.album.SearchAlbumResult;
 import com.vybes.external.spotify.model.search.album.SearchAlbumResponse;
+import com.vybes.external.spotify.model.search.album.SearchAlbumResult;
 
 import java.io.IOException;
 import java.util.Arrays;

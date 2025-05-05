@@ -1,8 +1,8 @@
 package com.vybes.service.user;
 
-import com.vybes.dto.response.VybesUserResponseDTO;
 import com.vybes.dto.mapper.AlbumMapper;
 import com.vybes.dto.mapper.ArtistMapper;
+import com.vybes.dto.response.VybesUserResponseDTO;
 import com.vybes.exception.UserAlreadyExistsException;
 import com.vybes.model.VybesUser;
 import com.vybes.repository.UserRepository;

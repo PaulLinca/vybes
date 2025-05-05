@@ -32,7 +32,8 @@ public class SearchArtistResponseDeserializer extends JsonDeserializer<SearchArt
         }
 
         List<SearchArtistResult> searchTrackItems =
-                Arrays.asList(jsonParser.getCodec().treeToValue(tracks, SearchArtistResult[].class));
+                Arrays.asList(
+                        jsonParser.getCodec().treeToValue(tracks, SearchArtistResult[].class));
 
         return SearchArtistResponse.builder().searchArtistItems(searchTrackItems).build();
     }

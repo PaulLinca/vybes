@@ -52,7 +52,6 @@ public class VybeService {
         return vybeRepository.findAll(pageable);
     }
 
-
     @Transactional
     public List<Vybe> getAllVybes() {
         return vybeRepository.findAll();

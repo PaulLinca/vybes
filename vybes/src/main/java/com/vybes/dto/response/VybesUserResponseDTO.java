@@ -1,11 +1,12 @@
 package com.vybes.dto.response;
 
+import com.vybes.dto.AlbumDTO;
+import com.vybes.dto.ArtistDTO;
+
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.Set;
-import com.vybes.dto.AlbumDTO;
-import com.vybes.dto.ArtistDTO;
 
 @Data
 @Builder

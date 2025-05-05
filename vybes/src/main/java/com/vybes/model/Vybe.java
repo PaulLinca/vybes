@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+
 @Data
 @Builder
 @Entity
@@ -41,8 +42,7 @@ public class Vybe implements Post {
     @JoinTable(
             name = "vybe_artist",
             joinColumns = @JoinColumn(name = "vybe_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "artist_id"))
     private List<Artist> spotifyArtists;
 
     private String spotifyAlbumId;

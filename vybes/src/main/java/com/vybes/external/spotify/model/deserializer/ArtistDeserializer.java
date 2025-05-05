@@ -8,8 +8,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.vybes.external.spotify.model.entity.SpotifyArtist;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class ArtistDeserializer extends JsonDeserializer<SpotifyArtist> {

@@ -49,8 +49,7 @@ public class AlbumReview implements Post {
     @JoinTable(
             name = "album_review_artist",
             joinColumns = @JoinColumn(name = "album_review_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "artist_id"))
     private List<Artist> spotifyArtists;
 
     @JsonManagedReference
