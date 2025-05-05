@@ -1,7 +1,7 @@
 package com.vybes.dto.mapper;
 
 import com.vybes.dto.LikeDTO;
-import com.vybes.service.vybe.entity.Like;
+import com.vybes.model.Like;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

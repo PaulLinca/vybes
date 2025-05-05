@@ -7,10 +7,10 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vybes.service.spotify.model.deserializer.TrackDeserializer;
-import com.vybes.service.spotify.model.entity.SpotifyAlbum;
-import com.vybes.service.spotify.model.entity.SpotifyArtist;
-import com.vybes.service.spotify.model.entity.SpotifyTrack;
+import com.vybes.external.spotify.model.deserializer.TrackDeserializer;
+import com.vybes.external.spotify.model.entity.SpotifyAlbum;
+import com.vybes.external.spotify.model.entity.SpotifyArtist;
+import com.vybes.external.spotify.model.entity.SpotifyTrack;
 
 import lombok.SneakyThrows;
 

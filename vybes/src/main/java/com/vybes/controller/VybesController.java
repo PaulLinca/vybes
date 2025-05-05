@@ -2,22 +2,22 @@ package com.vybes.controller;
 
 import com.vybes.dto.CommentDTO;
 import com.vybes.dto.LikeDTO;
-import com.vybes.dto.PageResponse;
+import com.vybes.dto.response.PageResponse;
 import com.vybes.dto.VybeDTO;
 import com.vybes.dto.mapper.CommentMapper;
 import com.vybes.dto.mapper.LikeMapper;
 import com.vybes.dto.mapper.VybeMapper;
 import com.vybes.dto.request.CreateVybeRequestDTO;
-import com.vybes.service.spotify.SpotifyService;
-import com.vybes.service.spotify.model.entity.SpotifyTrack;
-import com.vybes.service.user.model.VybesUser;
-import com.vybes.service.user.repository.ArtistRepository;
-import com.vybes.service.user.repository.UserRepository;
-import com.vybes.service.vybe.VybeService;
-import com.vybes.service.vybe.entity.Artist;
-import com.vybes.service.vybe.entity.Comment;
-import com.vybes.service.vybe.entity.Like;
-import com.vybes.service.vybe.entity.Vybe;
+import com.vybes.external.spotify.SpotifyService;
+import com.vybes.external.spotify.model.entity.SpotifyTrack;
+import com.vybes.model.VybesUser;
+import com.vybes.repository.ArtistRepository;
+import com.vybes.repository.UserRepository;
+import com.vybes.service.post.VybeService;
+import com.vybes.model.Artist;
+import com.vybes.model.Comment;
+import com.vybes.model.Like;
+import com.vybes.model.Vybe;
 
 import lombok.RequiredArgsConstructor;
 

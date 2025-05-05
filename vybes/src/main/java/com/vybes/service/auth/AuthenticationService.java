@@ -1,12 +1,12 @@
 package com.vybes.service.auth;
 
-import com.vybes.dto.LoginResponseDTO;
-import com.vybes.dto.VybesUserResponseDTO;
+import com.vybes.dto.response.LoginResponseDTO;
+import com.vybes.dto.response.VybesUserResponseDTO;
 import com.vybes.exception.EmailAlreadyUsedException;
-import com.vybes.service.user.model.Role;
-import com.vybes.service.user.model.VybesUser;
-import com.vybes.service.user.repository.RoleRepository;
-import com.vybes.service.user.repository.UserRepository;
+import com.vybes.model.Role;
+import com.vybes.model.VybesUser;
+import com.vybes.repository.RoleRepository;
+import com.vybes.repository.UserRepository;
 
 import io.micrometer.common.util.StringUtils;
 

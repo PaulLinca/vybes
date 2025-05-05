@@ -1,15 +1,15 @@
 package com.vybes.controller;
 
 import com.vybes.dto.AlbumReviewDTO;
-import com.vybes.dto.PageResponse;
+import com.vybes.dto.response.PageResponse;
 import com.vybes.dto.mapper.AlbumReviewMapper;
 import com.vybes.dto.request.CreateAlbumReviewRequestDTO;
-import com.vybes.service.review.album.AlbumReviewService;
-import com.vybes.service.review.album.entity.AlbumReview;
-import com.vybes.service.spotify.SpotifyService;
-import com.vybes.service.spotify.model.entity.SpotifyAlbum;
-import com.vybes.service.user.repository.ArtistRepository;
-import com.vybes.service.user.repository.UserRepository;
+import com.vybes.service.post.AlbumReviewService;
+import com.vybes.model.AlbumReview;
+import com.vybes.external.spotify.SpotifyService;
+import com.vybes.external.spotify.model.entity.SpotifyAlbum;
+import com.vybes.repository.ArtistRepository;
+import com.vybes.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 

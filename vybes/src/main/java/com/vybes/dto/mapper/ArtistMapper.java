@@ -1,7 +1,7 @@
 package com.vybes.dto.mapper;
 
 import com.vybes.dto.ArtistDTO;
-import com.vybes.service.vybe.entity.Artist;
+import com.vybes.model.Artist;
 
 import org.mapstruct.Mapper;
 

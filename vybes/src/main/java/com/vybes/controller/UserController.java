@@ -2,12 +2,12 @@ package com.vybes.controller;
 
 import com.vybes.dto.request.FavoritesUpdateRequest;
 import com.vybes.dto.request.UsernameSetupRequestDTO;
-import com.vybes.dto.VybesUserResponseDTO;
+import com.vybes.dto.response.VybesUserResponseDTO;
 import com.vybes.service.user.UserFavoritesService;
 import com.vybes.service.user.UserService;
 
-import com.vybes.service.user.model.VybesUser;
-import com.vybes.service.user.repository.UserRepository;
+import com.vybes.model.VybesUser;
+import com.vybes.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

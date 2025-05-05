@@ -1,6 +1,6 @@
 package com.vybes.service.auth;
 
-import com.vybes.service.user.model.VybesUser;
+import com.vybes.model.VybesUser;
 
 import lombok.RequiredArgsConstructor;
 

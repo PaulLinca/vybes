@@ -2,14 +2,14 @@ package com.vybes.service.user;
 
 import com.vybes.dto.request.FavoritesUpdateRequest;
 import com.vybes.exception.InvalidRequestException;
-import com.vybes.service.spotify.SpotifyService;
-import com.vybes.service.spotify.model.entity.SpotifyAlbum;
-import com.vybes.service.spotify.model.entity.SpotifyArtist;
-import com.vybes.service.user.model.Album;
-import com.vybes.service.user.model.VybesUser;
-import com.vybes.service.user.repository.AlbumRepository;
-import com.vybes.service.user.repository.ArtistRepository;
-import com.vybes.service.vybe.entity.Artist;
+import com.vybes.external.spotify.SpotifyService;
+import com.vybes.external.spotify.model.entity.SpotifyAlbum;
+import com.vybes.external.spotify.model.entity.SpotifyArtist;
+import com.vybes.model.Album;
+import com.vybes.model.VybesUser;
+import com.vybes.repository.AlbumRepository;
+import com.vybes.repository.ArtistRepository;
+import com.vybes.model.Artist;
 
 import jakarta.transaction.Transactional;
 
@@ -30,7 +30,7 @@ public class UserFavoritesService {
     private final SpotifyService spotifyService;
 
     @Transactional
-    public VybesUser updateUserFavorites(VybesUser user, FavoritesUpdateRequest request) {
+    public void updateUserFavorites(VybesUser user, FavoritesUpdateRequest request) {
 
         if (request.getArtistIds() != null && request.getArtistIds().size() > 3) {
             throw new InvalidRequestException("You can only have up to 3 favorite artists");
@@ -92,7 +92,5 @@ public class UserFavoritesService {
             user.getFavoriteAlbums().clear();
             user.getFavoriteAlbums().addAll(albums);
         }
-
-        return user;
     }
 }

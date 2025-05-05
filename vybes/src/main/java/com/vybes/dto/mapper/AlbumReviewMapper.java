@@ -2,7 +2,7 @@ package com.vybes.dto.mapper;
 
 import com.vybes.dto.AlbumReviewDTO;
 import com.vybes.dto.request.CreateAlbumReviewRequestDTO;
-import com.vybes.service.review.album.entity.AlbumReview;
+import com.vybes.model.AlbumReview;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

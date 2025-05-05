@@ -2,7 +2,7 @@ package com.vybes.dto.mapper;
 
 import com.vybes.dto.VybeDTO;
 import com.vybes.dto.request.CreateVybeRequestDTO;
-import com.vybes.service.vybe.entity.Vybe;
+import com.vybes.model.Vybe;
 
 import org.mapstruct.Mapper;
 

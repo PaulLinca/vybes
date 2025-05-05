@@ -1,7 +1,7 @@
 package com.vybes.dto.mapper;
 
 import com.vybes.dto.CommentDTO;
-import com.vybes.service.vybe.entity.Comment;
+import com.vybes.model.Comment;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

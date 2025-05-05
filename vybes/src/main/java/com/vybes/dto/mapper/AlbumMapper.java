@@ -1,8 +1,8 @@
 package com.vybes.dto.mapper;
 
 import com.vybes.dto.AlbumDTO;
-import com.vybes.service.user.model.Album;
-import com.vybes.service.vybe.entity.Artist;
+import com.vybes.model.Album;
+import com.vybes.model.Artist;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
