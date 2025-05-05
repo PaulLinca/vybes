@@ -2,15 +2,13 @@ package com.vybes.dto;
 
 import lombok.Data;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @Data
 public class CommentDTO {
     private Long id;
     private String text;
-    private Long vybeId;
+    private Long postId;
     private UserDTO user;
-    private ZonedDateTime timestamp;
-    private List<LikeDTO> likes;
+    private List<CommentLikeDTO> likes;
 }

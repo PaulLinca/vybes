@@ -28,22 +28,17 @@ public class Comment {
     private String text;
 
     @ManyToOne
-    @JoinColumn(name = "vybe_id")
-    @JsonBackReference
-    private Vybe vybe;
-
-    @ManyToOne
     @JoinColumn(name = "user_id")
     private VybesUser user;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Like> likes;
-
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "album_review_id")
-    private AlbumReview albumReview;
+    @JoinColumn(name = "post_id")
+    private Post post;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CommentLike> likes;
 
     private ZonedDateTime timestamp;
 }

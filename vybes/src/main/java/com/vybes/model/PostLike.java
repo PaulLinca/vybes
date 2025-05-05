@@ -8,8 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,30 +17,17 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @Entity
-@Table(
-        name = "`like`",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"vybe_id", "user_id"})})
 @NoArgsConstructor
 @AllArgsConstructor
-public class Like {
+public class PostLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "vybe_id")
-    @JsonBackReference
-    private Vybe vybe;
-
-    @ManyToOne
-    @JoinColumn(name = "comment_id")
-    @JsonBackReference
-    private Comment comment;
-
-    @JoinColumn(name = "album_review_id")
     @JsonBackReference
     @ManyToOne
-    private AlbumReview albumReview;
+    @JoinColumn(name = "post_id")
+    private Post post;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

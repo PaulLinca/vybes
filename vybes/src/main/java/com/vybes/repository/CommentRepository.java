@@ -12,15 +12,13 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    List<Comment> findByVybeId(Long vybeId);
-
-    List<Comment> deleteByVybeIdAndUser_UserId(Long vybeId, Long userId);
+    List<Comment> findByPostId(Long vybeId);
 
     @Modifying
     @Query(
-            "DELETE FROM Comment c WHERE c.id = :commentId AND c.vybe.id = :vybeId AND c.user.userId = :userId")
-    int deleteByCommentIdAndVybeIdAndUserId(
+            "DELETE FROM Comment c WHERE c.id = :commentId AND c.post.id = :postId AND c.user.userId = :userId")
+    int deleteByCommentIdAndPostIdAndUserId(
             @Param("commentId") Long commentId,
-            @Param("vybeId") Long vybeId,
+            @Param("postId") Long postId,
             @Param("userId") Long userId);
 }

@@ -1,7 +1,9 @@
 package com.vybes.controller;
 
 import com.vybes.dto.CommentDTO;
+import com.vybes.dto.CommentLikeDTO;
 import com.vybes.dto.LikeDTO;
+import com.vybes.dto.PostDTO;
 import com.vybes.dto.VybeDTO;
 import com.vybes.dto.mapper.CommentMapper;
 import com.vybes.dto.mapper.LikeMapper;
@@ -12,12 +14,14 @@ import com.vybes.external.spotify.SpotifyService;
 import com.vybes.external.spotify.model.entity.SpotifyTrack;
 import com.vybes.model.Artist;
 import com.vybes.model.Comment;
-import com.vybes.model.Like;
+import com.vybes.model.CommentLike;
+import com.vybes.model.Post;
+import com.vybes.model.PostLike;
 import com.vybes.model.Vybe;
 import com.vybes.model.VybesUser;
 import com.vybes.repository.ArtistRepository;
 import com.vybes.repository.UserRepository;
-import com.vybes.service.post.VybeService;
+import com.vybes.service.post.PostService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -45,7 +49,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class VybesController {
 
-    private final VybeService vybeService;
+    private final PostService postService;
     private final SpotifyService spotifyService;
     private final UserRepository userRepository;
     private final ArtistRepository artistRepository;
@@ -55,18 +59,18 @@ public class VybesController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = "application/json; charset=UTF-8")
-    public ResponseEntity<PageResponse<VybeDTO>> getVybesPaginated(
+    public ResponseEntity<PageResponse<PostDTO>> getVybesPaginated(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sort,
             @RequestParam(defaultValue = "DESC") String direction) {
 
-        Page<Vybe> vybesPage = vybeService.getVybesPaginated(page, size, sort, direction);
+        Page<Post> vybesPage = postService.getPostsPaginated(page, size, sort, direction);
 
-        List<VybeDTO> vybesDTOs =
-                vybesPage.getContent().stream().map(vybeMapper::transform).toList();
+        List<PostDTO> vybesDTOs =
+                vybesPage.getContent().stream().map(vybeMapper::toPostDTO).toList();
 
-        PageResponse<VybeDTO> response =
+        PageResponse<PostDTO> response =
                 new PageResponse<>(
                         vybesDTOs,
                         vybesPage.getNumber(),
@@ -81,13 +85,17 @@ public class VybesController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/findAll", produces = "application/json; charset=UTF-8")
     public List<VybeDTO> getAllVybes() {
-        return vybeService.getAllVybes().stream().map(vybeMapper::transform).toList();
+        return postService.getAllPosts().stream()
+                .filter(Vybe.class::isInstance)
+                .map(Vybe.class::cast)
+                .map(vybeMapper::transform)
+                .toList();
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{vybeId}", produces = "application/json; charset=UTF-8")
     public VybeDTO getVybe(@PathVariable Long vybeId) {
-        return vybeMapper.transform(vybeService.getVybeById(vybeId));
+        return vybeMapper.transform((Vybe) postService.getPostById(vybeId));
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -95,7 +103,10 @@ public class VybesController {
     public VybeDTO postVybe(@RequestBody CreateVybeRequestDTO request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        Vybe vybe = vybeMapper.transform(request);
+        Vybe vybe = new Vybe();
+        vybe.setDescription(request.getDescription());
+        vybe.setSpotifyTrackId(request.getSpotifyTrackId());
+
         vybe.setComments(new ArrayList<>());
         vybe.setLikes(new ArrayList<>());
         vybe.setUser(userRepository.findByEmail(authentication.getName()).orElseThrow());
@@ -121,7 +132,7 @@ public class VybesController {
                                                                                 .build())))
                         .toList());
 
-        return vybeMapper.transform(vybeService.createVybe(vybe));
+        return vybeMapper.transform((Vybe) postService.createPost(vybe));
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -129,18 +140,18 @@ public class VybesController {
     public ResponseEntity<LikeDTO> likeVybe(@PathVariable Long vybeId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        Vybe vybe = vybeService.getVybeById(vybeId);
+        Vybe vybe = (Vybe) postService.getPostById(vybeId);
         if (vybe.getUser().getUsername().equals(authentication.getName())) {
             return ResponseEntity.badRequest().build();
         }
 
-        Like like =
-                Like.builder()
+        PostLike like =
+                PostLike.builder()
                         .user(userRepository.findByEmail(authentication.getName()).orElseThrow())
-                        .vybe(vybe)
+                        .post(vybe)
                         .build();
 
-        return Optional.ofNullable(vybeService.saveLike(like))
+        return Optional.ofNullable(postService.saveLike(like))
                 .map(likeMapper::transform)
                 .map(l -> new ResponseEntity<>(l, HttpStatus.CREATED))
                 .orElse(ResponseEntity.badRequest().build());
@@ -152,7 +163,7 @@ public class VybesController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         return likeMapper.transform(
-                vybeService.deleteLike(
+                postService.deleteLike(
                         vybeId,
                         userRepository
                                 .findByEmail(authentication.getName())
@@ -167,9 +178,9 @@ public class VybesController {
 
         Comment comment = commentMapper.transform(request);
         comment.setUser(userRepository.findByEmail(authentication.getName()).orElseThrow());
-        comment.setVybe(vybeService.getVybeById(vybeId));
+        comment.setPost(postService.getPostById(vybeId));
 
-        return commentMapper.transform(vybeService.saveComment(comment));
+        return commentMapper.transform(postService.saveComment(comment));
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -179,7 +190,7 @@ public class VybesController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         boolean isDeleted =
-                vybeService.deleteComment(
+                postService.deleteComment(
                         vybeId,
                         commentId,
                         userRepository
@@ -196,18 +207,18 @@ public class VybesController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{vybeId}/comments/{commentId}/likes")
-    public ResponseEntity<LikeDTO> likeComment(
+    public ResponseEntity<CommentLikeDTO> likeComment(
             @PathVariable Long vybeId, @PathVariable Long commentId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        Like like =
-                Like.builder()
+        CommentLike like =
+                CommentLike.builder()
                         .user(userRepository.findByEmail(authentication.getName()).orElseThrow())
-                        .comment(vybeService.getCommentById(commentId))
+                        .comment(postService.getCommentById(commentId))
                         .build();
 
-        return Optional.ofNullable(vybeService.saveCommentLike(like))
-                .map(likeMapper::transform)
+        return Optional.ofNullable(postService.saveCommentLike(like))
+                .map(commentMapper::transform)
                 .map(l -> new ResponseEntity<>(l, HttpStatus.CREATED))
                 .orElse(ResponseEntity.badRequest().build());
     }
@@ -224,7 +235,7 @@ public class VybesController {
                         .map(VybesUser::getUserId)
                         .orElseThrow();
 
-        boolean isDeleted = vybeService.deleteCommentLike(commentId, userId);
+        boolean isDeleted = postService.deleteCommentLike(commentId, userId);
         if (isDeleted) {
             return ResponseEntity.noContent().build();
         } else {
@@ -235,7 +246,7 @@ public class VybesController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{vybeId}/comments")
     public List<CommentDTO> getCommentsByPostId(@PathVariable Long vybeId) {
-        return vybeService.getCommentsByVybeId(vybeId).stream()
+        return postService.getCommentsByPostId(vybeId).stream()
                 .map(commentMapper::transform)
                 .toList();
     }
@@ -243,6 +254,6 @@ public class VybesController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{vybeId}/likes")
     public List<LikeDTO> getLikesByVybeId(@PathVariable Long vybeId) {
-        return vybeService.getLikesByVybeId(vybeId).stream().map(likeMapper::transform).toList();
+        return postService.getLikesByPostId(vybeId).stream().map(likeMapper::transform).toList();
     }
 }

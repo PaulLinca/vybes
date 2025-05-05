@@ -69,7 +69,7 @@ public class DeserializerHelper {
         return track;
     }
 
-    private static String getImageUrl(JsonNode albumNode){
+    private static String getImageUrl(JsonNode albumNode) {
         if (albumNode.has("images") && !albumNode.get("images").isEmpty()) {
             return albumNode.get("images").get(0).get("url").asText();
         }

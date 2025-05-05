@@ -1,33 +1,27 @@
 package com.vybes.controller;
 
 import com.vybes.dto.AlbumReviewDTO;
-import com.vybes.dto.mapper.AlbumReviewMapper;
+import com.vybes.dto.mapper.VybeMapper;
 import com.vybes.dto.request.CreateAlbumReviewRequestDTO;
-import com.vybes.dto.response.PageResponse;
 import com.vybes.external.spotify.SpotifyService;
 import com.vybes.external.spotify.model.entity.SpotifyAlbum;
 import com.vybes.model.AlbumReview;
 import com.vybes.repository.ArtistRepository;
 import com.vybes.repository.UserRepository;
-import com.vybes.service.post.AlbumReviewService;
+import com.vybes.service.post.PostService;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -35,8 +29,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AlbumReviewController {
 
-    private final AlbumReviewService albumReviewService;
-    private final AlbumReviewMapper albumReviewMapper;
+    private final PostService postService;
+    private final VybeMapper vybeMapper;
     private final SpotifyService spotifyService;
     private final UserRepository userRepository;
     private final ArtistRepository artistRepository;
@@ -46,7 +40,9 @@ public class AlbumReviewController {
     public AlbumReviewDTO postAlbumReview(@RequestBody CreateAlbumReviewRequestDTO request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        AlbumReview albumReview = albumReviewMapper.transform(request);
+        AlbumReview albumReview =
+                AlbumReview.builder().spotifyAlbumId(request.getSpotifyAlbumId()).build();
+        albumReview.setDescription(request.getDescription());
         albumReview.setComments(new ArrayList<>());
         albumReview.setLikes(new ArrayList<>());
         albumReview.setUser(userRepository.findByEmail(authentication.getName()).orElseThrow());
@@ -67,32 +63,6 @@ public class AlbumReviewController {
                                                                 a.getId())))
                         .toList());
 
-        return albumReviewMapper.transform(albumReviewService.createAlbumReview(albumReview));
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping(produces = "application/json; charset=UTF-8")
-    public ResponseEntity<PageResponse<AlbumReviewDTO>> getAlbumReviewsPaginated(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "postedDate") String sort,
-            @RequestParam(defaultValue = "DESC") String direction) {
-
-        Page<AlbumReview> albumReviewsPage =
-                albumReviewService.getAlbumReviewsPaginated(page, size, sort, direction);
-
-        List<AlbumReviewDTO> albumReviewDTOs =
-                albumReviewsPage.getContent().stream().map(albumReviewMapper::transform).toList();
-
-        PageResponse<AlbumReviewDTO> response =
-                new PageResponse<>(
-                        albumReviewDTOs,
-                        albumReviewsPage.getNumber(),
-                        albumReviewsPage.getSize(),
-                        albumReviewsPage.getTotalElements(),
-                        albumReviewsPage.getTotalPages(),
-                        albumReviewsPage.isLast());
-
-        return ResponseEntity.ok(response);
+        return vybeMapper.transform((AlbumReview) postService.createPost(albumReview));
     }
 }

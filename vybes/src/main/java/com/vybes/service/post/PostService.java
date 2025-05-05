@@ -1,11 +1,13 @@
 package com.vybes.service.post;
 
 import com.vybes.model.Comment;
-import com.vybes.model.Like;
-import com.vybes.model.Vybe;
+import com.vybes.model.CommentLike;
+import com.vybes.model.Post;
+import com.vybes.model.PostLike;
+import com.vybes.repository.CommentLikeRepository;
 import com.vybes.repository.CommentRepository;
 import com.vybes.repository.LikeRepository;
-import com.vybes.repository.post.VybeRepository;
+import com.vybes.repository.PostRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -21,19 +23,21 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class VybeService {
-    private final VybeRepository vybeRepository;
-    private final LikeRepository likeRepository;
+public class PostService {
+
+    private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
-    public Vybe createVybe(Vybe vybe) {
-        vybeRepository.save(vybe);
-        return vybe;
+    public Post createPost(Post post) {
+        postRepository.save(post);
+        return post;
     }
 
     @Transactional
-    public Page<Vybe> getVybesPaginated(int page, int size, String sortBy, String direction) {
+    public Page<Post> getPostsPaginated(int page, int size, String sortBy, String direction) {
         if (page < 0) page = 0;
         if (size < 1) size = 10;
         if (size > 50) size = 50;
@@ -49,17 +53,17 @@ public class VybeService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
 
-        return vybeRepository.findAll(pageable);
+        return postRepository.findAllByOrderByPostedDateDesc(pageable);
     }
 
     @Transactional
-    public List<Vybe> getAllVybes() {
-        return vybeRepository.findAll();
+    public List<Post> getAllPosts() {
+        return postRepository.findAll();
     }
 
     @Transactional
-    public Vybe getVybeById(Long id) {
-        return vybeRepository.findById(id).orElseThrow();
+    public Post getPostById(Long id) {
+        return postRepository.findById(id).orElseThrow();
     }
 
     @Transactional
@@ -73,22 +77,22 @@ public class VybeService {
     }
 
     @Transactional
-    public boolean deleteComment(Long vybeId, Long commentId, Long userId) {
+    public boolean deleteComment(Long postId, Long commentId, Long userId) {
         int rowsDeleted =
-                commentRepository.deleteByCommentIdAndVybeIdAndUserId(commentId, vybeId, userId);
+                commentRepository.deleteByCommentIdAndPostIdAndUserId(commentId, postId, userId);
         return rowsDeleted > 0;
     }
 
     @Transactional
-    public List<Comment> getCommentsByVybeId(Long vybeId) {
-        return commentRepository.findByVybeId(vybeId);
+    public List<Comment> getCommentsByPostId(Long postId) {
+        return commentRepository.findByPostId(postId);
     }
 
     @Transactional
-    public Like saveLike(Like like) {
+    public PostLike saveLike(PostLike like) {
 
         if (!likeRepository
-                .findByVybeIdAndUser_UserId(like.getVybe().getId(), like.getUser().getUserId())
+                .findByPostIdAndUser_UserId(like.getPost().getId(), like.getUser().getUserId())
                 .isEmpty()) {
             return null;
         }
@@ -97,32 +101,31 @@ public class VybeService {
     }
 
     @Transactional
-    public Like deleteLike(Long vybeId, Long userId) {
-        return likeRepository.deleteByVybeIdAndUser_UserId(vybeId, userId).stream()
+    public PostLike deleteLike(Long postId, Long userId) {
+        return likeRepository.deleteByPostIdAndUser_UserId(postId, userId).stream()
                 .findFirst()
                 .orElseThrow();
     }
 
     @Transactional
-    public Like saveCommentLike(Like like) {
+    public CommentLike saveCommentLike(CommentLike like) {
 
-        if (likeRepository.findByCommentIdAndUserId(
-                        like.getComment().getId(), like.getUser().getUserId())
+        if (commentLikeRepository.findByCommentIdAndUserId(like.getId(), like.getUser().getUserId())
                 != null) {
             return null;
         }
 
-        return likeRepository.save(like);
+        return commentLikeRepository.save(like);
     }
 
     @Transactional
     public boolean deleteCommentLike(Long commentId, Long userId) {
-        int rowsDeleted = likeRepository.deleteByCommentIdAndUserId(commentId, userId);
+        int rowsDeleted = commentLikeRepository.deleteByCommentIdAndUserId(commentId, userId);
         return rowsDeleted > 0;
     }
 
     @Transactional
-    public List<Like> getLikesByVybeId(Long vybeId) {
-        return likeRepository.findByVybeId(vybeId);
+    public List<PostLike> getLikesByPostId(Long postId) {
+        return likeRepository.findByPostId(postId);
     }
 }
