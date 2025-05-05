@@ -1,4 +1,4 @@
-package com.vybes.external.spotify.model.deserializer;
+package com.vybes.external.spotify.model.deserializer.search;
 
 import static com.vybes.external.spotify.model.deserializer.DeserializerHelper.getArtists;
 
@@ -6,12 +6,9 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.vybes.external.spotify.model.entity.SpotifyArtist;
-import com.vybes.external.spotify.model.search.artist.SearchArtistResponse;
+import com.vybes.external.spotify.model.entity.search.SearchArtistResponse;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SearchArtistResponseDeserializer extends JsonDeserializer<SearchArtistResponse> {
 

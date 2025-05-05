@@ -1,7 +1,7 @@
-package com.vybes.external.spotify.model.search.artist;
+package com.vybes.external.spotify.model.entity.search;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.vybes.external.spotify.model.deserializer.SearchArtistResponseDeserializer;
+import com.vybes.external.spotify.model.deserializer.search.SearchArtistResponseDeserializer;
 import com.vybes.external.spotify.model.entity.SpotifyArtist;
 
 import lombok.Builder;
