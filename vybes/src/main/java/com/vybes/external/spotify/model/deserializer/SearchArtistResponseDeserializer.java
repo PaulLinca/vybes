@@ -18,9 +18,7 @@ public class SearchArtistResponseDeserializer extends JsonDeserializer<SearchArt
             final JsonParser jsonParser, final DeserializationContext deserializationContext)
             throws IOException {
         JsonNode rootNode = jsonParser.getCodec().readTree(jsonParser);
-        JsonNode artistsNode = rootNode.get("artists");
-        JsonNode itemsNode = artistsNode.get("items");
-
+        JsonNode itemsNode = rootNode.get("artists").get("items");
         List<SpotifyArtist> artists = new ArrayList<>();
 
         for (JsonNode artistNode : itemsNode) {
@@ -37,8 +35,6 @@ public class SearchArtistResponseDeserializer extends JsonDeserializer<SearchArt
             artists.add(artist);
         }
 
-        SearchArtistResponse response = SearchArtistResponse.builder().searchArtistItems(artists).build();
-        System.out.println(response);
-        return response;
+        return SearchArtistResponse.builder().searchArtistItems(artists).build();
     }
 }

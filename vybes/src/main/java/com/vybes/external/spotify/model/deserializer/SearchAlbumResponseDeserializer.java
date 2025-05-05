@@ -18,8 +18,7 @@ public class SearchAlbumResponseDeserializer extends JsonDeserializer<SearchAlbu
     public SearchAlbumResponse deserialize(JsonParser jsonParser, DeserializationContext ctxt)
             throws IOException {
         JsonNode rootNode = jsonParser.getCodec().readTree(jsonParser);
-        JsonNode albumsNode = rootNode.get("albums");
-        JsonNode itemsNode = albumsNode.get("items");
+        JsonNode itemsNode = rootNode.get("albums").get("items");
 
         List<SpotifyAlbum> albums = new ArrayList<>();
 

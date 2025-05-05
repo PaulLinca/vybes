@@ -6,7 +6,6 @@ import com.vybes.external.spotify.SpotifyService;
 import com.vybes.external.spotify.model.entity.SpotifyAlbum;
 import com.vybes.external.spotify.model.entity.SpotifyArtist;
 import com.vybes.external.spotify.model.entity.SpotifyTrack;
-import com.vybes.external.spotify.model.search.track.SearchTrackResult;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +27,7 @@ public class SpotifyController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/search/track", produces = "application/json; charset=UTF-8")
-    public List<SearchTrackResult> searchTrack(@RequestParam String query) {
+    public List<SpotifyTrack> searchTrack(@RequestParam String query) {
         return spotifyService.searchTrack(query);
     }
 

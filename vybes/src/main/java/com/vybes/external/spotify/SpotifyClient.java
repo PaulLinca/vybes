@@ -7,7 +7,6 @@ import com.vybes.external.spotify.model.entity.SpotifyTrack;
 import com.vybes.external.spotify.model.search.album.SearchAlbumResponse;
 import com.vybes.external.spotify.model.search.artist.SearchArtistResponse;
 import com.vybes.external.spotify.model.search.track.SearchTrackResponse;
-import com.vybes.external.spotify.model.search.track.SearchTrackResult;
 
 import lombok.RequiredArgsConstructor;
 
@@ -64,7 +63,7 @@ public class SpotifyClient {
         return response.getBody();
     }
 
-    public List<SearchTrackResult> searchTrack(String searchString) {
+    public List<SpotifyTrack> searchTrack(String searchString) {
         ResponseEntity<SearchTrackResponse> result =
                 new RestTemplate()
                         .exchange(

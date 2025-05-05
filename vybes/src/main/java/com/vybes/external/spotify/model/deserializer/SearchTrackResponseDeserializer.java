@@ -4,47 +4,67 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.vybes.external.spotify.model.entity.SpotifyAlbum;
+import com.vybes.external.spotify.model.entity.SpotifyArtist;
+import com.vybes.external.spotify.model.entity.SpotifyTrack;
 import com.vybes.external.spotify.model.search.track.SearchTrackResponse;
-import com.vybes.external.spotify.model.search.track.SearchTrackResult;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SearchTrackResponseDeserializer extends JsonDeserializer<SearchTrackResponse> {
-
-    private static final String NAME_KEY = "name";
-    private static final String ALBUM_KEY = "album";
 
     @Override
     public SearchTrackResponse deserialize(
             final JsonParser jsonParser, final DeserializationContext deserializationContext)
             throws IOException {
+        JsonNode rootNode = jsonParser.getCodec().readTree(jsonParser);
+        JsonNode itemsNode = rootNode.get("tracks").get("items");
 
-        JsonNode valueAsJson = jsonParser.getCodec().readTree(jsonParser);
-        JsonNodeFactory factory = JsonNodeFactory.instance;
-        ArrayNode tracks = JsonNodeFactory.instance.arrayNode();
+        List<SpotifyTrack> tracks = new ArrayList<>();
 
-        for (JsonNode trackNode : valueAsJson.get("tracks").get("items")) {
-            tracks.add(getTrackNode(trackNode, factory.objectNode()));
+        for (JsonNode trackNode : itemsNode) {
+            SpotifyTrack track = new SpotifyTrack();
+
+            track.setId(trackNode.get("id").asText());
+            track.setName(trackNode.get("name").asText());
+            track.setSpotifyUrl(trackNode.get("external_urls").get("spotify").asText());
+
+            List<SpotifyArtist> artists = new ArrayList<>();
+            JsonNode artistsNode = trackNode.get("artists");
+
+            for (JsonNode artistNode : artistsNode) {
+                SpotifyArtist artist = new SpotifyArtist();
+                artist.setId(artistNode.get("id").asText());
+                artist.setName(artistNode.get("name").asText());
+                artist.setSpotifyUrl(artistNode.get("external_urls").get("spotify").asText());
+
+                artists.add(artist);
+            }
+
+            track.setArtists(artists);
+
+            JsonNode albumNode = trackNode.get("album");
+            SpotifyAlbum album =
+                    SpotifyAlbum.builder()
+                            .id(albumNode.get("id").asText())
+                            .name(albumNode.get("name").asText())
+                            .spotifyUrl(albumNode.get("external_urls").get("spotify").asText())
+                            .build();
+
+            track.setAlbum(album);
+            track.setImageUrl(
+                    Optional.ofNullable(albumNode.get("images"))
+                            .map(n -> n.get(0))
+                            .map(n -> n.get("url"))
+                            .map(JsonNode::asText)
+                            .orElse(null));
+
+            tracks.add(track);
         }
 
-        List<SearchTrackResult> searchTrackResults =
-                Arrays.asList(jsonParser.getCodec().treeToValue(tracks, SearchTrackResult[].class));
-
-        return SearchTrackResponse.builder().searchTrackItems(searchTrackResults).build();
-    }
-
-    private ObjectNode getTrackNode(JsonNode trackNode, ObjectNode trackItem) {
-        trackItem.putIfAbsent("id", trackNode.get("id"));
-        trackItem.putIfAbsent(NAME_KEY, trackNode.get(NAME_KEY));
-        trackItem.putIfAbsent(ALBUM_KEY, trackNode.get(ALBUM_KEY).get(NAME_KEY));
-        trackItem.putIfAbsent("artist", trackNode.get("artists").get(0).get(NAME_KEY));
-        trackItem.putIfAbsent("imageUrl", trackNode.get(ALBUM_KEY).get("images").get(0).get("url"));
-
-        return trackItem;
+        return SearchTrackResponse.builder().searchTrackItems(tracks).build();
     }
 }

@@ -1,12 +1,9 @@
 package com.vybes.external.spotify.model.deserializer;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.vybes.external.spotify.model.entity.SpotifyAlbum;
 import com.vybes.external.spotify.model.entity.SpotifyArtist;
 import com.vybes.external.spotify.model.entity.SpotifyTrack;
@@ -14,6 +11,7 @@ import com.vybes.external.spotify.model.entity.SpotifyTrack;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TrackDeserializer extends JsonDeserializer<SpotifyTrack> {
 
@@ -22,26 +20,44 @@ public class TrackDeserializer extends JsonDeserializer<SpotifyTrack> {
             final JsonParser jsonParser, final DeserializationContext deserializationContext)
             throws IOException {
 
-        JsonNode valueAsJson = jsonParser.getCodec().readTree(jsonParser);
+        JsonNode trackNode = jsonParser.getCodec().readTree(jsonParser);
 
-        return SpotifyTrack.builder()
-                .id(valueAsJson.get("id").textValue())
-                .name(valueAsJson.get("name").textValue())
-                .spotifyUrl(valueAsJson.get("external_urls").at("/spotify").textValue())
-                .album(
-                        jsonParser
-                                .getCodec()
-                                .treeToValue(valueAsJson.get("album"), SpotifyAlbum.class))
-                .artists(getArtists(valueAsJson.withArray("artists"), jsonParser.getCodec()))
-                .build();
-    }
+        SpotifyTrack track = new SpotifyTrack();
 
-    private List<SpotifyArtist> getArtists(ArrayNode artistsAsJson, ObjectCodec codec)
-            throws JsonProcessingException {
+        track.setId(trackNode.get("id").asText());
+        track.setName(trackNode.get("name").asText());
+        track.setSpotifyUrl(trackNode.get("external_urls").get("spotify").asText());
+
         List<SpotifyArtist> artists = new ArrayList<>();
-        for (JsonNode artistNode : artistsAsJson) {
-            artists.add(codec.treeToValue(artistNode, SpotifyArtist.class));
+        JsonNode artistsNode = trackNode.get("artists");
+
+        for (JsonNode artistNode : artistsNode) {
+            SpotifyArtist artist = new SpotifyArtist();
+            artist.setId(artistNode.get("id").asText());
+            artist.setName(artistNode.get("name").asText());
+            artist.setSpotifyUrl(artistNode.get("external_urls").get("spotify").asText());
+
+            artists.add(artist);
         }
-        return artists;
+
+        track.setArtists(artists);
+
+        JsonNode albumNode = trackNode.get("album");
+        SpotifyAlbum album =
+                SpotifyAlbum.builder()
+                        .id(albumNode.get("id").asText())
+                        .name(albumNode.get("name").asText())
+                        .spotifyUrl(albumNode.get("external_urls").get("spotify").asText())
+                        .build();
+
+        track.setAlbum(album);
+        track.setImageUrl(
+                Optional.ofNullable(albumNode.get("images"))
+                        .map(n -> n.get(0))
+                        .map(n -> n.get("url"))
+                        .map(JsonNode::asText)
+                        .orElse(null));
+
+        return track;
     }
 }

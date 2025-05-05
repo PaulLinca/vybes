@@ -7,7 +7,6 @@ import com.vybes.dto.mapper.ArtistMapper;
 import com.vybes.external.spotify.model.entity.SpotifyAlbum;
 import com.vybes.external.spotify.model.entity.SpotifyArtist;
 import com.vybes.external.spotify.model.entity.SpotifyTrack;
-import com.vybes.external.spotify.model.search.track.SearchTrackResult;
 import com.vybes.model.Artist;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,7 @@ public class SpotifyService {
     private final AlbumMapper albumMapper;
     private final ArtistMapper artistMapper;
 
-    public List<SearchTrackResult> searchTrack(String searchQuery) {
+    public List<SpotifyTrack> searchTrack(String searchQuery) {
         try {
             return spotifyClient.searchTrack(searchQuery);
         } catch (HttpClientErrorException.Unauthorized e) {
