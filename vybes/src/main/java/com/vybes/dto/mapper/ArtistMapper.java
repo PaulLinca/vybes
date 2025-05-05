@@ -8,4 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface ArtistMapper {
     ArtistDTO transform(Artist artist);
+
+    Artist transform(ArtistDTO artist);
 }

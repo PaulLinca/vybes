@@ -2,6 +2,7 @@ package com.vybes.service.vybe.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.vybes.service.review.album.entity.AlbumReview;
 import com.vybes.service.user.model.VybesUser;
 
 import jakarta.persistence.CascadeType;
@@ -40,6 +41,11 @@ public class Comment {
     @JsonManagedReference
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Like> likes;
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "album_review_id")
+    private AlbumReview albumReview;
 
     private ZonedDateTime timestamp;
 }

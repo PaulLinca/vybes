@@ -1,10 +1,14 @@
-package com.vybes.service.vybe.entity;
+package com.vybes.service.review.album.entity;
 
+import java.time.ZonedDateTime;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vybes.service.Post;
 import com.vybes.service.user.model.VybesUser;
-
+import com.vybes.service.vybe.entity.Artist;
+import com.vybes.service.vybe.entity.Comment;
+import com.vybes.service.vybe.entity.Like;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,38 +20,29 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import java.time.ZonedDateTime;
-import java.util.List;
 @Data
 @Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Vybe implements Post {
+@ToString(callSuper = true)
+public class AlbumReview implements Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String songName;
-
-    private String spotifyTrackId;
-
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(
-            name = "vybe_artist",
-            joinColumns = @JoinColumn(name = "vybe_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id")
-    )
-    private List<Artist> spotifyArtists;
+    private String albumName;
 
     private String spotifyAlbumId;
+
+    private Integer score;
 
     private String imageUrl;
 
@@ -55,12 +50,20 @@ public class Vybe implements Post {
 
     private String description;
 
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "album_review_artist",
+            joinColumns = @JoinColumn(name = "album_review_id"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id")
+    )
+    private List<Artist> spotifyArtists;
+
     @JsonManagedReference
-    @OneToMany(mappedBy = "vybe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "albumReview", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Like> likes;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "vybe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "albumReview", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments;
 
     @JsonIgnore

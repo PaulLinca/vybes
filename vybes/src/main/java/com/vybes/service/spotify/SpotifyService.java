@@ -7,6 +7,7 @@ import com.vybes.service.spotify.model.entity.SpotifyAlbum;
 import com.vybes.service.spotify.model.entity.SpotifyArtist;
 import com.vybes.service.spotify.model.entity.SpotifyTrack;
 import com.vybes.service.spotify.model.search.track.SearchTrackItem;
+import com.vybes.service.vybe.entity.Artist;
 
 import lombok.RequiredArgsConstructor;
 
@@ -88,6 +89,20 @@ public class SpotifyService {
         } catch (HttpClientErrorException.Unauthorized e) {
             spotifyClient.refreshAccessToken();
             return getArtist(id);
+        }
+    }
+
+    public Artist getArtistAsEntity(String id) {
+        try {
+            SpotifyArtist spotifyArtist = spotifyClient.getArtist(id);
+            return Artist.builder()
+                    .spotifyId(spotifyArtist.getId())
+                    .name(spotifyArtist.getName())
+                    .imageUrl(spotifyArtist.getImageUrl())
+                    .build();
+        } catch (HttpClientErrorException.Unauthorized e) {
+            spotifyClient.refreshAccessToken();
+            return getArtistAsEntity(id);
         }
     }
 }

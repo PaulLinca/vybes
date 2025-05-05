@@ -8,6 +8,8 @@ import com.vybes.service.spotify.model.entity.SpotifyAlbum;
 import com.vybes.service.spotify.model.entity.SpotifyArtist;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AlbumDeserializer extends JsonDeserializer<SpotifyAlbum> {
 
@@ -24,11 +26,24 @@ public class AlbumDeserializer extends JsonDeserializer<SpotifyAlbum> {
                 .spotifyUrl(valueAsJson.get("external_urls").get("spotify").textValue())
                 .imageUrl(valueAsJson.get("images").get(0).get("url").textValue())
                 .releaseDate(valueAsJson.get("release_date").textValue())
-                .artist(
-                        jsonParser
-                                .getCodec()
-                                .treeToValue(
-                                        valueAsJson.get("artists").get(0), SpotifyArtist.class))
+                .artists(getArtists(valueAsJson.withArray("artists")))
                 .build();
+    }
+
+    private List<SpotifyArtist> getArtists(JsonNode artistsArrayNode) {
+        List<SpotifyArtist> artists = new ArrayList<>();
+
+        for (JsonNode artistNode : artistsArrayNode) {
+            SpotifyArtist artist =
+                    SpotifyArtist.builder()
+                            .id(artistNode.get("id").asText())
+                            .name(artistNode.get("name").asText())
+                            .spotifyUrl(artistNode.get("external_urls").get("spotify").asText())
+                            .build();
+
+            artists.add(artist);
+        }
+
+        return artists;
     }
 }

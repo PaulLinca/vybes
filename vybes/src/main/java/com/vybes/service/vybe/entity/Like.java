@@ -1,6 +1,7 @@
 package com.vybes.service.vybe.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.vybes.service.review.album.entity.AlbumReview;
 import com.vybes.service.user.model.VybesUser;
 
 import jakarta.persistence.Entity;
@@ -39,6 +40,11 @@ public class Like {
     @JoinColumn(name = "comment_id")
     @JsonBackReference
     private Comment comment;
+
+    @JoinColumn(name = "album_review_id")
+    @JsonBackReference
+    @ManyToOne
+    private AlbumReview albumReview;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

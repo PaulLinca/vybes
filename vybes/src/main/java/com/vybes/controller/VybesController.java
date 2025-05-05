@@ -53,15 +53,6 @@ public class VybesController {
     private final CommentMapper commentMapper;
     private final LikeMapper likeMapper;
 
-    /**
-     * Get all vybes with pagination support
-     *
-     * @param page Page number (zero-based)
-     * @param size Number of items per page
-     * @param sort Field to sort by (default: createdAt)
-     * @param direction Sort direction (ASC or DESC, default: DESC)
-     * @return List of VybeDTOs for the requested page
-     */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = "application/json; charset=UTF-8")
     public ResponseEntity<PageResponse<VybeDTO>> getVybesPaginated(
