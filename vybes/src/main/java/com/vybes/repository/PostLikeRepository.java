@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface LikeRepository extends JpaRepository<PostLike, Long> {
+public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
     List<PostLike> findByPostId(Long postId);
 
     List<PostLike> findByPostIdAndUser_UserId(Long postId, Long userId);

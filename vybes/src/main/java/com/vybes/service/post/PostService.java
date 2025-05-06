@@ -6,7 +6,7 @@ import com.vybes.model.Post;
 import com.vybes.model.PostLike;
 import com.vybes.repository.CommentLikeRepository;
 import com.vybes.repository.CommentRepository;
-import com.vybes.repository.LikeRepository;
+import com.vybes.repository.PostLikeRepository;
 import com.vybes.repository.PostRepository;
 
 import jakarta.transaction.Transactional;
@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
-    private final LikeRepository likeRepository;
+    private final PostLikeRepository postLikeRepository;
     private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
@@ -91,20 +92,18 @@ public class PostService {
     @Transactional
     public PostLike saveLike(PostLike like) {
 
-        if (!likeRepository
+        if (!postLikeRepository
                 .findByPostIdAndUser_UserId(like.getPost().getId(), like.getUser().getUserId())
                 .isEmpty()) {
             return null;
         }
 
-        return likeRepository.save(like);
+        return postLikeRepository.save(like);
     }
 
     @Transactional
-    public PostLike deleteLike(Long postId, Long userId) {
-        return likeRepository.deleteByPostIdAndUser_UserId(postId, userId).stream()
-                .findFirst()
-                .orElseThrow();
+    public Optional<PostLike> deleteLike(Long postId, Long userId) {
+        return postLikeRepository.deleteByPostIdAndUser_UserId(postId, userId).stream().findFirst();
     }
 
     @Transactional
@@ -126,6 +125,6 @@ public class PostService {
 
     @Transactional
     public List<PostLike> getLikesByPostId(Long postId) {
-        return likeRepository.findByPostId(postId);
+        return postLikeRepository.findByPostId(postId);
     }
 }

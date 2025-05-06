@@ -1,5 +1,7 @@
 package com.vybes.exception.handler;
 
+import com.vybes.dto.response.ErrorResponse;
+import com.vybes.exception.EmailAlreadyUsedException;
 import com.vybes.exception.InvalidCredentialsException;
 import com.vybes.exception.InvalidRequestException;
 import com.vybes.exception.UserAlreadyExistsException;
@@ -19,31 +21,48 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<String> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
-        logger.error("Unhandled exception occurred", ex);
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(
+            UserAlreadyExistsException ex) {
+        logger.error("User already exists", ex);
 
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(
+                ErrorResponse.builder().message("User already exists").status(409).build(),
+                HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EmailAlreadyUsedException.class)
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyUsedException(
+            UserAlreadyExistsException ex) {
+        logger.error("Email address already in use", ex);
+
+        return new ResponseEntity<>(
+                ErrorResponse.builder().message("Email address already in use").status(409).build(),
+                HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<String> handleInvalidCredentialsException(
+    public ResponseEntity<ErrorResponse> handleInvalidCredentialsException(
             InvalidCredentialsException ex) {
         logger.error("Unhandled exception occurred", ex);
 
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(
+                ErrorResponse.builder().message("Invalid credentials").status(401).build(),
+                HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException ex) {
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
         logger.error("Unhandled exception occurred", ex);
 
-        return new ResponseEntity<>("Invalid username or password.", HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(
+                ErrorResponse.builder().message("Invalid username or password").status(401).build(),
+                HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(InvalidRequestException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleInvalidRequestException(InvalidRequestException ex) {
         logger.error("Invalid request", ex);
 

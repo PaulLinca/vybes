@@ -5,6 +5,7 @@ import com.vybes.dto.CommentLikeDTO;
 import com.vybes.dto.LikeDTO;
 import com.vybes.dto.mapper.CommentMapper;
 import com.vybes.dto.mapper.LikeMapper;
+import com.vybes.dto.response.ErrorResponse;
 import com.vybes.model.Comment;
 import com.vybes.model.CommentLike;
 import com.vybes.model.Post;
@@ -41,40 +42,53 @@ public class PostController {
     private final CommentMapper commentMapper;
     private final LikeMapper likeMapper;
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{postId}/likes")
-    public ResponseEntity<LikeDTO> likeVybe(@PathVariable Long postId) {
+    public ResponseEntity<?> likePost(@PathVariable Long postId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        Post vybe = postService.getPostById(postId);
-        if (vybe.getUser().getUsername().equals(authentication.getName())) {
-            return ResponseEntity.badRequest().build();
-        }
+        Post post = postService.getPostById(postId);
 
         PostLike like =
                 PostLike.builder()
                         .user(userRepository.findByEmail(authentication.getName()).orElseThrow())
-                        .post(vybe)
+                        .post(post)
                         .build();
 
-        return Optional.ofNullable(postService.saveLike(like))
-                .map(likeMapper::transform)
-                .map(l -> new ResponseEntity<>(l, HttpStatus.CREATED))
-                .orElse(ResponseEntity.badRequest().build());
+        Optional<LikeDTO> likeDto =
+                Optional.ofNullable(postService.saveLike(like)).map(likeMapper::transform);
+        if (likeDto.isPresent()) {
+            return new ResponseEntity<>(likeDto.get(), HttpStatus.CREATED);
+        }
+
+        return ResponseEntity.badRequest()
+                .body(
+                        ErrorResponse.builder()
+                                .message("User has already liked this post")
+                                .status(400)
+                                .build());
     }
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{postId}/likes")
-    public LikeDTO unlikePost(@PathVariable Long postId) {
+    public ResponseEntity<?> unlikePost(@PathVariable Long postId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        return likeMapper.transform(
+        Optional<PostLike> like =
                 postService.deleteLike(
                         postId,
                         userRepository
                                 .findByEmail(authentication.getName())
                                 .map(VybesUser::getUserId)
-                                .orElseThrow()));
+                                .orElseThrow());
+
+        if (like.isPresent()) {
+            return like.map(l -> likeMapper.transform(l))
+                    .map(l -> new ResponseEntity<>(l, HttpStatus.OK))
+                    .get();
+        }
+
+        return ResponseEntity.badRequest()
+                .body(ErrorResponse.builder().message("Can't unlike post").status(400).build());
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -113,8 +127,7 @@ public class PostController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{postId}/comments/{commentId}/likes")
-    public ResponseEntity<CommentLikeDTO> likeComment(
-            @PathVariable Long postId, @PathVariable Long commentId) {
+    public ResponseEntity<?> likeComment(@PathVariable Long postId, @PathVariable Long commentId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         CommentLike like =
@@ -123,10 +136,19 @@ public class PostController {
                         .comment(postService.getCommentById(commentId))
                         .build();
 
-        return Optional.ofNullable(postService.saveCommentLike(like))
-                .map(commentMapper::transform)
-                .map(l -> new ResponseEntity<>(l, HttpStatus.CREATED))
-                .orElse(ResponseEntity.badRequest().build());
+        Optional<CommentLikeDTO> likeDto =
+                Optional.ofNullable(postService.saveCommentLike(like))
+                        .map(commentMapper::transform);
+        if (likeDto.isPresent()) {
+            return new ResponseEntity<>(likeDto.get(), HttpStatus.CREATED);
+        }
+
+        return ResponseEntity.badRequest()
+                .body(
+                        ErrorResponse.builder()
+                                .message("User has already liked this comment")
+                                .status(400)
+                                .build());
     }
 
     @ResponseStatus(HttpStatus.CREATED)
