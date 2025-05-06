@@ -1,11 +1,16 @@
 package com.vybes.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.vybes.dto.AlbumReviewDTO;
 import com.vybes.dto.mapper.PostMapper;
+import com.vybes.dto.mapper.TrackReviewMapper;
 import com.vybes.dto.request.CreateAlbumReviewRequestDTO;
 import com.vybes.external.spotify.SpotifyService;
 import com.vybes.external.spotify.model.entity.SpotifyAlbum;
 import com.vybes.model.AlbumReview;
+import com.vybes.model.TrackReview;
 import com.vybes.repository.ArtistRepository;
 import com.vybes.repository.UserRepository;
 import com.vybes.service.post.PostService;
@@ -25,7 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/album-reviews")
@@ -34,13 +41,14 @@ public class AlbumReviewController {
 
     private final PostService postService;
     private final PostMapper postMapper;
+    private final TrackReviewMapper trackReviewMapper;
     private final SpotifyService spotifyService;
     private final UserRepository userRepository;
     private final ArtistRepository artistRepository;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/post", produces = "application/json; charset=UTF-8")
-    public AlbumReviewDTO postAlbumReview(@RequestBody CreateAlbumReviewRequestDTO request) {
+    public AlbumReviewDTO postAlbumReview(@RequestBody CreateAlbumReviewRequestDTO request) throws JsonProcessingException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         AlbumReview albumReview =
@@ -69,9 +77,18 @@ public class AlbumReviewController {
                                                 .orElse(
                                                         spotifyService.getArtistAsEntity(
                                                                 a.getId())))
-                        .toList());
+                        .collect(Collectors.toCollection(ArrayList::new)));
 
-        return postMapper.transform((AlbumReview) postService.createPost(albumReview));
+        List<TrackReview> trackReviews = request.getTrackReviews().stream()
+                .map(trackReviewMapper::transform)
+                .peek(tr -> tr.setAlbumReview(albumReview)) // Important: set parent reference BEFORE persisting
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        albumReview.setTrackReviews(trackReviews);
+
+        AlbumReview savedReview = (AlbumReview) postService.createPost(albumReview);
+
+        return postMapper.transform(savedReview);
     }
 
     @ResponseStatus(HttpStatus.OK)

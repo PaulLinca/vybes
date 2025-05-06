@@ -7,6 +7,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Data
 @Builder
@@ -33,4 +35,8 @@ public class AlbumReview extends Post {
             joinColumns = @JoinColumn(name = "album_review_id"),
             inverseJoinColumns = @JoinColumn(name = "artist_id"))
     private List<Artist> spotifyArtists;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "albumReview", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TrackReview> trackReviews;
 }

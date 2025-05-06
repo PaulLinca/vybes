@@ -20,4 +20,5 @@ public class AlbumReviewDTO implements PostDTO {
     private List<ArtistDTO> artists;
     private UserDTO user;
     private ZonedDateTime postedDate;
+    private List<TrackReviewDTO> trackReviews;
 }
