@@ -13,7 +13,7 @@ import org.mapstruct.Mapping;
 @Mapper(
         componentModel = "spring",
         uses = {LikeMapper.class, CommentMapper.class, ArtistMapper.class})
-public interface VybeMapper {
+public interface PostMapper {
 
     default PostDTO toPostDTO(Post post) {
         if (post instanceof Vybe vybe) {
