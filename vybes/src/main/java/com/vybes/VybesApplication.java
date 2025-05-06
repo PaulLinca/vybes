@@ -2,6 +2,7 @@ package com.vybes;
 
 import com.vybes.model.Role;
 import com.vybes.repository.RoleRepository;
+import com.vybes.service.auth.AuthenticationService;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -22,5 +23,10 @@ public class VybesApplication {
             }
             roleRepository.save(Role.builder().authority("USER").build());
         };
+    }
+
+    @Bean
+    CommandLineRunner initUser(AuthenticationService authenticationService) {
+        return args -> authenticationService.registerUser("paul@gmail.com", "paulpaul");
     }
 }

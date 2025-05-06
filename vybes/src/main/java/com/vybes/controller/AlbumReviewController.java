@@ -43,7 +43,10 @@ public class AlbumReviewController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         AlbumReview albumReview =
-                AlbumReview.builder().spotifyAlbumId(request.getSpotifyAlbumId()).build();
+                AlbumReview.builder()
+                        .spotifyAlbumId(request.getSpotifyAlbumId())
+                        .score(request.getScore())
+                        .build();
         albumReview.setDescription(request.getDescription());
         albumReview.setComments(new ArrayList<>());
         albumReview.setLikes(new ArrayList<>());
