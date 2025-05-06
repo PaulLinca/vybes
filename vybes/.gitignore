@@ -53,3 +53,5 @@ target
 secrets.yml
 .gradletasknamecache
 /.idea/sonarlint/issuestore/index.pb
+
+application-secrets.properties
