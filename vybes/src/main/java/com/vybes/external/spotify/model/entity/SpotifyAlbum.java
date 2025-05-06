@@ -19,6 +19,7 @@ import java.util.List;
 @ToString(callSuper = true)
 public class SpotifyAlbum extends SpotifyEntity {
     private List<SpotifyArtist> artists;
+    private List<SpotifyTrack> tracks;
     private String imageUrl;
     private String releaseDate;
 }

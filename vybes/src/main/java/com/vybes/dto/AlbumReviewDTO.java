@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Data
@@ -18,4 +19,5 @@ public class AlbumReviewDTO implements PostDTO {
     private String description;
     private List<ArtistDTO> artists;
     private UserDTO user;
+    private ZonedDateTime postedDate;
 }

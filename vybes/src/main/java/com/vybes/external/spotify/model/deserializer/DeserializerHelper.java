@@ -50,10 +50,7 @@ public class DeserializerHelper {
     }
 
     public static SpotifyTrack getTrack(JsonNode trackNode) {
-        SpotifyTrack track = new SpotifyTrack();
-        track.setId(trackNode.get("id").asText());
-        track.setName(trackNode.get("name").asText());
-        track.setSpotifyUrl(trackNode.get("external_urls").get("spotify").asText());
+        SpotifyTrack track = getBaseTrack(trackNode);
         track.setArtists(getArtists(trackNode.get("artists")));
 
         JsonNode albumNode = trackNode.get("album");
@@ -65,6 +62,15 @@ public class DeserializerHelper {
                         .map(n -> n.get("url"))
                         .map(JsonNode::asText)
                         .orElse(null));
+
+        return track;
+    }
+
+    public static SpotifyTrack getBaseTrack(JsonNode trackNode) {
+        SpotifyTrack track = new SpotifyTrack();
+        track.setId(trackNode.get("id").asText());
+        track.setName(trackNode.get("name").asText());
+        track.setSpotifyUrl(trackNode.get("external_urls").get("spotify").asText());
 
         return track;
     }

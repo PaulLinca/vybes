@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -46,6 +47,7 @@ public class VybeController {
         Vybe vybe = new Vybe();
         vybe.setDescription(request.getDescription());
         vybe.setSpotifyTrackId(request.getSpotifyTrackId());
+        vybe.setPostedDate(ZonedDateTime.now());
 
         vybe.setComments(new ArrayList<>());
         vybe.setLikes(new ArrayList<>());
