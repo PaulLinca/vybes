@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,6 +100,7 @@ public class PostController {
         Comment comment = commentMapper.transform(request);
         comment.setUser(userRepository.findByEmail(authentication.getName()).orElseThrow());
         comment.setPost(postService.getPostById(postId));
+        comment.setPostedDate(ZonedDateTime.now());
 
         return commentMapper.transform(postService.saveComment(comment));
     }

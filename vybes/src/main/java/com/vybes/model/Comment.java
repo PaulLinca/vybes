@@ -40,5 +40,5 @@ public class Comment {
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CommentLike> likes;
 
-    private ZonedDateTime timestamp;
+    private ZonedDateTime postedDate;
 }

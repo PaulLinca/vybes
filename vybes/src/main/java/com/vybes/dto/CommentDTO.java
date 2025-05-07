@@ -11,4 +11,5 @@ public class CommentDTO {
     private Long postId;
     private UserDTO user;
     private List<CommentLikeDTO> likes;
+    private String postedDate;
 }
