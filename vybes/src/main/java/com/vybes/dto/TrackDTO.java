@@ -2,15 +2,15 @@ package com.vybes.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
 @Data
 @Builder
-public class AlbumDTO {
+@ToString
+public class TrackDTO {
     private String spotifyId;
     private String name;
-    private String imageUrl;
-    private List<ArtistDTO> artists;
-    private List<TrackDTO> tracks;
+    private List<String> artists;
 }
