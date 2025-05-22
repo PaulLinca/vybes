@@ -64,9 +64,9 @@ public class SpotifyService {
         }
     }
 
-    public SpotifyAlbum getAlbum(String id) {
+    public AlbumDTO getAlbum(String id) {
         try {
-            return spotifyClient.getAlbum(id);
+            return albumMapper.transform(spotifyClient.getAlbum(id));
         } catch (HttpClientErrorException.Unauthorized e) {
             spotifyClient.refreshAccessToken();
             return getAlbum(id);

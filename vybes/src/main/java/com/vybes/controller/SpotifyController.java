@@ -51,7 +51,7 @@ public class SpotifyController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/album", produces = "application/json; charset=UTF-8")
-    public SpotifyAlbum getAlbum(@RequestParam String id) {
+    public AlbumDTO getAlbum(@RequestParam String id) {
         return spotifyService.getAlbum(id);
     }
 
