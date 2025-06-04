@@ -2,7 +2,7 @@ package com.vybes.controller;
 
 import com.vybes.dto.PostDTO;
 import com.vybes.dto.mapper.PostMapper;
-import com.vybes.dto.response.PageResponse;
+import com.vybes.dto.response.PostPageResponse;
 import com.vybes.model.Post;
 import com.vybes.service.post.PostService;
 
@@ -29,7 +29,7 @@ public class FeedController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = "application/json; charset=UTF-8")
-    public ResponseEntity<PageResponse<PostDTO>> getPosts(
+    public ResponseEntity<PostPageResponse> getPosts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sort,
@@ -40,8 +40,8 @@ public class FeedController {
         List<PostDTO> vybesDTOs =
                 vybesPage.getContent().stream().map(postMapper::toPostDTO).toList();
 
-        PageResponse<PostDTO> response =
-                new PageResponse<>(
+        PostPageResponse response =
+                new PostPageResponse(
                         vybesDTOs,
                         vybesPage.getNumber(),
                         vybesPage.getSize(),
