@@ -82,6 +82,15 @@ public class SpotifyService {
         }
     }
 
+    public SpotifyAlbum getSpotifyAlbum(String id) {
+        try {
+            return spotifyClient.getAlbum(id);
+        } catch (HttpClientErrorException.Unauthorized e) {
+            spotifyClient.refreshAccessToken();
+            return getSpotifyAlbum(id);
+        }
+    }
+
     public Artist getArtistAsEntity(String id) {
         try {
             SpotifyArtist spotifyArtist = spotifyClient.getArtist(id);

@@ -74,7 +74,7 @@ public class UserFavoritesService {
                 Album album = albumRepository.findBySpotifyId(spotifyId);
 
                 if (album == null) {
-                    SpotifyAlbum spotifyAlbum = spotifyService.getAlbum(spotifyId);
+                    SpotifyAlbum spotifyAlbum = spotifyService.getSpotifyAlbum(spotifyId);
                     album =
                             Album.builder()
                                     .spotifyId(spotifyId)

@@ -13,4 +13,5 @@ public class AlbumDTO {
     private String imageUrl;
     private List<ArtistDTO> artists;
     private List<TrackDTO> tracks;
+    private String releaseDate;
 }

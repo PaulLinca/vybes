@@ -28,6 +28,7 @@ public class TrackReview {
 
     private String name;
     private String spotifyTrackId;
+    private boolean isFavorite;
 
     @Enumerated(EnumType.STRING)
     private TrackRating rating;

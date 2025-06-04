@@ -63,7 +63,7 @@ public class AlbumReviewController {
         albumReview.setLikes(new ArrayList<>());
         albumReview.setUser(userRepository.findByEmail(authentication.getName()).orElseThrow());
 
-        SpotifyAlbum spotifyAlbum = spotifyService.getAlbum(request.getSpotifyAlbumId());
+        SpotifyAlbum spotifyAlbum = spotifyService.getSpotifyAlbum(request.getSpotifyAlbumId());
         albumReview.setSpotifyAlbumId(spotifyAlbum.getId());
         albumReview.setAlbumName(spotifyAlbum.getName());
         albumReview.setImageUrl(spotifyAlbum.getImageUrl());
