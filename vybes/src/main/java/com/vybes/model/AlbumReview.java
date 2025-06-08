@@ -14,6 +14,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -26,8 +29,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @DiscriminatorValue("ALBUM_REVIEW")
 public class AlbumReview extends Post {
     private String albumName;
-    private String spotifyAlbumId;
+    private String spotifyId;
     private Integer score;
+    private LocalDate releaseDate;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(

@@ -10,7 +10,7 @@ public class VybeDTO implements PostDTO {
     private Long id;
     private UserDTO user;
     private String songName;
-    private String spotifyTrackId;
+    private String spotifyId;
     private List<ArtistDTO> spotifyArtists;
     private String spotifyAlbumId;
     private String imageUrl;

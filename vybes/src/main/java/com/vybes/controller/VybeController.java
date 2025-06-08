@@ -46,7 +46,7 @@ public class VybeController {
 
         Vybe vybe = new Vybe();
         vybe.setDescription(request.getDescription());
-        vybe.setSpotifyTrackId(request.getSpotifyTrackId());
+        vybe.setSpotifyId(request.getSpotifyTrackId());
         vybe.setPostedDate(ZonedDateTime.now());
 
         vybe.setComments(new ArrayList<>());
@@ -54,7 +54,7 @@ public class VybeController {
         vybe.setUser(userRepository.findByEmail(authentication.getName()).orElseThrow());
 
         SpotifyTrack spotifyTrack = spotifyService.getTrack(request.getSpotifyTrackId());
-        vybe.setSpotifyTrackId(spotifyTrack.getId());
+        vybe.setSpotifyId(spotifyTrack.getId());
         vybe.setSongName(spotifyTrack.getName());
         vybe.setSpotifyAlbumId(spotifyTrack.getAlbum().getId());
         vybe.setImageUrl(spotifyTrack.getAlbum().getImageUrl());

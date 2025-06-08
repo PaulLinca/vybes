@@ -1,8 +1,6 @@
 package com.vybes.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.vybes.dto.AlbumReviewDTO;
 import com.vybes.dto.mapper.PostMapper;
 import com.vybes.dto.mapper.TrackReviewMapper;
@@ -28,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ public class AlbumReviewController {
 
         AlbumReview albumReview =
                 AlbumReview.builder()
-                        .spotifyAlbumId(request.getSpotifyAlbumId())
+                        .spotifyId(request.getSpotifyAlbumId())
                         .score(request.getScore())
                         .build();
         albumReview.setDescription(request.getDescription());
@@ -64,9 +64,10 @@ public class AlbumReviewController {
         albumReview.setUser(userRepository.findByEmail(authentication.getName()).orElseThrow());
 
         SpotifyAlbum spotifyAlbum = spotifyService.getSpotifyAlbum(request.getSpotifyAlbumId());
-        albumReview.setSpotifyAlbumId(spotifyAlbum.getId());
+        albumReview.setSpotifyId(spotifyAlbum.getId());
         albumReview.setAlbumName(spotifyAlbum.getName());
         albumReview.setImageUrl(spotifyAlbum.getImageUrl());
+        albumReview.setReleaseDate(LocalDate.parse(spotifyAlbum.getReleaseDate()));
 
         albumReview.setSpotifyArtists(
                 spotifyAlbum.getArtists().stream()
@@ -81,7 +82,7 @@ public class AlbumReviewController {
 
         List<TrackReview> trackReviews = request.getTrackReviews().stream()
                 .map(trackReviewMapper::transform)
-                .peek(tr -> tr.setAlbumReview(albumReview)) // Important: set parent reference BEFORE persisting
+                .peek(tr -> tr.setAlbumReview(albumReview))
                 .collect(Collectors.toCollection(ArrayList::new));
 
         albumReview.setTrackReviews(trackReviews);

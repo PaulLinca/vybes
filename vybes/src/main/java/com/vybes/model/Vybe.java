@@ -22,7 +22,7 @@ import java.util.List;
 @DiscriminatorValue("VYBE")
 public class Vybe extends Post {
     private String songName;
-    private String spotifyTrackId;
+    private String spotifyId;
     private String spotifyAlbumId;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
