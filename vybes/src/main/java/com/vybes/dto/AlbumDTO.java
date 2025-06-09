@@ -3,6 +3,7 @@ package com.vybes.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -13,5 +14,5 @@ public class AlbumDTO {
     private String imageUrl;
     private List<ArtistDTO> artists;
     private List<TrackDTO> tracks;
-    private String releaseDate;
+    private LocalDate releaseDate;
 }

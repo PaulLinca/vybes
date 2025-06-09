@@ -10,10 +10,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.vybes.external.spotify.model.entity.SpotifyAlbum;
 import com.vybes.external.spotify.model.entity.search.SearchAlbumResponse;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class SearchAlbumResponseDeserializer extends JsonDeserializer<SearchAlbumResponse> {
 
     @Override
@@ -24,6 +27,9 @@ public class SearchAlbumResponseDeserializer extends JsonDeserializer<SearchAlbu
 
         List<SpotifyAlbum> albums = new ArrayList<>();
         for (JsonNode albumNode : itemsNode) {
+            if (albumNode.get("album_type").asText().equals("single")) {
+                continue;
+            }
             SpotifyAlbum album = getAlbum(albumNode);
             album.setArtists(getArtists(albumNode.get("artists")));
             albums.add(album);

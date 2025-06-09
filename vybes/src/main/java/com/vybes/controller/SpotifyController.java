@@ -3,7 +3,6 @@ package com.vybes.controller;
 import com.vybes.dto.AlbumDTO;
 import com.vybes.dto.ArtistDTO;
 import com.vybes.external.spotify.SpotifyService;
-import com.vybes.external.spotify.model.entity.SpotifyAlbum;
 import com.vybes.external.spotify.model.entity.SpotifyArtist;
 import com.vybes.external.spotify.model.entity.SpotifyTrack;
 

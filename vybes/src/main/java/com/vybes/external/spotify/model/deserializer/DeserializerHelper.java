@@ -8,11 +8,15 @@ import com.vybes.external.spotify.model.entity.SpotifyTrack;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DeserializerHelper {
 
@@ -45,7 +49,7 @@ public class DeserializerHelper {
                 .name(albumNode.get("name").textValue())
                 .spotifyUrl(albumNode.get("external_urls").get("spotify").textValue())
                 .imageUrl(getImageUrl(albumNode))
-                .releaseDate(albumNode.get("release_date").textValue())
+                .releaseDate(parseReleaseDate(albumNode))
                 .build();
     }
 
@@ -80,5 +84,25 @@ public class DeserializerHelper {
             return albumNode.get("images").get(0).get("url").asText();
         }
         return null;
+    }
+
+    public static LocalDate parseReleaseDate(JsonNode albumNode) {
+        return Optional.ofNullable(albumNode.get("release_date"))
+                .map(JsonNode::asText)
+                .map(DeserializerHelper::safeParseDate)
+                .orElse(null);
+    }
+
+    private static LocalDate safeParseDate(String dateStr) {
+        try {
+            return LocalDate.parse(dateStr);
+        } catch (DateTimeParseException e) {
+            try {
+                int year = Integer.parseInt(dateStr);
+                return LocalDate.of(year, 1, 1);
+            } catch (NumberFormatException | DateTimeParseException ex) {
+                return LocalDate.of(1,1,1);
+            }
+        }
     }
 }

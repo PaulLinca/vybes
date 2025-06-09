@@ -67,7 +67,7 @@ public class AlbumReviewController {
         albumReview.setSpotifyId(spotifyAlbum.getId());
         albumReview.setAlbumName(spotifyAlbum.getName());
         albumReview.setImageUrl(spotifyAlbum.getImageUrl());
-        albumReview.setReleaseDate(LocalDate.parse(spotifyAlbum.getReleaseDate()));
+        albumReview.setReleaseDate(spotifyAlbum.getReleaseDate());
 
         albumReview.setSpotifyArtists(
                 spotifyAlbum.getArtists().stream()

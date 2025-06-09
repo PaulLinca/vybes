@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -21,5 +22,5 @@ public class SpotifyAlbum extends SpotifyEntity {
     private List<SpotifyArtist> artists;
     private List<SpotifyTrack> tracks;
     private String imageUrl;
-    private String releaseDate;
+    private LocalDate releaseDate;
 }
