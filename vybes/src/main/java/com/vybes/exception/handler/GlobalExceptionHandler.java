@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -30,9 +31,19 @@ public class GlobalExceptionHandler {
                 HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUsernameNotFoundException(
+            UsernameNotFoundException ex) {
+        logger.error("User doesn't exist", ex);
+
+        return new ResponseEntity<>(
+                ErrorResponse.builder().message("User doesn't exist").status(401).build(),
+                HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(EmailAlreadyUsedException.class)
     public ResponseEntity<ErrorResponse> handleEmailAlreadyUsedException(
-            UserAlreadyExistsException ex) {
+            EmailAlreadyUsedException ex) {
         logger.error("Email address already in use", ex);
 
         return new ResponseEntity<>(

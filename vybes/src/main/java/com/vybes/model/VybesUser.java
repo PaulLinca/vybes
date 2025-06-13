@@ -36,13 +36,14 @@ public class VybesUser implements UserDetails {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(unique = true)
+    @Column(length = 20, unique = true)
     private String username;
 
     @Email(message = "Please provide a valid email address")
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(length = 128)
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
