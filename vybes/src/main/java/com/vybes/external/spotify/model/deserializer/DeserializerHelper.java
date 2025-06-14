@@ -101,7 +101,7 @@ public class DeserializerHelper {
                 int year = Integer.parseInt(dateStr);
                 return LocalDate.of(year, 1, 1);
             } catch (NumberFormatException | DateTimeParseException ex) {
-                return LocalDate.of(1,1,1);
+                return LocalDate.of(1, 1, 1);
             }
         }
     }

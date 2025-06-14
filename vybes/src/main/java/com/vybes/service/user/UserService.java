@@ -8,15 +8,22 @@ import com.vybes.model.VybesUser;
 import com.vybes.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
+import org.imgscalr.Scalr;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.util.stream.Collectors;
+
+import javax.imageio.ImageIO;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +54,7 @@ public class UserService implements UserDetailsService {
                 .userId(user.getUserId())
                 .email(user.getEmail())
                 .username(user.getUsername())
+                .profilePictureUrl(getProfilePictureUrl(user.getUserId()))
                 .favoriteArtists(
                         user.getFavoriteArtists().stream()
                                 .map(artistMapper::transform)
@@ -81,6 +89,35 @@ public class UserService implements UserDetailsService {
                 .userId(updatedUser.getUserId())
                 .email(updatedUser.getEmail())
                 .username(updatedUser.getUsername())
+                .profilePictureUrl(getProfilePictureUrl(updatedUser.getUserId()))
                 .build();
+    }
+
+    @SneakyThrows
+    public VybesUserResponseDTO setProfilePicture(MultipartFile image) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        VybesUser user = userRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        BufferedImage resizedImage = ImageIO.read(image.getInputStream());
+        BufferedImage thumbnail = Scalr.resize(resizedImage, 128); // 128x128 thumbnail
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(thumbnail, "png", baos);
+        byte[] imageBytes = baos.toByteArray();
+
+        user.setProfilePicture(imageBytes);
+        VybesUser saved = userRepository.save(user);
+
+        return VybesUserResponseDTO.builder()
+                .userId(saved.getUserId())
+                .email(saved.getEmail())
+                .username(saved.getUsername())
+                .profilePictureUrl(getProfilePictureUrl(saved.getUserId()))
+                .build();
+    }
+
+    private String getProfilePictureUrl(Long id) {
+        return "http://10.0.2.2:8080/api/user/profilePicture/" + id;
     }
 }

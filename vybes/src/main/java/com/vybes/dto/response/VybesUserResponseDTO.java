@@ -14,6 +14,7 @@ public class VybesUserResponseDTO {
     private Long userId;
     private String username;
     private String email;
+    private String profilePictureUrl;
     private Set<ArtistDTO> favoriteArtists;
     private Set<AlbumDTO> favoriteAlbums;
 }

@@ -12,4 +12,6 @@ public interface UserRepository extends JpaRepository<VybesUser, Integer> {
     Optional<VybesUser> findByUsername(String username);
 
     Optional<VybesUser> findByEmail(String email);
+
+    Optional<VybesUser> findByUserId(Long userId);
 }

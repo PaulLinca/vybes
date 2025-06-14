@@ -8,7 +8,9 @@ import com.vybes.model.CommentLike;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = LikeMapper.class)
+@Mapper(
+        componentModel = "spring",
+        uses = {LikeMapper.class, UserMapper.class})
 public interface CommentMapper {
 
     @Mapping(target = "postId", source = "post.id")

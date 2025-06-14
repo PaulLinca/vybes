@@ -12,9 +12,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("api/user")
@@ -37,6 +41,27 @@ public class UserController {
     public VybesUserResponseDTO setUsername(
             @RequestBody UsernameSetupRequestDTO usernameSetupRequestDTO) {
         return userService.setUsername(usernameSetupRequestDTO.getUsername());
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/setProfilePicture")
+    public VybesUserResponseDTO setProfilePicture(@RequestParam("image") MultipartFile image) {
+        return userService.setProfilePicture(image);
+    }
+
+    @GetMapping("/profilePicture/{userId}")
+    public ResponseEntity<byte[]> getProfilePictureById(@PathVariable Long userId) {
+        VybesUser user =
+                userRepository
+                        .findByUserId(userId)
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        byte[] image = user.getProfilePicture();
+        if (image == null || image.length == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image);
     }
 
     @ResponseStatus(HttpStatus.OK)

@@ -39,6 +39,10 @@ public class TrackReview {
     private AlbumReview albumReview;
 
     public enum TrackRating {
-        AWFUL, MEH, OKAY, GREAT, AMAZING
+        AWFUL,
+        MEH,
+        OKAY,
+        GREAT,
+        AMAZING
     }
 }

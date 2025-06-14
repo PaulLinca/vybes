@@ -1,6 +1,7 @@
 package com.vybes.dto.response;
 
 import com.vybes.dto.PostDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

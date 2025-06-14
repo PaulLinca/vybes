@@ -1,15 +1,6 @@
 package com.vybes.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
@@ -38,6 +29,10 @@ public class VybesUser implements UserDetails {
 
     @Column(length = 20, unique = true)
     private String username;
+
+    @Lob
+    @Column(name = "profile_picture")
+    private byte[] profilePicture;
 
     @Email(message = "Please provide a valid email address")
     @Column(unique = true, nullable = false)

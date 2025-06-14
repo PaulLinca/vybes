@@ -5,10 +5,9 @@ import com.vybes.dto.ArtistDTO;
 import com.vybes.external.spotify.SpotifyService;
 import com.vybes.external.spotify.model.entity.SpotifyArtist;
 import com.vybes.external.spotify.model.entity.SpotifyTrack;
-
-import com.vybes.model.Vybe;
 import com.vybes.model.VybesUser;
 import com.vybes.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;

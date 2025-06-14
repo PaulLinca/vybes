@@ -1,6 +1,5 @@
 package com.vybes.model;
 
-
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
