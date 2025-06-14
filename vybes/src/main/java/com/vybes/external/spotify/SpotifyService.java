@@ -8,6 +8,9 @@ import com.vybes.external.spotify.model.entity.SpotifyAlbum;
 import com.vybes.external.spotify.model.entity.SpotifyArtist;
 import com.vybes.external.spotify.model.entity.SpotifyTrack;
 import com.vybes.model.Artist;
+import com.vybes.model.Post;
+import com.vybes.model.VybesUser;
+import com.vybes.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +19,8 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
+// TODO: Make this be an implementation of a MusicService and use DI to inject SpotifyService (avoid
+// using Spotify specific models)
 @Component
 @RequiredArgsConstructor
 public class SpotifyService {
@@ -23,6 +28,7 @@ public class SpotifyService {
     private final SpotifyClient spotifyClient;
     private final AlbumMapper albumMapper;
     private final ArtistMapper artistMapper;
+    private final PostRepository postRepository;
 
     public List<SpotifyTrack> searchTrack(String searchQuery) {
         try {
@@ -64,12 +70,20 @@ public class SpotifyService {
         }
     }
 
-    public AlbumDTO getAlbum(String id) {
+    public AlbumDTO getAlbum(String id, boolean findReview, VybesUser userId) {
         try {
-            return albumMapper.transform(spotifyClient.getAlbum(id));
+            var albumDTO = albumMapper.transform(spotifyClient.getAlbum(id));
+            if (findReview) {
+                albumDTO.setReviewId(
+                        postRepository
+                                .findAlbumReviewBySpotifyIdAndUser(id, userId)
+                                .map(Post::getId)
+                                .orElse(null));
+            }
+            return albumDTO;
         } catch (HttpClientErrorException.Unauthorized e) {
             spotifyClient.refreshAccessToken();
-            return getAlbum(id);
+            return getAlbum(id, findReview, userId);
         }
     }
 

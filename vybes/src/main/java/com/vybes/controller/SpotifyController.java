@@ -6,9 +6,14 @@ import com.vybes.external.spotify.SpotifyService;
 import com.vybes.external.spotify.model.entity.SpotifyArtist;
 import com.vybes.external.spotify.model.entity.SpotifyTrack;
 
+import com.vybes.model.Vybe;
+import com.vybes.model.VybesUser;
+import com.vybes.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +28,7 @@ import java.util.List;
 public class SpotifyController {
 
     private final SpotifyService spotifyService;
+    private final UserRepository userRepository;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/search/track", produces = "application/json; charset=UTF-8")
@@ -50,8 +56,11 @@ public class SpotifyController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/album", produces = "application/json; charset=UTF-8")
-    public AlbumDTO getAlbum(@RequestParam String id) {
-        return spotifyService.getAlbum(id);
+    public AlbumDTO getAlbum(@RequestParam String id, @RequestParam boolean findReview) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        VybesUser user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+
+        return spotifyService.getAlbum(id, findReview, user);
     }
 
     @ResponseStatus(HttpStatus.OK)

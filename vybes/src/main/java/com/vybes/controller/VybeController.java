@@ -33,6 +33,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class VybeController {
 
+    // TODO: Consolidate dependencies so we don't depend on different leveled modules
     private final SpotifyService spotifyService;
     private final ArtistRepository artistRepository;
     private final UserRepository userRepository;

@@ -15,4 +15,5 @@ public class AlbumDTO {
     private List<ArtistDTO> artists;
     private List<TrackDTO> tracks;
     private LocalDate releaseDate;
+    private Long reviewId;
 }
