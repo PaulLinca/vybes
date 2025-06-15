@@ -4,13 +4,18 @@ import com.vybes.dto.PostDTO;
 import com.vybes.dto.mapper.PostMapper;
 import com.vybes.dto.response.PostPageResponse;
 import com.vybes.model.Post;
+import com.vybes.model.VybesUser;
+import com.vybes.repository.UserRepository;
 import com.vybes.service.post.PostService;
 
+import com.vybes.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,13 +31,14 @@ public class FeedController {
 
     private final PostService postService;
     private final PostMapper postMapper;
+    private final UserRepository userRepository;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = "application/json; charset=UTF-8")
     public ResponseEntity<PostPageResponse> getPosts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sort,
+            @RequestParam(defaultValue = "postedDate") String sort,
             @RequestParam(defaultValue = "DESC") String direction) {
 
         Page<Post> vybesPage = postService.getPostsPaginated(page, size, sort, direction);

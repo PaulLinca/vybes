@@ -1,9 +1,6 @@
 package com.vybes.service.post;
 
-import com.vybes.model.Comment;
-import com.vybes.model.CommentLike;
-import com.vybes.model.Post;
-import com.vybes.model.PostLike;
+import com.vybes.model.*;
 import com.vybes.repository.CommentLikeRepository;
 import com.vybes.repository.CommentRepository;
 import com.vybes.repository.PostLikeRepository;
@@ -55,6 +52,26 @@ public class PostService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
 
         return postRepository.findAllByOrderByPostedDateDesc(pageable);
+    }
+
+    @Transactional
+    public Page<Post> getPostsPaginatedByUser(VybesUser user, int page, int size, String sortBy, String direction) {
+        if (page < 0) page = 0;
+        if (size < 1) size = 10;
+        if (size > 50) size = 50;
+
+        if (sortBy == null || sortBy.isEmpty()) {
+            sortBy = "postedDate";
+        }
+
+        Sort.Direction sortDirection = Sort.Direction.DESC;
+        if (direction != null && direction.equalsIgnoreCase("ASC")) {
+            sortDirection = Sort.Direction.ASC;
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+
+        return postRepository.findByUserOrderByPostedDateDesc(user, pageable);
     }
 
     @Transactional
