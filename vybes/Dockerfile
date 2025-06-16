@@ -1,7 +1,11 @@
 # Build stage
 FROM maven:3.9.6-eclipse-temurin-17 AS build
-COPY . /app
 WORKDIR /app
+
+# Copy only the project folder with pom.xml and src
+COPY vybes /app
+
+# Build the app
 RUN mvn clean package -DskipTests
 
 # Run stage
