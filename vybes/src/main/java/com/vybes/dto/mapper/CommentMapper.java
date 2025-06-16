@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(
         componentModel = "spring",
-        uses = {LikeMapper.class, UserMapper.class})
+        uses = {LikeMapper.class})
 public interface CommentMapper {
 
     @Mapping(target = "postId", source = "post.id")

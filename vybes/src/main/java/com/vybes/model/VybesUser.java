@@ -30,7 +30,6 @@ public class VybesUser implements UserDetails {
     @Column(length = 20, unique = true)
     private String username;
 
-    @Lob
     @Column(name = "profile_picture")
     private byte[] profilePicture;
 

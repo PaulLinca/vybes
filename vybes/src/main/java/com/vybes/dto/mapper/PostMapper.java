@@ -12,13 +12,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(
         componentModel = "spring",
-        uses = {
-            LikeMapper.class,
-            CommentMapper.class,
-            ArtistMapper.class,
-            TrackReviewMapper.class,
-            UserMapper.class
-        })
+        uses = {LikeMapper.class, CommentMapper.class, ArtistMapper.class, TrackReviewMapper.class})
 public interface PostMapper {
 
     default PostDTO toPostDTO(Post post) {

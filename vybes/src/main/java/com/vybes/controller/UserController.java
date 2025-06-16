@@ -13,6 +13,7 @@ import com.vybes.service.post.PostService;
 import com.vybes.service.user.UserFavoritesService;
 import com.vybes.service.user.UserService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -59,6 +60,7 @@ public class UserController {
         return userService.setProfilePicture(image);
     }
 
+    @Transactional
     @GetMapping("/profilePicture/{userId}")
     public ResponseEntity<byte[]> getProfilePictureById(@PathVariable Long userId) {
         VybesUser user =
