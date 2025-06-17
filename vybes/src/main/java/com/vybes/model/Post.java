@@ -25,7 +25,6 @@ public abstract class Post {
 
     private ZonedDateTime postedDate;
 
-    @Lob
     @Column(length = 10000)
     private String description;
 

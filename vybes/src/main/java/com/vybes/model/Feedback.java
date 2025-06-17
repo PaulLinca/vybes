@@ -23,7 +23,6 @@ public class Feedback {
     @JoinColumn(name = "user_id")
     private VybesUser user;
 
-    @Lob
     @Column(length = 5000)
     private String text;
 
