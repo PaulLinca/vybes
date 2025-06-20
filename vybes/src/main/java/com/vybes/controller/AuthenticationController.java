@@ -36,7 +36,8 @@ public class AuthenticationController {
 
         VybesUserResponseDTO user =
                 authenticationService.registerUser(
-                        authRequestDTO.getEmail(), authRequestDTO.getPassword());
+                        authRequestDTO.getEmail().trim().toLowerCase(),
+                        authRequestDTO.getPassword());
 
         log.info("User registered successfully: {}", authRequestDTO.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
@@ -49,7 +50,7 @@ public class AuthenticationController {
         try {
             LoginResponseDTO response =
                     authenticationService.loginUser(
-                            authRequestDTO.getEmail(), authRequestDTO.getPassword());
+                            authRequestDTO.getEmail().trim().toLowerCase(), authRequestDTO.getPassword());
 
             log.info("User logged in successfully: {}", authRequestDTO.getEmail());
             return ResponseEntity.ok(response);

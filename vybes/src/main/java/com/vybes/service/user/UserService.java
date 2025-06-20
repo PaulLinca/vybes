@@ -96,8 +96,10 @@ public class UserService implements UserDetailsService {
     @SneakyThrows
     public VybesUserResponseDTO setProfilePicture(MultipartFile image) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        VybesUser user = userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        VybesUser user =
+                userRepository
+                        .findByEmail(auth.getName())
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         BufferedImage resizedImage = ImageIO.read(image.getInputStream());
         BufferedImage thumbnail = Scalr.resize(resizedImage, 128); // 128x128 thumbnail
@@ -118,6 +120,6 @@ public class UserService implements UserDetailsService {
     }
 
     private String getProfilePictureUrl(Long id) {
-        return "http://10.0.2.2:8080/api/user/profilePicture/" + id;
+        return "https://vybes-service.onrender.com/api/user/profilePicture/" + id;
     }
 }
