@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.file.AccessDeniedException;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -185,5 +186,20 @@ public class PostController {
     @GetMapping("/{postId}/likes")
     public List<LikeDTO> getLikesByPostId(@PathVariable Long postId) {
         return postService.getLikesByPostId(postId).stream().map(likeMapper::transform).toList();
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{postId}")
+    public ResponseEntity<?> deletePost(@PathVariable Long postId) throws AccessDeniedException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long userId =
+                userRepository
+                        .findByEmail(authentication.getName())
+                        .map(VybesUser::getUserId)
+                        .orElseThrow();
+
+        postService.deletePost(postId, userId);
+
+        return ResponseEntity.notFound().build();
     }
 }

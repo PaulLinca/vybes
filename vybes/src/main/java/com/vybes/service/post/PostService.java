@@ -6,6 +6,7 @@ import com.vybes.repository.CommentRepository;
 import com.vybes.repository.PostLikeRepository;
 import com.vybes.repository.PostRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,7 +57,8 @@ public class PostService {
     }
 
     @Transactional
-    public Page<Post> getPostsPaginatedByUser(VybesUser user, int page, int size, String sortBy, String direction) {
+    public Page<Post> getPostsPaginatedByUser(
+            VybesUser user, int page, int size, String sortBy, String direction) {
         if (page < 0) page = 0;
         if (size < 1) size = 10;
         if (size > 50) size = 50;
@@ -143,5 +146,19 @@ public class PostService {
     @Transactional
     public List<PostLike> getLikesByPostId(Long postId) {
         return postLikeRepository.findByPostId(postId);
+    }
+
+    @Transactional
+    public void deletePost(Long postId, Long userId) throws AccessDeniedException {
+        Post post =
+                postRepository
+                        .findById(postId)
+                        .orElseThrow(() -> new EntityNotFoundException("Post not found"));
+
+        if (!post.getUser().getUserId().equals(userId)) {
+            throw new AccessDeniedException("You are not allowed to delete this post.");
+        }
+
+        postRepository.delete(post);
     }
 }
