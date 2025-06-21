@@ -1,10 +1,7 @@
 package com.vybes.exception.handler;
 
 import com.vybes.dto.response.ErrorResponse;
-import com.vybes.exception.EmailAlreadyUsedException;
-import com.vybes.exception.InvalidCredentialsException;
-import com.vybes.exception.InvalidRequestException;
-import com.vybes.exception.UserAlreadyExistsException;
+import com.vybes.exception.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +34,22 @@ public class GlobalExceptionHandler {
         logger.error("User doesn't exist", ex);
 
         return new ResponseEntity<>(
-                ErrorResponse.builder().message("User doesn't exist").status(401).build(),
+                ErrorResponse.builder()
+                        .message("User doesn't exist")
+                        .status(HttpStatus.UNAUTHORIZED.value())
+                        .build(),
+                HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+        logger.error("Couldn't find user", ex);
+
+        return new ResponseEntity<>(
+                ErrorResponse.builder()
+                        .message(ex.getMessage())
+                        .status(HttpStatus.UNAUTHORIZED.value())
+                        .build(),
                 HttpStatus.UNAUTHORIZED);
     }
 

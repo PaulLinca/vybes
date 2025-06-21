@@ -3,10 +3,12 @@ package com.vybes.controller;
 import com.vybes.dto.VybeDTO;
 import com.vybes.dto.mapper.PostMapper;
 import com.vybes.dto.request.CreateVybeRequestDTO;
+import com.vybes.exception.UserNotFoundException;
 import com.vybes.external.spotify.SpotifyService;
 import com.vybes.external.spotify.model.entity.SpotifyTrack;
 import com.vybes.model.Artist;
 import com.vybes.model.Vybe;
+import com.vybes.model.VybesUser;
 import com.vybes.repository.ArtistRepository;
 import com.vybes.repository.UserRepository;
 import com.vybes.service.post.PostService;
@@ -52,7 +54,7 @@ public class VybeController {
 
         vybe.setComments(new ArrayList<>());
         vybe.setLikes(new ArrayList<>());
-        vybe.setUser(userRepository.findByEmail(authentication.getName()).orElseThrow());
+        vybe.setUser(getUser(authentication.getName()));
 
         SpotifyTrack spotifyTrack = spotifyService.getTrack(request.getSpotifyTrackId());
         vybe.setSpotifyId(spotifyTrack.getId());
@@ -82,5 +84,11 @@ public class VybeController {
     @GetMapping(value = "/{vybeId}", produces = "application/json; charset=UTF-8")
     public VybeDTO getVybe(@PathVariable Long vybeId) {
         return postMapper.transform((Vybe) postService.getPostById(vybeId));
+    }
+
+    private VybesUser getUser(String name) {
+        return userRepository
+                .findByEmail(name)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + name));
     }
 }

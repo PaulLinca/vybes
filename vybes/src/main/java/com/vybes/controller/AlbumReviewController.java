@@ -1,14 +1,15 @@
 package com.vybes.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vybes.dto.AlbumReviewDTO;
 import com.vybes.dto.mapper.PostMapper;
 import com.vybes.dto.mapper.TrackReviewMapper;
 import com.vybes.dto.request.CreateAlbumReviewRequestDTO;
+import com.vybes.exception.UserNotFoundException;
 import com.vybes.external.spotify.SpotifyService;
 import com.vybes.external.spotify.model.entity.SpotifyAlbum;
 import com.vybes.model.AlbumReview;
 import com.vybes.model.TrackReview;
+import com.vybes.model.VybesUser;
 import com.vybes.repository.ArtistRepository;
 import com.vybes.repository.UserRepository;
 import com.vybes.service.post.PostService;
@@ -46,7 +47,7 @@ public class AlbumReviewController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/post", produces = "application/json; charset=UTF-8")
-    public AlbumReviewDTO postAlbumReview(@RequestBody CreateAlbumReviewRequestDTO request) throws JsonProcessingException {
+    public AlbumReviewDTO postAlbumReview(@RequestBody CreateAlbumReviewRequestDTO request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         AlbumReview albumReview =
@@ -59,7 +60,7 @@ public class AlbumReviewController {
 
         albumReview.setComments(new ArrayList<>());
         albumReview.setLikes(new ArrayList<>());
-        albumReview.setUser(userRepository.findByEmail(authentication.getName()).orElseThrow());
+        albumReview.setUser(getUser(authentication.getName()));
 
         SpotifyAlbum spotifyAlbum = spotifyService.getSpotifyAlbum(request.getSpotifyAlbumId());
         albumReview.setSpotifyId(spotifyAlbum.getId());
@@ -78,10 +79,11 @@ public class AlbumReviewController {
                                                                 a.getId())))
                         .collect(Collectors.toCollection(ArrayList::new)));
 
-        List<TrackReview> trackReviews = request.getTrackReviews().stream()
-                .map(trackReviewMapper::transform)
-                .peek(tr -> tr.setAlbumReview(albumReview))
-                .collect(Collectors.toCollection(ArrayList::new));
+        List<TrackReview> trackReviews =
+                request.getTrackReviews().stream()
+                        .map(trackReviewMapper::transform)
+                        .peek(tr -> tr.setAlbumReview(albumReview))
+                        .collect(Collectors.toCollection(ArrayList::new));
 
         albumReview.setTrackReviews(trackReviews);
 
@@ -94,5 +96,11 @@ public class AlbumReviewController {
     @GetMapping(value = "/{albumReviewId}", produces = "application/json; charset=UTF-8")
     public AlbumReviewDTO getAlbumReview(@PathVariable Long albumReviewId) {
         return postMapper.transform((AlbumReview) postService.getPostById(albumReviewId));
+    }
+
+    private VybesUser getUser(String name) {
+        return userRepository
+                .findByEmail(name)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + name));
     }
 }

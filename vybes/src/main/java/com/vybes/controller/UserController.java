@@ -6,6 +6,7 @@ import com.vybes.dto.request.FavoritesUpdateRequest;
 import com.vybes.dto.request.UsernameSetupRequestDTO;
 import com.vybes.dto.response.PostPageResponse;
 import com.vybes.dto.response.VybesUserResponseDTO;
+import com.vybes.exception.UserNotFoundException;
 import com.vybes.model.Post;
 import com.vybes.model.VybesUser;
 import com.vybes.repository.UserRepository;
@@ -66,7 +67,8 @@ public class UserController {
         VybesUser user =
                 userRepository
                         .findByUserId(userId)
-                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                        .orElseThrow(
+                                () -> new UserNotFoundException("User id not found: " + userId));
 
         byte[] image = user.getProfilePicture();
         if (image == null || image.length == 0) {
@@ -80,7 +82,7 @@ public class UserController {
     @PostMapping("/updateFavorites")
     public void updateFavorites(@RequestBody FavoritesUpdateRequest favoritesUpdateRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        VybesUser user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        VybesUser user = findUser(authentication.getName());
 
         userFavoritesService.updateUserFavorites(user, favoritesUpdateRequest);
 
@@ -97,7 +99,8 @@ public class UserController {
             @RequestParam(defaultValue = "DESC") String direction) {
         VybesUser user = userRepository.findByUserId(userId).orElseThrow();
 
-        Page<Post> vybesPage = postService.getPostsPaginatedByUser(user, page, size, sort, direction);
+        Page<Post> vybesPage =
+                postService.getPostsPaginatedByUser(user, page, size, sort, direction);
 
         List<PostDTO> vybesDTOs =
                 vybesPage.getContent().stream().map(postMapper::toPostDTO).toList();
@@ -112,5 +115,11 @@ public class UserController {
                         vybesPage.isLast());
 
         return ResponseEntity.ok(response);
+    }
+
+    private VybesUser findUser(String name) {
+        return userRepository
+                .findByEmail(name)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + name));
     }
 }

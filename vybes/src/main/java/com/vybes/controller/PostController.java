@@ -6,11 +6,8 @@ import com.vybes.dto.LikeDTO;
 import com.vybes.dto.mapper.CommentMapper;
 import com.vybes.dto.mapper.LikeMapper;
 import com.vybes.dto.response.ErrorResponse;
-import com.vybes.model.Comment;
-import com.vybes.model.CommentLike;
-import com.vybes.model.Post;
-import com.vybes.model.PostLike;
-import com.vybes.model.VybesUser;
+import com.vybes.exception.UserNotFoundException;
+import com.vybes.model.*;
 import com.vybes.repository.UserRepository;
 import com.vybes.service.post.PostService;
 
@@ -47,14 +44,11 @@ public class PostController {
     @PostMapping("/{postId}/likes")
     public ResponseEntity<?> likePost(@PathVariable Long postId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        VybesUser user = getUser(authentication.getName());
 
         Post post = postService.getPostById(postId);
 
-        PostLike like =
-                PostLike.builder()
-                        .user(userRepository.findByEmail(authentication.getName()).orElseThrow())
-                        .post(post)
-                        .build();
+        PostLike like = PostLike.builder().user(user).post(post).build();
 
         Optional<LikeDTO> likeDto =
                 Optional.ofNullable(postService.saveLike(like)).map(likeMapper::transform);
@@ -74,17 +68,12 @@ public class PostController {
     @DeleteMapping("/{postId}/likes")
     public ResponseEntity<?> unlikePost(@PathVariable Long postId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = getUser(authentication.getName()).getUserId();
 
-        Optional<PostLike> like =
-                postService.deleteLike(
-                        postId,
-                        userRepository
-                                .findByEmail(authentication.getName())
-                                .map(VybesUser::getUserId)
-                                .orElseThrow());
+        Optional<PostLike> like = postService.deleteLike(postId, userId);
 
         if (like.isPresent()) {
-            return like.map(l -> likeMapper.transform(l))
+            return like.map(likeMapper::transform)
                     .map(l -> new ResponseEntity<>(l, HttpStatus.OK))
                     .get();
         }
@@ -99,7 +88,7 @@ public class PostController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         Comment comment = commentMapper.transform(request);
-        comment.setUser(userRepository.findByEmail(authentication.getName()).orElseThrow());
+        comment.setUser(getUser(authentication.getName()));
         comment.setPost(postService.getPostById(postId));
         comment.setPostedDate(ZonedDateTime.now());
 
@@ -111,15 +100,9 @@ public class PostController {
     public ResponseEntity<?> deleteComment(
             @PathVariable Long postId, @PathVariable Long commentId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        VybesUser user = getUser(authentication.getName());
 
-        boolean isDeleted =
-                postService.deleteComment(
-                        postId,
-                        commentId,
-                        userRepository
-                                .findByEmail(authentication.getName())
-                                .map(VybesUser::getUserId)
-                                .orElseThrow());
+        boolean isDeleted = postService.deleteComment(postId, commentId, user.getUserId());
 
         if (isDeleted) {
             return ResponseEntity.noContent().build();
@@ -132,10 +115,11 @@ public class PostController {
     @PostMapping("/{postId}/comments/{commentId}/likes")
     public ResponseEntity<?> likeComment(@PathVariable Long postId, @PathVariable Long commentId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        VybesUser user = getUser(authentication.getName());
 
         CommentLike like =
                 CommentLike.builder()
-                        .user(userRepository.findByEmail(authentication.getName()).orElseThrow())
+                        .user(user)
                         .comment(postService.getCommentById(commentId))
                         .build();
 
@@ -159,12 +143,7 @@ public class PostController {
     public ResponseEntity<?> unlikeComment(
             @PathVariable Long postId, @PathVariable Long commentId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        Long userId =
-                userRepository
-                        .findByEmail(authentication.getName())
-                        .map(VybesUser::getUserId)
-                        .orElseThrow();
+        Long userId = getUser(authentication.getName()).getUserId();
 
         boolean isDeleted = postService.deleteCommentLike(commentId, userId);
         if (isDeleted) {
@@ -192,14 +171,16 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId) throws AccessDeniedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId =
-                userRepository
-                        .findByEmail(authentication.getName())
-                        .map(VybesUser::getUserId)
-                        .orElseThrow();
+        Long userId = getUser(authentication.getName()).getUserId();
 
         postService.deletePost(postId, userId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    private VybesUser getUser(String name) {
+        return userRepository
+                .findByEmail(name)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + name));
     }
 }

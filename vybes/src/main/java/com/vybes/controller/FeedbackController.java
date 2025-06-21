@@ -1,7 +1,9 @@
 package com.vybes.controller;
 
 import com.vybes.dto.request.FeedbackRequestDTO;
+import com.vybes.exception.UserNotFoundException;
 import com.vybes.model.Feedback;
+import com.vybes.model.VybesUser;
 import com.vybes.repository.FeedbackRepository;
 import com.vybes.repository.UserRepository;
 
@@ -31,9 +33,15 @@ public class FeedbackController {
                 Feedback.builder()
                         .text(request.getText())
                         .postedDate(ZonedDateTime.now())
-                        .user(userRepository.findByEmail(authentication.getName()).orElseThrow())
+                        .user(getUser(authentication.getName()))
                         .build();
 
         feedbackRepository.save(feedback);
+    }
+
+    private VybesUser getUser(String name) {
+        return userRepository
+                .findByEmail(name)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + name));
     }
 }

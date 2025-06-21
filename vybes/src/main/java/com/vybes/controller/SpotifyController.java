@@ -2,6 +2,7 @@ package com.vybes.controller;
 
 import com.vybes.dto.AlbumDTO;
 import com.vybes.dto.ArtistDTO;
+import com.vybes.exception.UserNotFoundException;
 import com.vybes.external.spotify.SpotifyService;
 import com.vybes.external.spotify.model.entity.SpotifyArtist;
 import com.vybes.external.spotify.model.entity.SpotifyTrack;
@@ -57,14 +58,19 @@ public class SpotifyController {
     @GetMapping(value = "/album", produces = "application/json; charset=UTF-8")
     public AlbumDTO getAlbum(@RequestParam String id, @RequestParam boolean findReview) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        VybesUser user = userRepository.findByEmail(authentication.getName()).orElseThrow();
 
-        return spotifyService.getAlbum(id, findReview, user);
+        return spotifyService.getAlbum(id, findReview, getUser(authentication.getName()));
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/artist", produces = "application/json; charset=UTF-8")
     public SpotifyArtist getArtist(@RequestParam String id) {
         return spotifyService.getArtist(id);
+    }
+
+    private VybesUser getUser(String name) {
+        return userRepository
+                .findByEmail(name)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + name));
     }
 }
