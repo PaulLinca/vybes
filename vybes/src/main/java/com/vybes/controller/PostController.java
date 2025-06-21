@@ -200,6 +200,6 @@ public class PostController {
 
         postService.deletePost(postId, userId);
 
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 }
