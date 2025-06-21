@@ -189,7 +189,7 @@ public class PostController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/{postId}")
+    @DeleteMapping("/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId) throws AccessDeniedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId =
