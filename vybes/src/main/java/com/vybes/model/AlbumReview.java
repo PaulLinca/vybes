@@ -25,7 +25,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
-@DiscrimainatorValue("ALBUM_REVIEW")
+@DiscriminatorValue("ALBUM_REVIEW")
 public class AlbumReview extends Post {
     private String albumName;
     private String spotifyId;
