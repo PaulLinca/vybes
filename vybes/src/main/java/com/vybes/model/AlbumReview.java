@@ -25,19 +25,21 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
-@DiscriminatorValue("ALBUM_REVIEW")
+@DiscrimainatorValue("ALBUM_REVIEW")
 public class AlbumReview extends Post {
     private String albumName;
     private String spotifyId;
     private Integer score;
     private LocalDate releaseDate;
+    private String imageUrl;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "album_review_artist",
             joinColumns = @JoinColumn(name = "album_review_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id"))
-    private List<Artist> spotifyArtists;
+            inverseJoinColumns = @JoinColumn(name = "artist_id", referencedColumnName = "id") // add referencedColumnName
+    )
+    private List<Artist> artists;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "albumReview", cascade = CascadeType.ALL, orphanRemoval = true)

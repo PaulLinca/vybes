@@ -28,8 +28,6 @@ public abstract class Post {
     @Column(length = 10000)
     private String description;
 
-    private String imageUrl;
-
     @JsonManagedReference
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PostLike> likes;

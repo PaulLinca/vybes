@@ -26,6 +26,5 @@ public interface PostMapper {
 
     VybeDTO transform(Vybe vybe);
 
-    @Mapping(source = "spotifyArtists", target = "artists")
     AlbumReviewDTO transform(AlbumReview albumReview);
 }

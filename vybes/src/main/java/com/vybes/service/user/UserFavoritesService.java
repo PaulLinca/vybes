@@ -53,7 +53,6 @@ public class UserFavoritesService {
                                     .spotifyId(spotifyId)
                                     .name(spotifyArtist.getName())
                                     .imageUrl(spotifyArtist.getImageUrl())
-                                    .vybes(new ArrayList<>())
                                     .favoritedBy(new HashSet<>())
                                     .build();
 

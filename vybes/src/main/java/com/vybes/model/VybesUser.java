@@ -2,13 +2,17 @@ package com.vybes.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import lombok.*;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +31,10 @@ public class VybesUser implements UserDetails {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(length = 20, unique = true)
+    @Column(length = 30, unique = true)
+    @Pattern(
+            regexp = "^[a-zA-Z0-9_-]+$",
+            message = "Username can only contain letters, numbers, underscores, and hyphens")
     private String username;
 
     @Column(name = "profile_picture")
@@ -40,7 +47,7 @@ public class VybesUser implements UserDetails {
     @Column(length = 128)
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "user_role_junction",
             joinColumns = {@JoinColumn(name = "user_id")},
@@ -62,6 +69,12 @@ public class VybesUser implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "album_id"))
     @Size(max = 3, message = "You can only have up to 3 favorite albums")
     private Set<Album> favoriteAlbums = new HashSet<>();
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

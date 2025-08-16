@@ -8,6 +8,7 @@ import com.vybes.exception.UserNotFoundException;
 import com.vybes.external.spotify.SpotifyService;
 import com.vybes.external.spotify.model.entity.SpotifyAlbum;
 import com.vybes.model.AlbumReview;
+import com.vybes.model.Artist;
 import com.vybes.model.TrackReview;
 import com.vybes.model.VybesUser;
 import com.vybes.repository.ArtistRepository;
@@ -30,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -68,15 +68,16 @@ public class AlbumReviewController {
         albumReview.setImageUrl(spotifyAlbum.getImageUrl());
         albumReview.setReleaseDate(spotifyAlbum.getReleaseDate());
 
-        albumReview.setSpotifyArtists(
+        albumReview.setArtists(
                 spotifyAlbum.getArtists().stream()
-                        .map(
-                                a ->
-                                        Optional.ofNullable(
-                                                        artistRepository.findBySpotifyId(a.getId()))
-                                                .orElse(
-                                                        spotifyService.getArtistAsEntity(
-                                                                a.getId())))
+                        .map(a -> {
+                            Artist artist = artistRepository.findBySpotifyId(a.getId());
+                            if (artist == null) {
+                                artist = spotifyService.getArtistAsEntity(a.getId());
+                                artist = artistRepository.save(artist);
+                            }
+                            return artist;
+                        })
                         .collect(Collectors.toCollection(ArrayList::new)));
 
         List<TrackReview> trackReviews =

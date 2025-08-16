@@ -24,6 +24,7 @@ public class Vybe extends Post {
     private String songName;
     private String spotifyId;
     private String spotifyAlbumId;
+    private String imageUrl;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
