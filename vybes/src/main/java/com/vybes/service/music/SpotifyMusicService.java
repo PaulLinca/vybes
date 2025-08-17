@@ -113,9 +113,10 @@ public class SpotifyMusicService implements MusicService {
     }
 
     private Track createAndSaveTrack(SpotifyTrack spotifyTrack) {
-        Set<Artist> artists = spotifyTrack.getArtists().stream()
-                .map(spotifyArtist -> getOrCreateArtist(spotifyArtist.getId()))
-                .collect(Collectors.toSet());
+        Set<Artist> artists =
+                spotifyTrack.getArtists().stream()
+                        .map(spotifyArtist -> getOrCreateArtist(spotifyArtist.getId()))
+                        .collect(Collectors.toSet());
 
         Album album = getOrCreateAlbum(spotifyTrack.getAlbum().getId());
 
@@ -127,9 +128,10 @@ public class SpotifyMusicService implements MusicService {
     }
 
     private Album createAndSaveAlbum(SpotifyAlbum spotifyAlbum) {
-        Set<Artist> artists = spotifyAlbum.getArtists().stream()
-                .map(spotifyArtist -> getOrCreateArtist(spotifyArtist.getId()))
-                .collect(Collectors.toSet());
+        Set<Artist> artists =
+                spotifyAlbum.getArtists().stream()
+                        .map(spotifyArtist -> getOrCreateArtist(spotifyArtist.getId()))
+                        .collect(Collectors.toSet());
 
         Album album = albumMapper.transformToEntity(spotifyAlbum);
         album.setArtists(artists);

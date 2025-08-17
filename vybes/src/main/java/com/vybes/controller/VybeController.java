@@ -7,7 +7,6 @@ import com.vybes.exception.UserNotFoundException;
 import com.vybes.model.Vybe;
 import com.vybes.model.VybesUser;
 import com.vybes.repository.UserRepository;
-import com.vybes.service.post.PostService;
 import com.vybes.service.post.VybeService;
 
 import lombok.RequiredArgsConstructor;

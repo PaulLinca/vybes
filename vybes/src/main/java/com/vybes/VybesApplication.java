@@ -2,7 +2,6 @@ package com.vybes;
 
 import com.vybes.model.Role;
 import com.vybes.repository.RoleRepository;
-import com.vybes.service.auth.AuthenticationService;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

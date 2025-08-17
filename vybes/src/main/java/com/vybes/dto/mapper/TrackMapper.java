@@ -1,12 +1,11 @@
 package com.vybes.dto.mapper;
 
-import com.vybes.dto.ArtistDTO;
 import com.vybes.dto.TrackDTO;
 import com.vybes.external.spotify.model.entity.SpotifyArtist;
 import com.vybes.external.spotify.model.entity.SpotifyTrack;
 import com.vybes.model.Artist;
-
 import com.vybes.model.Track;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -36,15 +35,15 @@ public interface TrackMapper {
 
     @Named("artistsToNames")
     default List<String> artistsToNames(Set<Artist> artists) {
-        return artists != null ?
-                artists.stream().map(Artist::getName).toList() :
-                Collections.emptyList();
+        return artists != null
+                ? artists.stream().map(Artist::getName).toList()
+                : Collections.emptyList();
     }
 
     @Named("spotifyArtistsToNames")
     default List<String> spotifyArtistsToNames(List<SpotifyArtist> artists) {
-        return artists != null ?
-                artists.stream().map(SpotifyArtist::getName).toList() :
-                Collections.emptyList();
+        return artists != null
+                ? artists.stream().map(SpotifyArtist::getName).toList()
+                : Collections.emptyList();
     }
 }

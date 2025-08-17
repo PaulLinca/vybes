@@ -1,16 +1,10 @@
 package com.vybes.dto.mapper;
 
 import com.vybes.dto.AlbumDTO;
-import com.vybes.dto.TrackDTO;
 import com.vybes.external.spotify.model.entity.SpotifyAlbum;
-import com.vybes.external.spotify.model.entity.SpotifyArtist;
-import com.vybes.external.spotify.model.entity.SpotifyTrack;
 import com.vybes.model.Album;
 
-import com.vybes.model.Artist;
 import org.mapstruct.*;
-
-import java.util.Set;
 
 @Mapper(
         componentModel = "spring",
