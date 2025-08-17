@@ -4,18 +4,13 @@ import com.vybes.dto.PostDTO;
 import com.vybes.dto.mapper.PostMapper;
 import com.vybes.dto.response.PostPageResponse;
 import com.vybes.model.Post;
-import com.vybes.model.VybesUser;
-import com.vybes.repository.UserRepository;
 import com.vybes.service.post.PostService;
 
-import com.vybes.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,19 +35,19 @@ public class FeedController {
             @RequestParam(defaultValue = "postedDate") String sort,
             @RequestParam(defaultValue = "DESC") String direction) {
 
-        Page<Post> vybesPage = postService.getPostsPaginated(page, size, sort, direction);
+        Page<Post> postPage = postService.getPostsPaginated(page, size, sort, direction);
 
-        List<PostDTO> vybesDTOs =
-                vybesPage.getContent().stream().map(postMapper::toPostDTO).toList();
+        List<PostDTO> dtos =
+                postPage.getContent().stream().map(postMapper::transformToDTO).toList();
 
         PostPageResponse response =
                 new PostPageResponse(
-                        vybesDTOs,
-                        vybesPage.getNumber(),
-                        vybesPage.getSize(),
-                        vybesPage.getTotalElements(),
-                        vybesPage.getTotalPages(),
-                        vybesPage.isLast());
+                        dtos,
+                        postPage.getNumber(),
+                        postPage.getSize(),
+                        postPage.getTotalElements(),
+                        postPage.getTotalPages(),
+                        postPage.isLast());
 
         return ResponseEntity.ok(response);
     }
@@ -60,6 +55,6 @@ public class FeedController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/all", produces = "application/json; charset=UTF-8")
     public List<PostDTO> getAllPosts() {
-        return postService.getAllPosts().stream().map(postMapper::toPostDTO).toList();
+        return postService.getAllPosts().stream().map(postMapper::transformToDTO).toList();
     }
 }

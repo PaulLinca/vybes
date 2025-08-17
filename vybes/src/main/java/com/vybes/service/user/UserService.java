@@ -57,11 +57,11 @@ public class UserService implements UserDetailsService {
                 .profilePictureUrl(getProfilePictureUrl(user.getUserId()))
                 .favoriteArtists(
                         user.getFavoriteArtists().stream()
-                                .map(artistMapper::transform)
+                                .map(artistMapper::transformToDTO)
                                 .collect(Collectors.toSet()))
                 .favoriteAlbums(
                         user.getFavoriteAlbums().stream()
-                                .map(albumMapper::transform)
+                                .map(albumMapper::transformToDTO)
                                 .collect(Collectors.toSet()))
                 .build();
     }

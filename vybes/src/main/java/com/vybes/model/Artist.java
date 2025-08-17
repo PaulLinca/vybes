@@ -19,22 +19,21 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(
-        name = "artists",
-        indexes = {
-            @Index(name = "idx_artist_spotify_id", columnList = "spotifyId"),
-            @Index(name = "idx_artist_name", columnList = "name")
-        })
+@Table(name = "artists")
 public class Artist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String spotifyId;
+    @Column(name = "external_id", unique = true, nullable = false)
+    private String externalId;
 
     @Column(nullable = false)
     private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MusicProvider provider;
 
     private String imageUrl;
 

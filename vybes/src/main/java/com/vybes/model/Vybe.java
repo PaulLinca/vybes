@@ -1,35 +1,25 @@
 package com.vybes.model;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @DiscriminatorValue("VYBE")
 public class Vybe extends Post {
-    private String songName;
-    private String spotifyId;
-    private String spotifyAlbumId;
-    private String imageUrl;
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "track_id")
+    private Track track;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(
-            name = "vybe_artist",
-            joinColumns = @JoinColumn(name = "vybe_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id"))
-    private List<Artist> spotifyArtists;
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "album_id")
+    private Album album;
 }

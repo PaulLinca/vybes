@@ -2,18 +2,13 @@ package com.vybes.controller;
 
 import com.vybes.dto.AlbumDTO;
 import com.vybes.dto.ArtistDTO;
-import com.vybes.exception.UserNotFoundException;
-import com.vybes.external.spotify.SpotifyService;
-import com.vybes.external.spotify.model.entity.SpotifyArtist;
-import com.vybes.external.spotify.model.entity.SpotifyTrack;
-import com.vybes.model.VybesUser;
+import com.vybes.dto.TrackDTO;
 import com.vybes.repository.UserRepository;
+import com.vybes.service.music.SpotifyMusicService;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,12 +22,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SpotifyController {
 
-    private final SpotifyService spotifyService;
+    private final SpotifyMusicService spotifyService;
     private final UserRepository userRepository;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/search/track", produces = "application/json; charset=UTF-8")
-    public List<SpotifyTrack> searchTrack(@RequestParam String query) {
+    public List<TrackDTO> searchTrack(@RequestParam String query) {
         return spotifyService.searchTrack(query);
     }
 
@@ -50,27 +45,19 @@ public class SpotifyController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/track", produces = "application/json; charset=UTF-8")
-    public SpotifyTrack getTrack(@RequestParam String id) {
-        return spotifyService.getTrack(id);
+    public TrackDTO getTrack(@RequestParam String id) {
+        return spotifyService.getTrackDetails(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/album", produces = "application/json; charset=UTF-8")
     public AlbumDTO getAlbum(@RequestParam String id, @RequestParam boolean findReview) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        return spotifyService.getAlbum(id, findReview, getUser(authentication.getName()));
+        return spotifyService.getAlbumDetails(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/artist", produces = "application/json; charset=UTF-8")
-    public SpotifyArtist getArtist(@RequestParam String id) {
-        return spotifyService.getArtist(id);
-    }
-
-    private VybesUser getUser(String name) {
-        return userRepository
-                .findByEmail(name)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + name));
+    public ArtistDTO getArtist(@RequestParam String id) {
+        return spotifyService.getArtistDetails(id);
     }
 }

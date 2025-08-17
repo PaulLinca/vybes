@@ -15,16 +15,26 @@ import org.mapstruct.Mapping;
         uses = {LikeMapper.class, CommentMapper.class, ArtistMapper.class, TrackReviewMapper.class, UserMapper.class})
 public interface PostMapper {
 
-    default PostDTO toPostDTO(Post post) {
+    default PostDTO transformToDTO(Post post) {
         if (post instanceof Vybe vybe) {
-            return transform(vybe);
+            return transformToDTO(vybe);
         } else if (post instanceof AlbumReview albumReview) {
-            return transform(albumReview);
+            return transformToDTO(albumReview);
         }
         return null;
     }
 
-    VybeDTO transform(Vybe vybe);
+    @Mapping(target = "songName", source = "track.name")
+    @Mapping(target = "spotifyId", source = "track.externalId")
+    @Mapping(target = "spotifyArtists", source = "track.artists")
+    @Mapping(target = "spotifyAlbumId", source = "album.externalId")
+    @Mapping(target = "imageUrl", source = "album.imageUrl")
+    VybeDTO transformToDTO(Vybe vybe);
 
-    AlbumReviewDTO transform(AlbumReview albumReview);
+    @Mapping(target = "albumName", source = "album.name")
+    @Mapping(target = "spotifyId", source = "album.externalId")
+    @Mapping(target = "imageUrl", source = "album.imageUrl")
+    @Mapping(target = "releaseDate", source = "album.releaseDate")
+    @Mapping(target = "artists", source = "album.artists")
+    AlbumReviewDTO transformToDTO(AlbumReview albumReview);
 }

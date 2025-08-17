@@ -1,19 +1,8 @@
 package com.vybes.service.challenge;
 
-import com.vybes.dto.request.ChallengeOptionRequestDTO;
-import com.vybes.exception.BadRequestException;
-import com.vybes.exception.SpotifyDataException;
-import com.vybes.external.spotify.SpotifyService;
-import com.vybes.model.*;
-import com.vybes.repository.*;
-
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor

@@ -7,23 +7,29 @@ import com.vybes.external.spotify.model.entity.SpotifyArtist;
 import com.vybes.external.spotify.model.entity.SpotifyTrack;
 import com.vybes.model.Album;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import com.vybes.model.Artist;
+import org.mapstruct.*;
+
+import java.util.Set;
 
 @Mapper(
         componentModel = "spring",
-        uses = {ArtistMapper.class})
+        uses = {ArtistMapper.class, TrackMapper.class})
 public interface AlbumMapper {
-    AlbumDTO transform(Album album);
+
+    @Mapping(target = "spotifyId", source = "externalId")
+    @Mapping(target = "reviewId", ignore = true)
+    AlbumDTO transformToDTO(Album album);
 
     @Mapping(target = "spotifyId", source = "id")
-    AlbumDTO transform(SpotifyAlbum album);
+    @Mapping(target = "reviewId", ignore = true)
+    AlbumDTO transformToDTO(SpotifyAlbum album);
 
-    @Mapping(target = "spotifyId", source = "id")
-    @Mapping(target = "artists", source = "artists")
-    TrackDTO transform(SpotifyTrack track);
-
-    default String getArtistName(SpotifyArtist artist) {
-        return artist.getName();
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "externalId", source = "id")
+    @Mapping(target = "provider", constant = "SPOTIFY")
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "fans", ignore = true)
+    Album transformToEntity(SpotifyAlbum spotifyAlbum);
 }

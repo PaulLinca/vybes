@@ -2,43 +2,29 @@ package com.vybes.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@Builder
+@SuperBuilder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
 @DiscriminatorValue("ALBUM_REVIEW")
 public class AlbumReview extends Post {
-    private String albumName;
-    private String spotifyId;
-    private Integer score;
-    private LocalDate releaseDate;
-    private String imageUrl;
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "album_id", nullable = false)
+    private Album album;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "album_review_artist",
-            joinColumns = @JoinColumn(name = "album_review_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id", referencedColumnName = "id"))
-    private List<Artist> artists;
+    private Integer score;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "albumReview", cascade = CascadeType.ALL, orphanRemoval = true)

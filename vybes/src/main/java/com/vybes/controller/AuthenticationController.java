@@ -50,7 +50,8 @@ public class AuthenticationController {
         try {
             LoginResponseDTO response =
                     authenticationService.loginUser(
-                            authRequestDTO.getEmail().trim().toLowerCase(), authRequestDTO.getPassword());
+                            authRequestDTO.getEmail().trim().toLowerCase(),
+                            authRequestDTO.getPassword());
 
             log.info("User logged in successfully: {}", authRequestDTO.getEmail());
             return ResponseEntity.ok(response);

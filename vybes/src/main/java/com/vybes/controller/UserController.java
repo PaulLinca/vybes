@@ -103,7 +103,7 @@ public class UserController {
                 postService.getPostsPaginatedByUser(user, page, size, sort, direction);
 
         List<PostDTO> vybesDTOs =
-                vybesPage.getContent().stream().map(postMapper::toPostDTO).toList();
+                vybesPage.getContent().stream().map(postMapper::transformToDTO).toList();
 
         PostPageResponse response =
                 new PostPageResponse(

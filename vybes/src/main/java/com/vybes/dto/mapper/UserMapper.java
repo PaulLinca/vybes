@@ -13,7 +13,7 @@ public interface UserMapper {
             target = "profilePictureUrl",
             source = "userId",
             qualifiedByName = "buildProfilePictureUrl")
-    UserDTO transform(VybesUser user);
+    UserDTO transformToDTO(VybesUser user);
 
     @Named("buildProfilePictureUrl")
     default String buildProfilePictureUrl(Long id) {

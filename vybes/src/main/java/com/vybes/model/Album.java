@@ -26,27 +26,28 @@ public class Album {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String spotifyId;
+    @Column(name = "external_id", unique = true, nullable = false)
+    private String externalId;
 
     @Column(nullable = false)
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MusicProvider provider;
+
     private String imageUrl;
     private LocalDate releaseDate;
 
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+    @CreationTimestamp private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    @UpdateTimestamp private LocalDateTime updatedAt;
 
     @ManyToMany
     @JoinTable(
             name = "album_artists",
             joinColumns = @JoinColumn(name = "album_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "artist_id"))
     private Set<Artist> artists = new HashSet<>();
 
     @ManyToMany(mappedBy = "favoriteAlbums")
