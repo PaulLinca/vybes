@@ -2,6 +2,7 @@ package com.vybes.service.auth;
 
 import com.vybes.dto.response.LoginResponseDTO;
 import com.vybes.dto.response.VybesUserResponseDTO;
+import com.vybes.exception.BadRequestException;
 import com.vybes.exception.EmailAlreadyUsedException;
 import com.vybes.model.Role;
 import com.vybes.model.VybesUser;
@@ -126,12 +127,6 @@ public class AuthenticationService {
 
     public static class InvalidTokenException extends RuntimeException {
         public InvalidTokenException(String message) {
-            super(message);
-        }
-    }
-
-    public static class BadRequestException extends RuntimeException {
-        public BadRequestException(String message) {
             super(message);
         }
     }

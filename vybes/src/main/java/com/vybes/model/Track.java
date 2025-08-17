@@ -1,10 +1,12 @@
 package com.vybes.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Data
 @Entity
 @Table(name = "tracks")
 public class Track {

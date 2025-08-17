@@ -26,7 +26,7 @@ public class FeedbackController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/submit")
-    public void setUsername(@RequestBody FeedbackRequestDTO request) {
+    public void submitFeedback(@RequestBody FeedbackRequestDTO request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         Feedback feedback =

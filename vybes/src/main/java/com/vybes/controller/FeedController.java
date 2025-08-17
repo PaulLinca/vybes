@@ -31,7 +31,6 @@ public class FeedController {
 
     private final PostService postService;
     private final PostMapper postMapper;
-    private final UserRepository userRepository;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = "application/json; charset=UTF-8")
