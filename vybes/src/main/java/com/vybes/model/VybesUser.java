@@ -70,11 +70,9 @@ public class VybesUser implements UserDetails {
     @Size(max = 3, message = "You can only have up to 3 favorite albums")
     private Set<Album> favoriteAlbums = new HashSet<>();
 
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+    @CreationTimestamp private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    @UpdateTimestamp private LocalDateTime updatedAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

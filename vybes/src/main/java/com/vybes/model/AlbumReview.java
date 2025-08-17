@@ -37,8 +37,7 @@ public class AlbumReview extends Post {
     @JoinTable(
             name = "album_review_artist",
             joinColumns = @JoinColumn(name = "album_review_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id", referencedColumnName = "id") // add referencedColumnName
-    )
+            inverseJoinColumns = @JoinColumn(name = "artist_id", referencedColumnName = "id"))
     private List<Artist> artists;
 
     @JsonManagedReference
