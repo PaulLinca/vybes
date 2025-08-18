@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,6 +20,6 @@ public class ChallengeDTO {
     private String type;
     private String answerType;
 
-    private List<ChallengeOptionDTO> options;
-    private List<ChallengeSubmissionDTO> challengeSubmissions;
+    private List<ChallengeOptionDTO> options = new ArrayList<>();
+    private List<ChallengeSubmissionDTO> challengeSubmissions = new ArrayList<>();
 }

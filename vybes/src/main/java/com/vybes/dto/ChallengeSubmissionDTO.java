@@ -17,6 +17,6 @@ public class ChallengeSubmissionDTO {
     private ArtistDTO artist;
     private String customText;
 
-    private Long votesCount;
+    private int votesCount;
     private boolean votedByUser;
 }
