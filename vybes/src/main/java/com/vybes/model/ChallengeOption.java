@@ -23,7 +23,6 @@ public class ChallengeOption {
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 
-    // Option can reference an album, track, artist, or be a custom text
     private Long albumId;
     private Long trackId;
     private Long artistId;

@@ -38,9 +38,6 @@ public class Challenge {
 
     private LocalDateTime expiresAt;
 
-    @Column(nullable = false)
-    private boolean isActive = true;
-
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChallengeOption> options = new ArrayList<>();
 
