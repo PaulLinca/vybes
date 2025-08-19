@@ -20,14 +20,14 @@ public class ChallengeOptionResolver {
     private final MusicService musicService;
 
     public List<ChallengeOption> resolveOptions(
-            List<ChallengeOptionRequestDTO> optionRequests, AnswerType answerType, Challenge challenge) {
+            List<ChallengeOptionRequestDTO> optionRequests,
+            AnswerType answerType,
+            Challenge challenge) {
         List<ChallengeOption> options = new ArrayList<>();
 
         for (ChallengeOptionRequestDTO optionRequest : optionRequests) {
-            ChallengeOption option = ChallengeOption.builder()
-                    .votes(new ArrayList<>())
-                    .challenge(challenge)
-                    .build();
+            ChallengeOption option =
+                    ChallengeOption.builder().votes(new ArrayList<>()).challenge(challenge).build();
 
             switch (answerType) {
                 case ALBUM:
