@@ -13,4 +13,5 @@ public class TrackDTO {
     private String spotifyId;
     private String name;
     private List<String> artists;
+    private String imageUrl;
 }
