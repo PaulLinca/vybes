@@ -12,6 +12,6 @@ import java.util.List;
 public class TrackDTO {
     private String spotifyId;
     private String name;
-    private List<String> artists;
+    private List<ArtistDTO> artists;
     private String imageUrl;
 }

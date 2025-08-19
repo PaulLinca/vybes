@@ -14,14 +14,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-@Mapper(componentModel = "spring")
+@Mapper(
+        componentModel = "spring",
+        uses = {TrackMapper.class})
 public interface TrackMapper {
     @Mapping(target = "spotifyId", source = "externalId")
-    @Mapping(target = "artists", source = "artists", qualifiedByName = "artistsToNames")
     TrackDTO transformToDTO(Track track);
 
     @Mapping(target = "spotifyId", source = "id")
-    @Mapping(target = "artists", source = "artists", qualifiedByName = "spotifyArtistsToNames")
     TrackDTO transformToDTO(SpotifyTrack track);
 
     @Mapping(target = "id", ignore = true)
