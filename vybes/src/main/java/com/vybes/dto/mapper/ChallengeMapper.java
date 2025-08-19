@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -16,7 +17,6 @@ public class ChallengeMapper {
 
     private final UserMapper userMapper;
     private final ChallengeOptionMapper optionMapper;
-    private final ChallengeSubmissionMapper submissionMapper;
 
     public ChallengeDTO transformToDTO(Challenge challenge) {
         return ChallengeDTO.builder()
@@ -36,15 +36,7 @@ public class ChallengeMapper {
                                                 optionMapper.transformToDTO(
                                                         option, challenge.getAnswerType()))
                                 .toList())
-                .challengeSubmissions(
-                        Optional.ofNullable(challenge.getChallengeSubmissions())
-                                .orElse(Collections.emptyList())
-                                .stream()
-                                .map(
-                                        submission ->
-                                                submissionMapper.transformToDTO(
-                                                        submission, challenge.getAnswerType()))
-                                .toList())
+                .challengeSubmissions(new ArrayList<>())
                 .build();
     }
 }

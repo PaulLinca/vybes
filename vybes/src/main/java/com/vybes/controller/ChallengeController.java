@@ -7,6 +7,7 @@ import com.vybes.dto.mapper.ChallengeSubmissionMapper;
 import com.vybes.dto.request.ChallengeOptionRequestDTO;
 import com.vybes.dto.request.SubmitChallengeRequestDTO;
 import com.vybes.exception.UserNotFoundException;
+import com.vybes.model.AnswerType;
 import com.vybes.model.Challenge;
 import com.vybes.model.ChallengeSubmission;
 import com.vybes.model.VybesUser;
@@ -21,6 +22,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/challenges")
@@ -53,6 +57,27 @@ public class ChallengeController {
 
         return challengeSubmissionMapper.transformToDTO(
                 submission, submission.getChallenge().getAnswerType());
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @GetMapping(value = "/{challengeId}/submissions", produces = "application/json; charset=UTF-8")
+    public List<ChallengeSubmissionDTO> getSubmissions(@PathVariable Long challengeId) {
+        List<ChallengeSubmission> submissions = challengeService.getSubmissions(challengeId);
+
+        if (submissions.isEmpty()) {
+            return List.of();
+        }
+
+        AnswerType answerType =
+                submissions.stream()
+                        .map(ChallengeSubmission::getChallenge)
+                        .map(Challenge::getAnswerType)
+                        .findFirst()
+                        .get();
+
+        return submissions.stream()
+                .map(s -> challengeSubmissionMapper.transformToDTO(s, answerType))
+                .collect(Collectors.toList());
     }
 
     @ResponseStatus(HttpStatus.OK)

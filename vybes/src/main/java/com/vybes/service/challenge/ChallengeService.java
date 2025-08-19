@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -44,6 +45,12 @@ public class ChallengeService {
         }
 
         return challengeRepository.save(challenge);
+    }
+
+    public Challenge getChallenge(Long challengeId) {
+        return challengeRepository
+                .findById(challengeId)
+                .orElseThrow(() -> new IllegalArgumentException("Challenge not found"));
     }
 
     public ChallengeSubmission addSubmission(
@@ -96,10 +103,8 @@ public class ChallengeService {
         return challengeSubmissionRepository.save(submission);
     }
 
-    public Challenge getChallenge(Long challengeId) {
-        return challengeRepository
-                .findById(challengeId)
-                .orElseThrow(() -> new IllegalArgumentException("Challenge not found"));
+    public List<ChallengeSubmission> getSubmissions(Long challengeId) {
+        return challengeSubmissionRepository.findAllByChallengeId(challengeId);
     }
 
     public void voteForOption(Long challengeId, Long optionId, VybesUser user) {
