@@ -3,7 +3,6 @@ package com.vybes.controller;
 import com.vybes.dto.AlbumDTO;
 import com.vybes.dto.ArtistDTO;
 import com.vybes.dto.TrackDTO;
-import com.vybes.repository.UserRepository;
 import com.vybes.service.music.SpotifyMusicService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import java.util.List;
 public class SpotifyController {
 
     private final SpotifyMusicService spotifyService;
-    private final UserRepository userRepository;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/search/track", produces = "application/json; charset=UTF-8")
@@ -51,7 +49,7 @@ public class SpotifyController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/album", produces = "application/json; charset=UTF-8")
-    public AlbumDTO getAlbum(@RequestParam String id, @RequestParam boolean findReview) {
+    public AlbumDTO getAlbum(@RequestParam String id) {
         return spotifyService.getAlbumDetails(id);
     }
 

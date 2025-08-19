@@ -3,6 +3,7 @@ package com.vybes.service.post;
 import com.vybes.dto.TrackReviewDTO;
 import com.vybes.dto.request.CreateAlbumReviewRequestDTO;
 import com.vybes.model.*;
+import com.vybes.repository.AlbumReviewRepository;
 import com.vybes.repository.PostRepository;
 import com.vybes.service.music.MusicService;
 
@@ -26,6 +27,7 @@ public class AlbumReviewService {
 
     private final MusicService musicService;
     private final PostRepository postRepository;
+    private final AlbumReviewRepository albumReviewRepository;
 
     public AlbumReview createAlbumReview(CreateAlbumReviewRequestDTO request, VybesUser user) {
         Album album = musicService.getOrCreateAlbum(request.getSpotifyAlbumId());
@@ -52,6 +54,10 @@ public class AlbumReviewService {
                 .filter(AlbumReview.class::isInstance)
                 .map(AlbumReview.class::cast)
                 .orElseThrow(() -> new IllegalArgumentException("Album review not found"));
+    }
+
+    public List<AlbumReview> getAlbumReviewByAlbumId(String albumId, VybesUser user) {
+        return albumReviewRepository.findByUserAndAlbum_ExternalId(user, albumId);
     }
 
     private List<TrackReview> createTrackReviews(

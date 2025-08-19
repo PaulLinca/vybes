@@ -14,17 +14,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/album-reviews")
 @RequiredArgsConstructor
+@RequestMapping("/api/album-reviews")
 public class AlbumReviewController {
 
     private final PostMapper postMapper;
@@ -48,6 +45,18 @@ public class AlbumReviewController {
         AlbumReview albumReview = albumReviewService.getAlbumReview(albumReviewId);
 
         return postMapper.transformToDTO(albumReview);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(produces = "application/json; charset=UTF-8")
+    public List<AlbumReviewDTO> getAlbumReviewByAlbumId(@RequestParam String albumSpotifyId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        VybesUser user = getUser(authentication.getName());
+
+        List<AlbumReview> albumReviews =
+                albumReviewService.getAlbumReviewByAlbumId(albumSpotifyId, user);
+
+        return albumReviews.stream().map(postMapper::transformToDTO).collect(Collectors.toList());
     }
 
     private VybesUser getUser(String name) {
