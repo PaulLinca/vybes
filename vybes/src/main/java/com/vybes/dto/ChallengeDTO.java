@@ -3,7 +3,7 @@ package com.vybes.dto;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +13,7 @@ public class ChallengeDTO {
     private Long id;
 
     private UserDTO createdBy;
-    private LocalDateTime createdAt;
-    private LocalDateTime expiresAt;
+    private ZonedDateTime createdAt;
 
     private String question;
     private String type;

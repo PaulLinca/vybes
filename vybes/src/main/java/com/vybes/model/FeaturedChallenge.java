@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @Builder
@@ -22,10 +22,10 @@ public class FeaturedChallenge {
     private Challenge challenge;
 
     @Column(nullable = false)
-    private LocalDateTime featuredAt;
+    private ZonedDateTime featuredAt;
 
     @Column(nullable = false)
-    private LocalDateTime featuredUntil;
+    private ZonedDateTime featuredUntil;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -34,11 +34,6 @@ public class FeaturedChallenge {
     @Column(nullable = false)
     @Builder.Default
     private Boolean isActive = true;
-
-    public boolean isCurrentlyFeatured() {
-        LocalDateTime now = LocalDateTime.now();
-        return isActive && featuredAt.isBefore(now) && featuredUntil.isAfter(now);
-    }
 
     public enum FeaturedType {
         DAILY,

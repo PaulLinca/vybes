@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -21,7 +21,7 @@ public class FeaturedChallengeService {
     private final FeaturedChallengeRepository featuredChallengeRepository;
 
     public Optional<FeaturedChallenge> getCurrentFeaturedChallenge() {
-        return featuredChallengeRepository.findCurrentFeaturedChallenge(LocalDateTime.now());
+        return featuredChallengeRepository.findCurrentFeaturedChallenge(ZonedDateTime.now());
     }
 
     public FeaturedChallenge createFeaturedChallenge(
@@ -31,13 +31,13 @@ public class FeaturedChallengeService {
                         .findById(challengeId)
                         .orElseThrow(() -> new RuntimeException("Challenge not found"));
 
-        if (featuredChallengeRepository.isChallengeFeatured(challenge, LocalDateTime.now())) {
+        if (featuredChallengeRepository.isChallengeFeatured(challenge, ZonedDateTime.now())) {
             throw new RuntimeException("Challenge is already featured");
         }
 
         deactivateCurrentFeaturedChallengeOfType(type);
 
-        LocalDateTime now = LocalDateTime.now();
+        ZonedDateTime now = ZonedDateTime.now();
         FeaturedChallenge featuredChallenge =
                 FeaturedChallenge.builder()
                         .challenge(challenge)
@@ -53,7 +53,7 @@ public class FeaturedChallengeService {
 
     public void deactivateCurrentFeaturedChallengeOfType(FeaturedChallenge.FeaturedType type) {
         Optional<FeaturedChallenge> current =
-                featuredChallengeRepository.findCurrentFeaturedChallenge(LocalDateTime.now());
+                featuredChallengeRepository.findCurrentFeaturedChallenge(ZonedDateTime.now());
         if (current.isPresent() && current.get().getFeaturedType() == type) {
             FeaturedChallenge featuredChallenge = current.get();
             featuredChallenge.setIsActive(false);

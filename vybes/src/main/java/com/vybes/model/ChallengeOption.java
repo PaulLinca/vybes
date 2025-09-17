@@ -1,5 +1,7 @@
 package com.vybes.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -20,6 +22,7 @@ public class ChallengeOption {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;

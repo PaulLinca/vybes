@@ -23,7 +23,6 @@ public class ChallengeMapper {
                 .id(challenge.getId())
                 .createdBy(userMapper.transformToDTO(challenge.getCreatedBy()))
                 .createdAt(challenge.getCreatedAt())
-                .expiresAt(challenge.getExpiresAt())
                 .question(challenge.getQuestion())
                 .type(challenge.getType().name())
                 .answerType(challenge.getAnswerType().name())

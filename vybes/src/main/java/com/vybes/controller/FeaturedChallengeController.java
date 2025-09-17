@@ -18,7 +18,7 @@ public class FeaturedChallengeController {
     private final ChallengeMapper challengeMapper;
     private final FeaturedChallengeService featuredChallengeService;
 
-    @GetMapping("/featured-challenge")
+    @GetMapping("/current")
     public ResponseEntity<ChallengeDTO> getFeaturedChallenge() {
         return featuredChallengeService
                 .getCurrentFeaturedChallenge()

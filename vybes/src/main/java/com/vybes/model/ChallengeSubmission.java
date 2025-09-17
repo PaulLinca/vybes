@@ -1,10 +1,12 @@
 package com.vybes.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,7 @@ public class ChallengeSubmission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "challenge_id", nullable = false)
     private Challenge challenge;
@@ -32,7 +35,7 @@ public class ChallengeSubmission {
     private String customText;
 
     @Column(nullable = false)
-    private LocalDateTime submittedAt;
+    private ZonedDateTime submittedAt;
 
     @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChallengeVote> votes = new ArrayList<>();

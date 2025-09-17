@@ -3,14 +3,14 @@ package com.vybes.dto;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @Builder
 public class ChallengeSubmissionDTO {
     private Long id;
     private UserDTO user;
-    private LocalDateTime submittedAt;
+    private ZonedDateTime submittedAt;
 
     private AlbumDTO album;
     private TrackDTO track;

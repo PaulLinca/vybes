@@ -1,10 +1,12 @@
 package com.vybes.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,13 +36,13 @@ public class Challenge {
     private AnswerType answerType;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 
-    private LocalDateTime expiresAt;
-
+    @JsonManagedReference
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChallengeOption> options = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChallengeSubmission> challengeSubmissions = new ArrayList<>();
 }

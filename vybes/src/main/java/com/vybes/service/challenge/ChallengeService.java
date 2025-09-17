@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Component
@@ -32,8 +32,7 @@ public class ChallengeService {
                 Challenge.builder()
                         .question(request.getQuestion())
                         .createdBy(user)
-                        .createdAt(LocalDateTime.now())
-                        .expiresAt(request.getExpiresAt())
+                        .createdAt(ZonedDateTime.now())
                         .answerType(request.getAnswerType())
                         .type(request.getChallengeType())
                         .build();
@@ -76,7 +75,7 @@ public class ChallengeService {
                 ChallengeSubmission.builder()
                         .challenge(challenge)
                         .user(user)
-                        .submittedAt(LocalDateTime.now())
+                        .submittedAt(ZonedDateTime.now())
                         .build();
 
         switch (challenge.getAnswerType()) {
