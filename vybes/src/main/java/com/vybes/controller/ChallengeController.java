@@ -43,7 +43,7 @@ public class ChallengeController {
 
         Challenge challenge = challengeService.createChallenge(request, user);
 
-        return challengeMapper.transformToDTO(challenge);
+        return challengeMapper.transformToDTO(challenge, user.getUserId());
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -83,9 +83,12 @@ public class ChallengeController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{challengeId}", produces = "application/json; charset=UTF-8")
     public ChallengeDTO getChallenge(@PathVariable Long challengeId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        VybesUser user = getUser(authentication.getName());
+
         Challenge challenge = challengeService.getChallenge(challengeId);
 
-        return challengeMapper.transformToDTO(challenge);
+        return challengeMapper.transformToDTO(challenge, user.getUserId());
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -97,7 +100,7 @@ public class ChallengeController {
         VybesUser user = getUser(authentication.getName());
 
         return challengeMapper.transformToDTO(
-                challengeService.voteForOption(challengeId, optionId, user));
+                challengeService.voteForOption(challengeId, optionId, user), user.getUserId());
     }
 
     @ResponseStatus(HttpStatus.CREATED)

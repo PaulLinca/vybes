@@ -18,7 +18,7 @@ public class ChallengeMapper {
     private final UserMapper userMapper;
     private final ChallengeOptionMapper optionMapper;
 
-    public ChallengeDTO transformToDTO(Challenge challenge) {
+    public ChallengeDTO transformToDTO(Challenge challenge, Long userId) {
         return ChallengeDTO.builder()
                 .id(challenge.getId())
                 .createdBy(userMapper.transformToDTO(challenge.getCreatedBy()))
@@ -33,7 +33,7 @@ public class ChallengeMapper {
                                 .map(
                                         option ->
                                                 optionMapper.transformToDTO(
-                                                        option, challenge.getAnswerType()))
+                                                        option, challenge.getAnswerType(), userId))
                                 .toList())
                 .challengeSubmissions(new ArrayList<>())
                 .build();

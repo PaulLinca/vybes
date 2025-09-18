@@ -24,11 +24,19 @@ public class ChallengeOptionMapper {
     private final ArtistMapper artistMapper;
     private final TrackMapper trackMapper;
 
-    public ChallengeOptionDTO transformToDTO(ChallengeOption option, AnswerType answerType) {
+    public ChallengeOptionDTO transformToDTO(
+            ChallengeOption option, AnswerType answerType, Long currentUserId) {
         ChallengeOptionDTO dto =
                 ChallengeOptionDTO.builder()
                         .id(option.getId())
                         .votesCount(option.getVotes().size())
+                        .votedByUser(
+                                option.getVotes().stream()
+                                        .anyMatch(
+                                                vote ->
+                                                        vote.getUser()
+                                                                .getUserId()
+                                                                .equals(currentUserId)))
                         .build();
 
         resolveOption(option, dto, answerType);
