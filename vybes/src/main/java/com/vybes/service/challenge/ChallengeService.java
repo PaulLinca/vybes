@@ -9,9 +9,13 @@ import com.vybes.repository.ChallengeSubmissionRepository;
 import com.vybes.repository.ChallengeVoteRepository;
 import com.vybes.service.music.MusicService;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -26,6 +30,8 @@ public class ChallengeService {
     private final ChallengeOptionRepository challengeOptionRepository;
     private final ChallengeSubmissionRepository challengeSubmissionRepository;
     private final ChallengeOptionResolver challengeOptionResolver;
+
+    @PersistenceContext private EntityManager entityManager;
 
     public Challenge createChallenge(SubmitChallengeRequestDTO request, VybesUser user) {
         Challenge challenge =
@@ -106,7 +112,8 @@ public class ChallengeService {
         return challengeSubmissionRepository.findAllByChallengeId(challengeId);
     }
 
-    public void voteForOption(Long challengeId, Long optionId, VybesUser user) {
+    @Transactional
+    public Challenge voteForOption(Long challengeId, Long optionId, VybesUser user) {
         ChallengeOption option =
                 challengeOptionRepository
                         .findById(optionId)
@@ -125,6 +132,11 @@ public class ChallengeService {
         }
 
         addVoteToOption(option, user);
+
+        // Refresh the challenge to get the latest vote count otherwise we return the old one
+        entityManager.refresh(option.getChallenge());
+
+        return getChallenge(challengeId);
     }
 
     public void voteForSubmission(Long challengeId, Long submissionId, VybesUser user) {

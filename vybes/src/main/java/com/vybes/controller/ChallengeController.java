@@ -92,11 +92,12 @@ public class ChallengeController {
     @PostMapping(
             value = "/{challengeId}/options/{optionId}/vote",
             produces = "application/json; charset=UTF-8")
-    public void voteForOption(@PathVariable Long challengeId, @PathVariable Long optionId) {
+    public ChallengeDTO voteForOption(@PathVariable Long challengeId, @PathVariable Long optionId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         VybesUser user = getUser(authentication.getName());
 
-        challengeService.voteForOption(challengeId, optionId, user);
+        return challengeMapper.transformToDTO(
+                challengeService.voteForOption(challengeId, optionId, user));
     }
 
     @ResponseStatus(HttpStatus.CREATED)
