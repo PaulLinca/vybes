@@ -1,6 +1,7 @@
 package com.vybes.dto.request;
 
 import com.vybes.model.FeaturedChallenge;
+
 import lombok.Data;
 
 @Data

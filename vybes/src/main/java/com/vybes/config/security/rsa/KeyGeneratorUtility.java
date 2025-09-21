@@ -1,14 +1,14 @@
 package com.vybes.config.security.rsa;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class KeyGeneratorUtility {
-
-    private KeyGeneratorUtility() {
-        // utility class
-    }
 
     public static KeyPair generateRsaKey() {
         try {
