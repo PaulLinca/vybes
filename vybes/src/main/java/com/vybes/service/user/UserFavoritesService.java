@@ -28,21 +28,25 @@ public class UserFavoritesService {
     public void updateUserFavorites(VybesUser user, FavoritesUpdateRequest request) {
         validateRequest(request);
 
-        Set<Artist> artists =
-                Optional.of(request.getArtistIds()).orElse(Collections.emptyList()).stream()
-                        .map(spotifyService::getOrCreateArtist)
-                        .collect(Collectors.toSet());
+        if (request.getArtistIds() != null) {
+            Set<Artist> artists =
+                    Optional.of(request.getArtistIds()).orElse(Collections.emptyList()).stream()
+                            .map(spotifyService::getOrCreateArtist)
+                            .collect(Collectors.toSet());
 
-        user.getFavoriteArtists().clear();
-        user.getFavoriteArtists().addAll(artists);
+            user.getFavoriteArtists().clear();
+            user.getFavoriteArtists().addAll(artists);
+        }
 
-        Set<Album> albums =
-                Optional.of(request.getAlbumIds()).orElse(Collections.emptyList()).stream()
-                        .map(spotifyService::getOrCreateAlbum)
-                        .collect(Collectors.toSet());
+        if (request.getAlbumIds() != null) {
+            Set<Album> albums =
+                    Optional.of(request.getAlbumIds()).orElse(Collections.emptyList()).stream()
+                            .map(spotifyService::getOrCreateAlbum)
+                            .collect(Collectors.toSet());
 
-        user.getFavoriteAlbums().clear();
-        user.getFavoriteAlbums().addAll(albums);
+            user.getFavoriteAlbums().clear();
+            user.getFavoriteAlbums().addAll(albums);
+        }
     }
 
     private void validateRequest(FavoritesUpdateRequest request) {
