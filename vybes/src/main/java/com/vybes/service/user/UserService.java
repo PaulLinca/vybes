@@ -27,19 +27,11 @@ import javax.imageio.ImageIO;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final UserRepository userRepository;
     private final ArtistMapper artistMapper;
     private final AlbumMapper albumMapper;
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository
-                .findByEmail(email)
-                .orElseThrow(
-                        () -> new UsernameNotFoundException("User not found with email: " + email));
-    }
 
     public VybesUserResponseDTO getByUsername(String username) throws UsernameNotFoundException {
         var user =
