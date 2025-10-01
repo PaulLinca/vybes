@@ -30,4 +30,11 @@ public class AuthenticationController {
                 principal.email());
         return ResponseEntity.ok(dto);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(Authentication authentication) {
+        FirebasePrincipal principal = (FirebasePrincipal) authentication.getPrincipal();
+        firebaseAuthService.logout(principal);
+        return ResponseEntity.noContent().build();
+    }
 }

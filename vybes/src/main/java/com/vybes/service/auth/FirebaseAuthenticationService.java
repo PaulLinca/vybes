@@ -54,7 +54,12 @@ public class FirebaseAuthenticationService {
                 .build();
     }
 
-    private String getProfilePictureUrl(Long id) {
-        return "https://vybes-service.onrender.com/api/user/profilePicture/" + id;
+    public void logout(FirebasePrincipal principal) {
+        try {
+            FirebaseAuth.getInstance().revokeRefreshTokens(principal.uid());
+            log.info("Revoked refresh tokens for uid={}", principal.uid());
+        } catch (Exception e) {
+            log.warn("Failed to revoke refresh tokens for uid={} : {}", principal.uid(), e.getMessage());
+        }
     }
 }
