@@ -3,6 +3,7 @@ package com.vybes.controller;
 import com.vybes.dto.PostDTO;
 import com.vybes.dto.mapper.PostMapper;
 import com.vybes.dto.request.FavoritesUpdateRequest;
+import com.vybes.dto.request.ProfilePictureRequestDTO;
 import com.vybes.dto.request.UsernameSetupRequestDTO;
 import com.vybes.dto.response.PostPageResponse;
 import com.vybes.dto.response.VybesUserResponseDTO;
@@ -57,25 +58,9 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/setProfilePicture")
-    public VybesUserResponseDTO setProfilePicture(@RequestParam("image") MultipartFile image) {
-        return userService.setProfilePicture(image);
-    }
-
-    @Transactional
-    @GetMapping("/profilePicture/{userId}")
-    public ResponseEntity<byte[]> getProfilePictureById(@PathVariable Long userId) {
-        VybesUser user =
-                userRepository
-                        .findByUserId(userId)
-                        .orElseThrow(
-                                () -> new UserNotFoundException("User id not found: " + userId));
-
-        byte[] image = user.getProfilePicture();
-        if (image == null || image.length == 0) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image);
+    public VybesUserResponseDTO setProfilePicture(
+            @RequestBody ProfilePictureRequestDTO requestDTO) {
+        return userService.setProfilePicture(requestDTO);
     }
 
     @ResponseStatus(HttpStatus.OK)

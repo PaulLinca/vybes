@@ -55,3 +55,7 @@ secrets.yml
 /.idea/sonarlint/issuestore/index.pb
 
 application-secrets.properties
+
+# Firebase service account (secret)
+src/main/resources/firebase-service-account.json
+vybes/src/main/resources/firebase-service-account.json

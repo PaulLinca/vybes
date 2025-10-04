@@ -37,8 +37,8 @@ public class VybesUser {
             message = "Username can only contain letters, numbers, underscores, and hyphens")
     private String username;
 
-    @Column(name = "profile_picture")
-    private byte[] profilePicture;
+    @Column(name = "profile_picture_url")
+    private String profilePictureUrl;
 
     @Email(message = "Please provide a valid email address")
     @Column(unique = true)
