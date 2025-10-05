@@ -1,5 +1,6 @@
 package com.vybes.config.firebase;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
@@ -24,8 +25,7 @@ public class FirebaseSecurityConfig {
         if (apps != null && !apps.isEmpty()) {
             return FirebaseApp.getInstance();
         }
-        ClassPathResource resource = new ClassPathResource("firebase-service-account.json");
-        try (InputStream in = resource.getInputStream()) {
+        try (InputStream in = new FileInputStream("/etc/secrets/firebase-service-account.json")) {
             FirebaseOptions options =
                     FirebaseOptions.builder()
                             .setCredentials(GoogleCredentials.fromStream(in))
