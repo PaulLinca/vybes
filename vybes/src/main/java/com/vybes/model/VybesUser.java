@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Getter
 @Setter
 @Builder
@@ -69,6 +71,7 @@ public class VybesUser {
 
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Set<FcmToken> fcmTokens = new HashSet<>();
 
     @CreationTimestamp private LocalDateTime createdAt;

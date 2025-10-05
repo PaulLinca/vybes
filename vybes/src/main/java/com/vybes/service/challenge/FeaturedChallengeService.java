@@ -4,11 +4,15 @@ import com.vybes.model.Challenge;
 import com.vybes.model.FeaturedChallenge;
 import com.vybes.repository.ChallengeRepository;
 import com.vybes.repository.FeaturedChallengeRepository;
+import com.vybes.service.notification.PushNotificationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -19,11 +23,13 @@ import java.util.Optional;
 public class FeaturedChallengeService {
     private final ChallengeRepository challengeRepository;
     private final FeaturedChallengeRepository featuredChallengeRepository;
+    private final PushNotificationService pushNotificationService;
 
     public Optional<FeaturedChallenge> getCurrentFeaturedChallenge() {
         return featuredChallengeRepository.findCurrentFeaturedChallenge(ZonedDateTime.now());
     }
 
+    @Transactional
     public FeaturedChallenge createFeaturedChallenge(
             Long challengeId, FeaturedChallenge.FeaturedType type, int durationHours) {
         Challenge challenge =
@@ -47,8 +53,19 @@ public class FeaturedChallengeService {
                         .isActive(true)
                         .build();
 
+        FeaturedChallenge saved = featuredChallengeRepository.save(featuredChallenge);
         log.info("Created featured challenge: {} for {} hours", challengeId, durationHours);
-        return featuredChallengeRepository.save(featuredChallenge);
+
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        pushNotificationService
+                                .sendNewFeaturedChallengeNotificationAsync(saved);
+                    }
+                });
+
+        return saved;
     }
 
     public void deactivateCurrentFeaturedChallengeOfType(FeaturedChallenge.FeaturedType type) {

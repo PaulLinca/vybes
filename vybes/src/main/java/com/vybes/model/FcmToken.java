@@ -7,6 +7,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Getter
 @Setter
 @Builder
@@ -23,6 +25,7 @@ public class FcmToken {
     @Column(nullable = false, length = 512)
     private String token;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private VybesUser user;
@@ -36,4 +39,3 @@ public class FcmToken {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }
-
