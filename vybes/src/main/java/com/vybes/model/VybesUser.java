@@ -67,6 +67,10 @@ public class VybesUser {
     @Size(max = 3, message = "You can only have up to 3 favorite albums")
     private Set<Album> favoriteAlbums = new HashSet<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FcmToken> fcmTokens = new HashSet<>();
+
     @CreationTimestamp private LocalDateTime createdAt;
     @UpdateTimestamp private LocalDateTime updatedAt;
 }
