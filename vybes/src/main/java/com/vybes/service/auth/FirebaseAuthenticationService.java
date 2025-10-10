@@ -50,6 +50,7 @@ public class FirebaseAuthenticationService {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .userId(user.getUserId())
+                .roles(user.getAuthorities())
                 .requiresUsernameSetup(user.getUsername() == null)
                 .build();
     }

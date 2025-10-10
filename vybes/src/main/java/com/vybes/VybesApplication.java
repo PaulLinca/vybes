@@ -21,6 +21,11 @@ public class VybesApplication {
                 return;
             }
             roleRepository.save(Role.builder().authority("USER").build());
+
+            if(roleRepository.findByAuthority("ADMIN").isPresent()) {
+                return;
+            }
+            roleRepository.save(Role.builder().authority("ADMIN").build());
         };
     }
 }

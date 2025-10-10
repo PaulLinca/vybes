@@ -30,7 +30,7 @@ public class SubmitChallengeRequestDTO {
     @NotNull(message = "Answer type is required")
     private AnswerType answerType;
 
-    @Valid private List<ChallengeOptionRequestDTO> options;
+    @Valid private List<String> options;
 
     @AssertTrue(message = "POLL challenges must have at least 2 options")
     public boolean isPollValidation() {

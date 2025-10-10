@@ -5,6 +5,7 @@ import com.vybes.dto.mapper.ArtistMapper;
 import com.vybes.dto.request.ProfilePictureRequestDTO;
 import com.vybes.dto.response.VybesUserResponseDTO;
 import com.vybes.exception.UserAlreadyExistsException;
+import com.vybes.model.Role;
 import com.vybes.model.VybesUser;
 import com.vybes.repository.UserRepository;
 
@@ -48,6 +49,10 @@ public class UserService {
                         user.getFavoriteAlbums().stream()
                                 .map(albumMapper::transformToDTO)
                                 .collect(Collectors.toSet()))
+                .roles(
+                        user.getAuthorities().stream()
+                                .map(Role::getAuthority)
+                                .collect(Collectors.toSet()))
                 .build();
     }
 
@@ -75,6 +80,10 @@ public class UserService {
                 .email(updatedUser.getEmail())
                 .username(updatedUser.getUsername())
                 .profilePictureUrl(updatedUser.getProfilePictureUrl())
+                .roles(
+                        updatedUser.getAuthorities().stream()
+                                .map(Role::getAuthority)
+                                .collect(Collectors.toSet()))
                 .build();
     }
 
@@ -94,6 +103,10 @@ public class UserService {
                 .email(saved.getEmail())
                 .username(saved.getUsername())
                 .profilePictureUrl(saved.getProfilePictureUrl())
+                .roles(
+                        saved.getAuthorities().stream()
+                                .map(Role::getAuthority)
+                                .collect(Collectors.toSet()))
                 .build();
     }
 }
