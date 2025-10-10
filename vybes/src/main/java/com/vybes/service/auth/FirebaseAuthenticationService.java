@@ -1,8 +1,10 @@
 package com.vybes.service.auth;
 
+import java.util.stream.Collectors;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserRecord;
 import com.vybes.dto.response.LoginResponseDTO;
+import com.vybes.model.Role;
 import com.vybes.model.VybesUser;
 import com.vybes.repository.UserRepository;
 import com.vybes.security.FirebasePrincipal;
@@ -50,7 +52,10 @@ public class FirebaseAuthenticationService {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .userId(user.getUserId())
-                .roles(user.getAuthorities())
+                .roles(
+                        user.getAuthorities().stream()
+                                .map(Role::getAuthority)
+                                .collect(Collectors.toSet()))
                 .requiresUsernameSetup(user.getUsername() == null)
                 .build();
     }

@@ -11,6 +11,6 @@ public class LoginResponseDTO {
     private Long userId;
     private String email;
     private String username;
-    private Set<Role> roles;
+    private Set<String> roles;
     private boolean requiresUsernameSetup;
 }
