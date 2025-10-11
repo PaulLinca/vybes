@@ -25,6 +25,8 @@ public class Track {
     @Column(nullable = false)
     private String name;
 
+    private String imageUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MusicProvider provider;
