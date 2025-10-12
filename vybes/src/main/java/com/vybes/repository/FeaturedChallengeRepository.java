@@ -3,6 +3,8 @@ package com.vybes.repository;
 import com.vybes.model.Challenge;
 import com.vybes.model.FeaturedChallenge;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -37,4 +39,7 @@ public interface FeaturedChallengeRepository extends JpaRepository<FeaturedChall
             "SELECT COUNT(fc) > 0 FROM FeaturedChallenge fc WHERE fc.challenge = :challenge AND fc.isActive = true AND fc.featuredAt <= :now AND fc.featuredUntil > :now")
     boolean isChallengeFeatured(
             @Param("challenge") Challenge challenge, @Param("now") ZonedDateTime now);
+
+    @Query("SELECT fc FROM FeaturedChallenge fc WHERE fc.featuredUntil < :now ORDER BY fc.featuredUntil DESC")
+    Page<FeaturedChallenge> findPastFeaturedChallenges(@Param("now") ZonedDateTime now, Pageable pageable);
 }

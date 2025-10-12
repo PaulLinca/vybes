@@ -1,7 +1,9 @@
 package com.vybes.dto.mapper;
 
 import com.vybes.dto.ChallengeDTO;
+import com.vybes.dto.FeaturedChallengeDTO;
 import com.vybes.model.Challenge;
+import com.vybes.model.FeaturedChallenge;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,6 +38,14 @@ public class ChallengeMapper {
                                                         option, challenge.getAnswerType(), userId))
                                 .toList())
                 .challengeSubmissions(new ArrayList<>())
+                .build();
+    }
+
+    public FeaturedChallengeDTO transformToDTO(FeaturedChallenge featuredChallenge, Long userId) {
+        return FeaturedChallengeDTO.builder()
+                .challenge(transformToDTO(featuredChallenge.getChallenge(), userId))
+                .featuredAt(featuredChallenge.getFeaturedAt())
+                .featuredUntil(featuredChallenge.getFeaturedUntil())
                 .build();
     }
 }

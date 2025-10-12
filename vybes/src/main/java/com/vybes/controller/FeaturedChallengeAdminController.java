@@ -1,5 +1,7 @@
 package com.vybes.controller;
 
+import com.vybes.dto.FeaturedChallengeDTO;
+import com.vybes.dto.mapper.ChallengeMapper;
 import com.vybes.dto.request.CreateFeaturedChallengeRequestDTO;
 import com.vybes.model.FeaturedChallenge;
 import com.vybes.service.challenge.FeaturedChallengeService;
@@ -16,17 +18,24 @@ import org.springframework.web.bind.annotation.*;
 @PreAuthorize("hasRole('ADMIN')")
 public class FeaturedChallengeAdminController {
 
+    private final ChallengeMapper challengeMapper;
     private final FeaturedChallengeService featuredChallengeService;
 
     @PostMapping
-    public ResponseEntity<FeaturedChallenge> createFeaturedChallenge(
+    public ResponseEntity<FeaturedChallengeDTO> createFeaturedChallenge(
             @RequestBody CreateFeaturedChallengeRequestDTO request) {
-
         FeaturedChallenge featuredChallenge =
                 featuredChallengeService.createFeaturedChallenge(
                         request.getChallengeId(), request.getType(), request.getDurationHours());
 
-        return ResponseEntity.ok(featuredChallenge);
+        return ResponseEntity.ok(
+                FeaturedChallengeDTO.builder()
+                        .challenge(
+                                challengeMapper.transformToDTO(
+                                        featuredChallenge.getChallenge(), null))
+                        .featuredAt(featuredChallenge.getFeaturedAt())
+                        .featuredUntil(featuredChallenge.getFeaturedUntil())
+                        .build());
     }
 
     @DeleteMapping("/{id}")

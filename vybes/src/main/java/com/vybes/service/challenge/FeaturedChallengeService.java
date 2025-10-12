@@ -9,6 +9,8 @@ import com.vybes.service.notification.PushNotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -27,6 +29,10 @@ public class FeaturedChallengeService {
 
     public Optional<FeaturedChallenge> getCurrentFeaturedChallenge() {
         return featuredChallengeRepository.findCurrentFeaturedChallenge(ZonedDateTime.now());
+    }
+
+    public Page<FeaturedChallenge> getPastFeaturedChallenges(Pageable pageable) {
+        return featuredChallengeRepository.findPastFeaturedChallenges(ZonedDateTime.now(), pageable);
     }
 
     @Transactional
