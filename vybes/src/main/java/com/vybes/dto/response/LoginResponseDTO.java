@@ -1,9 +1,9 @@
 package com.vybes.dto.response;
 
-import java.util.Set;
-import com.vybes.model.Role;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.Set;
 
 @Data
 @Builder

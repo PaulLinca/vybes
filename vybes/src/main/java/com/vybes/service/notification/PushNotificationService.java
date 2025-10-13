@@ -25,20 +25,27 @@ public class PushNotificationService {
 
     @Transactional(readOnly = true)
     public void sendNewFeaturedChallengeNotificationAsync(FeaturedChallenge featured) {
-        new Thread(() -> {
-            try {
-                sendNewFeaturedChallengeNotification(featured);
-            } catch (Exception e) {
-                log.warn("Failed to send featured challenge notification: {}", e.getMessage());
-            }
-        }, "featured-challenge-push").start();
+        new Thread(
+                        () -> {
+                            try {
+                                sendNewFeaturedChallengeNotification(featured);
+                            } catch (Exception e) {
+                                log.warn(
+                                        "Failed to send featured challenge notification: {}",
+                                        e.getMessage());
+                            }
+                        },
+                        "featured-challenge-push")
+                .start();
     }
 
     @Transactional
     public void sendNewFeaturedChallengeNotification(FeaturedChallenge featured) {
         List<FcmToken> tokens = fcmTokenRepository.findAll();
         if (tokens.isEmpty()) {
-            log.debug("No FCM tokens registered; skipping notification for featured challenge {}", featured.getId());
+            log.debug(
+                    "No FCM tokens registered; skipping notification for featured challenge {}",
+                    featured.getId());
             return;
         }
 
@@ -48,30 +55,35 @@ public class PushNotificationService {
         }
         List<String> allTokens = new ArrayList<>(tokenMap.keySet());
 
-        String question = Optional.ofNullable(featured.getChallenge())
-                .map(Challenge::getQuestion)
-                .orElse("A new challenge is live!");
+        String question =
+                Optional.ofNullable(featured.getChallenge())
+                        .map(Challenge::getQuestion)
+                        .orElse("A new challenge is live!");
         String shortQuestion = truncate(question, 80);
-        String title = switch (featured.getFeaturedType()) {
-            case DAILY -> "New Daily Challenge";
-            case WEEKLY -> "New Weekly Challenge";
-            case SPECIAL_EVENT -> "Special Event Challenge";
-        };
+        String title =
+                switch (featured.getFeaturedType()) {
+                    case DAILY -> "New Daily Challenge";
+                    case WEEKLY -> "New Weekly Challenge";
+                    case SPECIAL_EVENT -> "Special Event Challenge";
+                };
         String body = shortQuestion + " - Tap to vote now!";
 
         int total = allTokens.size();
         int sent = 0;
         int removed = 0;
         for (int i = 0; i < allTokens.size(); i += FCM_BATCH_LIMIT) {
-            List<String> batch = allTokens.subList(i, Math.min(i + FCM_BATCH_LIMIT, allTokens.size()));
-            MulticastMessage message = MulticastMessage.builder()
-                    .addAllTokens(batch)
-                    .setNotification(Notification.builder().setTitle(title).setBody(body).build())
-                    .putData("challengeId", String.valueOf(featured.getChallenge().getId()))
-                    .putData("featuredId", String.valueOf(featured.getId()))
-                    .putData("type", featured.getFeaturedType().name())
-                    .putData("click_action", "OPEN_MAIN_ACTIVITY")
-                    .build();
+            List<String> batch =
+                    allTokens.subList(i, Math.min(i + FCM_BATCH_LIMIT, allTokens.size()));
+            MulticastMessage message =
+                    MulticastMessage.builder()
+                            .addAllTokens(batch)
+                            .setNotification(
+                                    Notification.builder().setTitle(title).setBody(body).build())
+                            .putData("challengeId", String.valueOf(featured.getChallenge().getId()))
+                            .putData("featuredId", String.valueOf(featured.getId()))
+                            .putData("type", featured.getFeaturedType().name())
+                            .putData("click_action", "OPEN_MAIN_ACTIVITY")
+                            .build();
             try {
                 BatchResponse response;
                 try {
@@ -79,15 +91,22 @@ public class PushNotificationService {
                 } catch (FirebaseMessagingException primary) {
                     if (isBatchNotFound(primary)) {
                         // Fallback: retry sending each token individually (avoids /batch endpoint)
-                        log.warn("Multicast batch endpoint returned 404; falling back to sendEachForMulticast. Cause: {}", sanitize(primary.getMessage()));
+                        log.warn(
+                                "Multicast batch endpoint returned 404; falling back to sendEachForMulticast. Cause: {}",
+                                sanitize(primary.getMessage()));
                         try {
-                            response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
+                            response =
+                                    FirebaseMessaging.getInstance().sendEachForMulticast(message);
                         } catch (FirebaseMessagingException secondary) {
-                            log.warn("Fallback sendEachForMulticast also failed: {}", sanitize(secondary.getMessage()));
+                            log.warn(
+                                    "Fallback sendEachForMulticast also failed: {}",
+                                    sanitize(secondary.getMessage()));
                             continue; // skip this batch
                         }
                     } else {
-                        log.warn("Firebase messaging batch failed: {}", sanitize(primary.getMessage()));
+                        log.warn(
+                                "Firebase messaging batch failed: {}",
+                                sanitize(primary.getMessage()));
                         continue; // skip this batch
                     }
                 }
@@ -103,7 +122,12 @@ public class PushNotificationService {
                 log.warn("Unexpected error while sending FCM batch: {}", sanitize(e.getMessage()));
             }
         }
-        log.info("Featured challenge notification summary: totalTokens={} sent={} removedInvalid={} featuredId={}", total, sent, removed, featured.getId());
+        log.info(
+                "Featured challenge notification summary: totalTokens={} sent={} removedInvalid={} featuredId={}",
+                total,
+                sent,
+                removed,
+                featured.getId());
     }
 
     private boolean isBatchNotFound(FirebaseMessagingException e) {
@@ -131,7 +155,10 @@ public class PushNotificationService {
             try {
                 fcmTokenRepository.findByToken(invalidToken).ifPresent(fcmTokenRepository::delete);
             } catch (Exception ex) {
-                log.debug("Failed to remove invalid FCM token {}: {}", invalidToken, sanitize(ex.getMessage()));
+                log.debug(
+                        "Failed to remove invalid FCM token {}: {}",
+                        invalidToken,
+                        sanitize(ex.getMessage()));
             }
         }
     }

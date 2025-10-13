@@ -22,7 +22,7 @@ public class VybesApplication {
             }
             roleRepository.save(Role.builder().authority("USER").build());
 
-            if(roleRepository.findByAuthority("ADMIN").isPresent()) {
+            if (roleRepository.findByAuthority("ADMIN").isPresent()) {
                 return;
             }
             roleRepository.save(Role.builder().authority("ADMIN").build());

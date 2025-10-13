@@ -16,4 +16,3 @@ public class RegisterFcmTokenRequestDTO {
     @Size(max = 40)
     private String devicePlatform;
 }
-

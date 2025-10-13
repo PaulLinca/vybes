@@ -1,20 +1,21 @@
 package com.vybes.config.firebase;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.List;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.auth.FirebaseAuth;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.List;
 
 @Configuration
 public class FirebaseSecurityConfig {
@@ -57,9 +58,7 @@ public class FirebaseSecurityConfig {
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())
-                .addFilterBefore(
-                        firebaseAuthFilter,
-                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(firebaseAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }

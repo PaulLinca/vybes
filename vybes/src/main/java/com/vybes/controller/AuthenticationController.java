@@ -6,14 +6,14 @@ import com.vybes.security.FirebasePrincipal;
 import com.vybes.service.auth.FirebaseAuthenticationService;
 import com.vybes.service.notification.FcmTokenService;
 
+import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/auth")

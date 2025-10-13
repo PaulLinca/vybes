@@ -40,6 +40,8 @@ public interface FeaturedChallengeRepository extends JpaRepository<FeaturedChall
     boolean isChallengeFeatured(
             @Param("challenge") Challenge challenge, @Param("now") ZonedDateTime now);
 
-    @Query("SELECT fc FROM FeaturedChallenge fc WHERE fc.featuredUntil < :now ORDER BY fc.featuredUntil DESC")
-    Page<FeaturedChallenge> findPastFeaturedChallenges(@Param("now") ZonedDateTime now, Pageable pageable);
+    @Query(
+            "SELECT fc FROM FeaturedChallenge fc WHERE fc.featuredUntil < :now ORDER BY fc.featuredUntil DESC")
+    Page<FeaturedChallenge> findPastFeaturedChallenges(
+            @Param("now") ZonedDateTime now, Pageable pageable);
 }

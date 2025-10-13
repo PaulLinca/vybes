@@ -1,6 +1,7 @@
 package com.vybes.repository;
 
 import com.vybes.model.VybesUser;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,6 +1,5 @@
 package com.vybes.service.auth;
 
-import java.util.stream.Collectors;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserRecord;
 import com.vybes.dto.response.LoginResponseDTO;
@@ -8,10 +7,14 @@ import com.vybes.model.Role;
 import com.vybes.model.VybesUser;
 import com.vybes.repository.UserRepository;
 import com.vybes.security.FirebasePrincipal;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
