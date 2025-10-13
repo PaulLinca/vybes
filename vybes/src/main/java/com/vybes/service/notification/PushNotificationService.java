@@ -70,6 +70,7 @@ public class PushNotificationService {
                     .putData("challengeId", String.valueOf(featured.getChallenge().getId()))
                     .putData("featuredId", String.valueOf(featured.getId()))
                     .putData("type", featured.getFeaturedType().name())
+                    .putData("click_action", "OPEN_MAIN_ACTIVITY")
                     .build();
             try {
                 BatchResponse response;
