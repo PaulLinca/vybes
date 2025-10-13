@@ -77,12 +77,11 @@ public class PushNotificationService {
             MulticastMessage message =
                     MulticastMessage.builder()
                             .addAllTokens(batch)
-                            .setNotification(
-                                    Notification.builder().setTitle(title).setBody(body).build())
+                            .putData("title", title)
+                            .putData("body", body)
                             .putData("challengeId", String.valueOf(featured.getChallenge().getId()))
                             .putData("featuredId", String.valueOf(featured.getId()))
                             .putData("type", featured.getFeaturedType().name())
-                            .putData("click_action", "OPEN_MAIN_ACTIVITY")
                             .build();
             try {
                 BatchResponse response;
@@ -90,7 +89,7 @@ public class PushNotificationService {
                     response = FirebaseMessaging.getInstance().sendMulticast(message);
                 } catch (FirebaseMessagingException primary) {
                     if (isBatchNotFound(primary)) {
-                        // Fallback: retry sending each token individually (avoids /batch endpoint)
+                        // Fallback: retry sending each token individually
                         log.warn(
                                 "Multicast batch endpoint returned 404; falling back to sendEachForMulticast. Cause: {}",
                                 sanitize(primary.getMessage()));
@@ -101,13 +100,13 @@ public class PushNotificationService {
                             log.warn(
                                     "Fallback sendEachForMulticast also failed: {}",
                                     sanitize(secondary.getMessage()));
-                            continue; // skip this batch
+                            continue;
                         }
                     } else {
                         log.warn(
                                 "Firebase messaging batch failed: {}",
                                 sanitize(primary.getMessage()));
-                        continue; // skip this batch
+                        continue;
                     }
                 }
                 sent += response.getSuccessCount();
@@ -164,8 +163,9 @@ public class PushNotificationService {
     }
 
     private String sanitize(String s) {
-        if (s == null) return null;
-        // Avoid logging full HTML bodies; truncate long messages
+        if (s == null) {
+            return null;
+        }
         return s.length() > 300 ? s.substring(0, 300) + "..." : s;
     }
 
@@ -177,7 +177,9 @@ public class PushNotificationService {
     }
 
     private String truncate(String s, int max) {
-        if (s == null) return "";
+        if (s == null) {
+            return "";
+        }
         return s.length() <= max ? s : s.substring(0, max - 1) + "…";
     }
 }

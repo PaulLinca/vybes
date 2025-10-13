@@ -29,7 +29,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/user")
-@CrossOrigin("*") // check what this means
+@CrossOrigin("*")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
