@@ -32,7 +32,8 @@ public class FeaturedChallengeService {
     }
 
     public Page<FeaturedChallenge> getPastFeaturedChallenges(Pageable pageable) {
-        return featuredChallengeRepository.findPastFeaturedChallenges(ZonedDateTime.now(), pageable);
+        return featuredChallengeRepository.findPastFeaturedChallenges(
+                ZonedDateTime.now(), pageable);
     }
 
     @Transactional
@@ -66,8 +67,7 @@ public class FeaturedChallengeService {
                 new TransactionSynchronization() {
                     @Override
                     public void afterCommit() {
-                        pushNotificationService
-                                .sendNewFeaturedChallengeNotificationAsync(saved);
+                        pushNotificationService.sendNewFeaturedChallengeNotificationAsync(saved);
                     }
                 });
 
@@ -80,6 +80,12 @@ public class FeaturedChallengeService {
         if (current.isPresent() && current.get().getFeaturedType() == type) {
             FeaturedChallenge featuredChallenge = current.get();
             featuredChallenge.setIsActive(false);
+
+            ZonedDateTime now = ZonedDateTime.now();
+            if (featuredChallenge.getFeaturedUntil().isAfter(now)) {
+                featuredChallenge.setFeaturedUntil(now);
+            }
+
             featuredChallengeRepository.save(featuredChallenge);
             log.info("Deactivated current featured challenge: {}", featuredChallenge.getId());
         }
