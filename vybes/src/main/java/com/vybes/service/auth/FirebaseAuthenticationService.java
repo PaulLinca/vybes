@@ -5,6 +5,7 @@ import com.google.firebase.auth.UserRecord;
 import com.vybes.dto.response.LoginResponseDTO;
 import com.vybes.model.Role;
 import com.vybes.model.VybesUser;
+import com.vybes.repository.RoleRepository;
 import com.vybes.repository.UserRepository;
 import com.vybes.security.FirebasePrincipal;
 
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class FirebaseAuthenticationService {
 
+    private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -31,7 +34,10 @@ public class FirebaseAuthenticationService {
                 UserRecord record = FirebaseAuth.getInstance().getUser(principal.uid());
                 email = record.getEmail();
             } catch (Exception e) {
-                log.warn("Email not present for uid={} and lookup failed: {}", principal.uid(), e.getMessage());
+                log.warn(
+                        "Email not present for uid={} and lookup failed: {}",
+                        principal.uid(),
+                        e.getMessage());
             }
         }
         if (email != null) {
@@ -39,14 +45,20 @@ public class FirebaseAuthenticationService {
         }
 
         String finalEmail = email;
-        VybesUser user = userRepository.findByFirebaseUid(principal.uid()).orElseGet(() ->
-                userRepository.save(VybesUser.builder()
-                        .firebaseUid(principal.uid())
-                        .email(finalEmail)
-                        .build())
-        );
+        VybesUser user =
+                userRepository
+                        .findByFirebaseUid(principal.uid())
+                        .orElseGet(
+                                () ->
+                                        userRepository.save(
+                                                VybesUser.builder()
+                                                        .firebaseUid(principal.uid())
+                                                        .email(finalEmail)
+                                                        .authorities(Set.of(getUserRole()))
+                                                        .build()));
 
-        if (email != null && (user.getEmail() == null || !user.getEmail().equalsIgnoreCase(email))) {
+        if (email != null
+                && (user.getEmail() == null || !user.getEmail().equalsIgnoreCase(email))) {
             user.setEmail(email);
             user = userRepository.save(user);
         }
@@ -63,12 +75,19 @@ public class FirebaseAuthenticationService {
                 .build();
     }
 
+    private Role getUserRole() {
+        return roleRepository.findByAuthority("USER").orElseThrow();
+    }
+
     public void logout(FirebasePrincipal principal) {
         try {
             FirebaseAuth.getInstance().revokeRefreshTokens(principal.uid());
             log.info("Revoked refresh tokens for uid={}", principal.uid());
         } catch (Exception e) {
-            log.warn("Failed to revoke refresh tokens for uid={} : {}", principal.uid(), e.getMessage());
+            log.warn(
+                    "Failed to revoke refresh tokens for uid={} : {}",
+                    principal.uid(),
+                    e.getMessage());
         }
     }
 }
