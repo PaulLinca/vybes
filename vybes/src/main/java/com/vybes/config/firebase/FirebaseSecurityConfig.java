@@ -52,9 +52,7 @@ public class FirebaseSecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         auth ->
-                                auth.requestMatchers("/api/user/profilePicture/**")
-                                        .permitAll()
-                                        .requestMatchers("/actuator/health")
+                                auth.requestMatchers("/actuator/health")
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())

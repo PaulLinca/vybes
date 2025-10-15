@@ -29,6 +29,7 @@ public class FirebaseAuthenticationService {
     @Transactional
     public LoginResponseDTO authenticateOrCreate(FirebasePrincipal principal) {
         String email = principal.email();
+        log.info("Firebase user authentication (email={})", principal.email());
         if (email == null) {
             try {
                 UserRecord record = FirebaseAuth.getInstance().getUser(principal.uid());
@@ -45,6 +46,8 @@ public class FirebaseAuthenticationService {
         }
 
         String finalEmail = email;
+        log.info("Final email for user authentication (email={})", finalEmail);
+
         VybesUser user =
                 userRepository
                         .findByFirebaseUid(principal.uid())
@@ -59,6 +62,7 @@ public class FirebaseAuthenticationService {
 
         if (email != null
                 && (user.getEmail() == null || !user.getEmail().equalsIgnoreCase(email))) {
+            log.info("Something happening here (user.getEmail()={}, email={})", user.getEmail(), email);
             user.setEmail(email);
             user = userRepository.save(user);
         }
