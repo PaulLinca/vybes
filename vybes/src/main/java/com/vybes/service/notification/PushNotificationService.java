@@ -43,9 +43,6 @@ public class PushNotificationService {
     public void sendNewFeaturedChallengeNotification(FeaturedChallenge featured) {
         List<FcmToken> tokens = fcmTokenRepository.findAll();
         if (tokens.isEmpty()) {
-            log.debug(
-                    "No FCM tokens registered; skipping notification for featured challenge {}",
-                    featured.getId());
             return;
         }
 

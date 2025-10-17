@@ -29,10 +29,6 @@ public class AuthenticationController {
     public ResponseEntity<LoginResponseDTO> authenticate(Authentication authentication) {
         FirebasePrincipal principal = (FirebasePrincipal) authentication.getPrincipal();
         LoginResponseDTO dto = firebaseAuthService.authenticateOrCreate(principal);
-        log.info(
-                "Firebase user authenticated (uid={} email={})",
-                principal.uid(),
-                principal.email());
         return ResponseEntity.ok(dto);
     }
 

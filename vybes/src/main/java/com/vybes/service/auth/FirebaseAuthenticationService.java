@@ -46,8 +46,6 @@ public class FirebaseAuthenticationService {
         }
 
         String finalEmail = email;
-        log.info("Final email for user authentication (email={})", finalEmail);
-
         VybesUser user =
                 userRepository
                         .findByFirebaseUid(principal.uid())
@@ -62,7 +60,6 @@ public class FirebaseAuthenticationService {
 
         if (email != null
                 && (user.getEmail() == null || !user.getEmail().equalsIgnoreCase(email))) {
-            log.info("Something happening here (user.getEmail()={}, email={})", user.getEmail(), email);
             user.setEmail(email);
             user = userRepository.save(user);
         }
@@ -86,7 +83,6 @@ public class FirebaseAuthenticationService {
     public void logout(FirebasePrincipal principal) {
         try {
             FirebaseAuth.getInstance().revokeRefreshTokens(principal.uid());
-            log.info("Revoked refresh tokens for uid={}", principal.uid());
         } catch (Exception e) {
             log.warn(
                     "Failed to revoke refresh tokens for uid={} : {}",
