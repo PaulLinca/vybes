@@ -17,6 +17,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -89,5 +90,9 @@ public class FeaturedChallengeService {
             featuredChallengeRepository.save(featuredChallenge);
             log.info("Deactivated current featured challenge: {}", featuredChallenge.getId());
         }
+    }
+
+    public List<Challenge> getChallengesToFeature() {
+        return challengeRepository.findAllNotFeatured();
     }
 }

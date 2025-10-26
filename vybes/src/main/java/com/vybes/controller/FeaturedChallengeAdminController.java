@@ -1,5 +1,6 @@
 package com.vybes.controller;
 
+import com.vybes.dto.ChallengeDTO;
 import com.vybes.dto.FeaturedChallengeDTO;
 import com.vybes.dto.mapper.ChallengeMapper;
 import com.vybes.dto.request.CreateFeaturedChallengeRequestDTO;
@@ -11,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin/featured-challenges")
@@ -43,5 +47,13 @@ public class FeaturedChallengeAdminController {
         featuredChallengeService.deactivateCurrentFeaturedChallengeOfType(
                 FeaturedChallenge.FeaturedType.DAILY);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/toFeature")
+    public ResponseEntity<List<ChallengeDTO>> getChallenges() {
+        return ResponseEntity.ok(
+                featuredChallengeService.getChallengesToFeature().stream()
+                        .map(c -> challengeMapper.transformToDTO(c, null))
+                        .collect(Collectors.toList()));
     }
 }
