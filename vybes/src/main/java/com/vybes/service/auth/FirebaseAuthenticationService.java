@@ -73,6 +73,7 @@ public class FirebaseAuthenticationService {
                                 .map(Role::getAuthority)
                                 .collect(Collectors.toSet()))
                 .requiresUsernameSetup(user.getUsername() == null)
+                .profilePictureUrl(user.getProfilePictureUrl())
                 .build();
     }
 
