@@ -29,11 +29,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @RestController
 @RequestMapping("api/user")
 @CrossOrigin("*")
 @RequiredArgsConstructor
-@Slf4j
 public class UserController {
     private final UserService userService;
     private final PostService postService;
@@ -43,13 +43,13 @@ public class UserController {
     private final UserFollowService userFollowService;
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping
+    @GetMapping(params = "username")
     public VybesUserResponseDTO getUser(@RequestParam String username) {
         return userService.getByUsername(username);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping
+    @GetMapping(params = "query")
     public Set<VybesUserResponseDTO> searchUser(@RequestParam String query) {
         return userService.search(query);
     }
