@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -108,5 +109,22 @@ public class UserService {
                                 .map(Role::getAuthority)
                                 .collect(Collectors.toSet()))
                 .build();
+    }
+
+    public Set<VybesUserResponseDTO> search(String query) {
+        return userRepository.findByUsernameContainingIgnoreCase(query, query).stream()
+                .map(
+                        user ->
+                                VybesUserResponseDTO.builder()
+                                        .userId(user.getUserId())
+                                        .email(user.getEmail())
+                                        .username(user.getUsername())
+                                        .profilePictureUrl(user.getProfilePictureUrl())
+                                        .roles(
+                                                user.getAuthorities().stream()
+                                                        .map(Role::getAuthority)
+                                                        .collect(Collectors.toSet()))
+                                        .build())
+                .collect(Collectors.toSet());
     }
 }

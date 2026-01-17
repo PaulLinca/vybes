@@ -4,6 +4,7 @@ import com.vybes.model.VybesUser;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<VybesUser, Long> {
@@ -14,4 +15,6 @@ public interface UserRepository extends JpaRepository<VybesUser, Long> {
     Optional<VybesUser> findByUsername(String username);
 
     Optional<VybesUser> findByFirebaseUid(String firebaseUid);
+
+    List<VybesUser> findByUsernameContainingIgnoreCase(String username, String email);
 }

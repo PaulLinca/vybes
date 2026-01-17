@@ -26,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/user")
@@ -43,6 +44,12 @@ public class UserController {
     @GetMapping
     public VybesUserResponseDTO getUser(@RequestParam String username) {
         return userService.getByUsername(username);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    public Set<VybesUserResponseDTO> searchUser(@RequestParam String query) {
+        return userService.search(query);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
