@@ -74,6 +74,24 @@ public class VybesUser {
     @JsonManagedReference
     private Set<FcmToken> fcmTokens = new HashSet<>();
 
+    @Builder.Default
+    @ManyToMany
+    @JoinTable(
+            name = "user_followers",
+            joinColumns = @JoinColumn(name = "followed_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "follower_user_id")
+    )
+    private Set<VybesUser> followers = new HashSet<>();
+
+    @Builder.Default
+    @ManyToMany
+    @JoinTable(
+            name = "user_following",
+            joinColumns = @JoinColumn(name = "follower_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "followed_user_id")
+    )
+    private Set<VybesUser> following = new HashSet<>();
+
     @CreationTimestamp private LocalDateTime createdAt;
     @UpdateTimestamp private LocalDateTime updatedAt;
 }

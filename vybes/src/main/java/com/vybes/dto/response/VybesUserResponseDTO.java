@@ -18,4 +18,6 @@ public class VybesUserResponseDTO {
     private Set<ArtistDTO> favoriteArtists;
     private Set<AlbumDTO> favoriteAlbums;
     private Set<String> roles;
+    private Integer followerCount;
+    private Integer followingCount;
 }

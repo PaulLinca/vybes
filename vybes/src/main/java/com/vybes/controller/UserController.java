@@ -13,6 +13,7 @@ import com.vybes.model.VybesUser;
 import com.vybes.repository.UserRepository;
 import com.vybes.service.post.PostService;
 import com.vybes.service.user.UserFavoritesService;
+import com.vybes.service.user.UserFollowService;
 import com.vybes.service.user.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ public class UserController {
     private final PostMapper postMapper;
     private final UserRepository userRepository;
     private final UserFavoritesService userFavoritesService;
+    private final UserFollowService userFollowService;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
@@ -103,6 +105,18 @@ public class UserController {
                         vybesPage.isLast());
 
         return ResponseEntity.ok(response);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("follow/{userId}")
+    public void follow(@PathVariable Long userId) {
+        userFollowService.follow(userId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("unfollow/{userId}")
+    public void unfollow(@PathVariable Long userId) {
+        userFollowService.unfollow(userId);
     }
 
     private VybesUser findUser(String name) {

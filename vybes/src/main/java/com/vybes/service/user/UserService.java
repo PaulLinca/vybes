@@ -54,6 +54,8 @@ public class UserService {
                         user.getAuthorities().stream()
                                 .map(Role::getAuthority)
                                 .collect(Collectors.toSet()))
+                .followerCount(userRepository.countFollowersByUserId(user.getUserId()))
+                .followingCount(userRepository.countFollowingByUserId(user.getUserId()))
                 .build();
     }
 
@@ -81,6 +83,8 @@ public class UserService {
                 .email(updatedUser.getEmail())
                 .username(updatedUser.getUsername())
                 .profilePictureUrl(updatedUser.getProfilePictureUrl())
+                .followerCount(userRepository.countFollowersByUserId(user.getUserId()))
+                .followingCount(userRepository.countFollowingByUserId(user.getUserId()))
                 .roles(
                         updatedUser.getAuthorities().stream()
                                 .map(Role::getAuthority)
@@ -104,6 +108,8 @@ public class UserService {
                 .email(saved.getEmail())
                 .username(saved.getUsername())
                 .profilePictureUrl(saved.getProfilePictureUrl())
+                .followerCount(userRepository.countFollowersByUserId(user.getUserId()))
+                .followingCount(userRepository.countFollowingByUserId(user.getUserId()))
                 .roles(
                         saved.getAuthorities().stream()
                                 .map(Role::getAuthority)
@@ -112,7 +118,7 @@ public class UserService {
     }
 
     public Set<VybesUserResponseDTO> search(String query) {
-        return userRepository.findByUsernameContainingIgnoreCase(query, query).stream()
+        return userRepository.findByUsernameContainingIgnoreCase(query).stream()
                 .map(
                         user ->
                                 VybesUserResponseDTO.builder()
@@ -120,6 +126,8 @@ public class UserService {
                                         .email(user.getEmail())
                                         .username(user.getUsername())
                                         .profilePictureUrl(user.getProfilePictureUrl())
+                                        .followerCount(userRepository.countFollowersByUserId(user.getUserId()))
+                                        .followingCount(userRepository.countFollowingByUserId(user.getUserId()))
                                         .roles(
                                                 user.getAuthorities().stream()
                                                         .map(Role::getAuthority)
