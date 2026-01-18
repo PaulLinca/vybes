@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(params = "query")
+    @GetMapping("/search")
     public Set<VybesUserResponseDTO> searchUser(@RequestParam String query) {
         return userService.search(query);
     }
