@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -96,12 +97,10 @@ public class PostService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
 
-        Set<VybesUser> following = currentUser.getFollowing();
-        if (following == null || following.isEmpty()) {
-            return Page.empty(pageable);
-        }
+        Set<VybesUser> relevantUsers = new HashSet<>(currentUser.getFollowers());
+        relevantUsers.add(currentUser);
 
-        return postRepository.findByUserInOrderByPostedDateDesc(following, pageable);
+        return postRepository.findByUserInOrderByPostedDateDesc(relevantUsers, pageable);
     }
 
     @Transactional
@@ -155,7 +154,6 @@ public class PostService {
 
     @Transactional
     public CommentLike saveCommentLike(CommentLike like) {
-
         if (commentLikeRepository.findByCommentIdAndUserId(like.getId(), like.getUser().getUserId())
                 != null) {
             return null;
