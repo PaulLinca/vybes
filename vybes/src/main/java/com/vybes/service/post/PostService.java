@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -75,6 +76,32 @@ public class PostService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
 
         return postRepository.findByUserOrderByPostedDateDesc(user, pageable);
+    }
+
+    @Transactional
+    public Page<Post> getFollowingFeedPaginated(
+            VybesUser currentUser, int page, int size, String sortBy, String direction) {
+        if (page < 0) page = 0;
+        if (size < 1) size = 10;
+        if (size > 50) size = 50;
+
+        if (sortBy == null || sortBy.isEmpty()) {
+            sortBy = "postedDate";
+        }
+
+        Sort.Direction sortDirection = Sort.Direction.DESC;
+        if (direction != null && direction.equalsIgnoreCase("ASC")) {
+            sortDirection = Sort.Direction.ASC;
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+
+        Set<VybesUser> following = currentUser.getFollowing();
+        if (following == null || following.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        return postRepository.findByUserInOrderByPostedDateDesc(following, pageable);
     }
 
     @Transactional
