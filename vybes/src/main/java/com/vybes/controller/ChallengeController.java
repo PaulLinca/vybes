@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/challenges")
 @RequiredArgsConstructor
 public class ChallengeController {
+
     private final UserRepository userRepository;
     private final ChallengeService challengeService;
     private final ChallengeMapper challengeMapper;

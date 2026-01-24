@@ -24,6 +24,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class FeaturedChallengeService {
+
     private final ChallengeRepository challengeRepository;
     private final FeaturedChallengeRepository featuredChallengeRepository;
     private final PushNotificationService pushNotificationService;

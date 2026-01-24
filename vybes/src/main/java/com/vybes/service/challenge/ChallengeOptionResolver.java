@@ -18,6 +18,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class ChallengeOptionResolver {
+
     private final MusicService musicService;
 
     public List<ChallengeOption> resolveOptions(

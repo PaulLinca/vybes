@@ -35,6 +35,7 @@ import java.util.Set;
 @CrossOrigin("*")
 @RequiredArgsConstructor
 public class UserController {
+
     private final UserService userService;
     private final PostService postService;
     private final PostMapper postMapper;

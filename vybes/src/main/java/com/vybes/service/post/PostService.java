@@ -33,12 +33,6 @@ public class PostService {
     private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
-    public Post createPost(Post post) {
-        postRepository.save(post);
-        return post;
-    }
-
-    @Transactional
     public Page<Post> getPostsPaginated(int page, int size, String sortBy, String direction) {
         if (page < 0) page = 0;
         if (size < 1) size = 10;
@@ -137,7 +131,6 @@ public class PostService {
 
     @Transactional
     public PostLike saveLike(PostLike like) {
-
         if (!postLikeRepository
                 .findByPostIdAndUser_UserId(like.getPost().getId(), like.getUser().getUserId())
                 .isEmpty()) {

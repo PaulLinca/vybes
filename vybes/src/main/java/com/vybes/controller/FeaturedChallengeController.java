@@ -25,6 +25,7 @@ import java.util.List;
 @RequestMapping("/api/featured-challenges")
 @RequiredArgsConstructor
 public class FeaturedChallengeController {
+
     private final UserRepository userRepository;
     private final ChallengeMapper challengeMapper;
     private final FeaturedChallengeService featuredChallengeService;
